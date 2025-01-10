@@ -5,7 +5,7 @@ const Home: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/mytasks");
+    router.push("/my-tasks");
   }, [router]);
 
   return null;
