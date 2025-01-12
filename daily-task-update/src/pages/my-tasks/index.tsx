@@ -1,7 +1,8 @@
 import React from "react"; 
-import NavBar from "@/components/navbar";
+import NavBar from "@/components/layout/navbar";
 import styles from "../../styles/mytask.module.css";
-import Layout from "@/components/layout";
+import Layout from "@/components/layout/layout";
+import ProjectCard from "@/views/my-tasks/projectCard";
 
 interface Project {
   title: string;
@@ -9,14 +10,6 @@ interface Project {
 }
 
 const MyTasks: React.FC = () => {
-  const projects: Project[] = [
-    { title: "KBank ED-412", status: "Active" },
-    { title: "Dimos-514", status: "Active" },
-    { title: "SMP-41P", status: "Active" },
-    { title: "Title", status: "Inactive" },
-    { title: "Title", status: "Inactive" },
-    { title: "Title", status: "Inactive" },
-  ];
 
   return (
     <Layout>
@@ -27,27 +20,7 @@ const MyTasks: React.FC = () => {
           <p>Active project 3 of 9</p>
           <button className={styles.addProjectBtn}>Add Project</button>
         </div>
-        <div className={styles.projects}>
-          {projects.map((project, index) => (
-            <div key={index} className={styles.projectCard}>
-              <h2>{project.title}</h2>
-              <span
-                className={
-                  project.status === "Active"
-                    ? styles.activeStatus
-                    : styles.inactiveStatus
-                }
-              >
-                {project.status}
-              </span>
-              <p>Team member: 12</p>
-              <p>Last Update: 16/12/2024</p>
-              <p>Responsible Role: Front-End Dev</p>
-              <p>Project Manager: Watayut Pankong</p>
-              <a href="#">(view)</a>
-            </div>
-          ))}
-        </div>
+        <ProjectCard/>
         <div className={styles.pagination}>
           <span>Showing 6 of 9</span>
           <span>page 1 / 2</span>

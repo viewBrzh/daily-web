@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import styles from "../styles/NavBar.module.css";
+import styles from "../../styles/NavBar.module.css";
 
 const NavBar: React.FC = () => {
   return (
