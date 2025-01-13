@@ -47,3 +47,26 @@ body {
 .cancel:hover {
   background-color: #c0c0c0;
 }
+
+/* Basic styles for all status badges */
+.status-badge {
+  padding: 5px 5px;
+  border-radius: 5px;
+  color: white;
+  text-transform: capitalize;
+  font-weight: lighter;
+  font-size: smaller;
+}
+
+/* Styles for different status types */
+.status-in-progress {
+  background-color: #ffc107; /* Yellow for in-progress */
+}
+
+.status-complete {
+  background-color: #28a745; /* Green for complete */
+}
+
+.status-pending {
+  background-color: #6c757d; /* Gray for pending */
+}

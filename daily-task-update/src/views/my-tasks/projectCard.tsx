@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import styles from "../../styles/mytask.module.css";
 import { Project, NewProject } from "./types";
 import { fetchProjects } from "@/pages/api/my-task/getProject";
+import StatusBadge from "./statusBadge";
 
 const ProjectCard: React.FC = () => {
 
@@ -60,15 +61,7 @@ const ProjectCard: React.FC = () => {
           >
             <div className={styles.projectCardHeader}>
               <h2>{project.title}</h2>
-              <span
-                className={
-                  project.status === "Active"
-                    ? styles.activeStatus
-                    : styles.inactiveStatus
-                }
-              >
-                {project.status}
-              </span>
+              <StatusBadge status={project.status} />
             </div>
             {/* <p>Team member: {project.member}</p> */}
             <p>Last Update: {project.lastUpdate}</p>

@@ -3,10 +3,10 @@ export interface Project {
     title: string;
     lastUpdate: string;
     status: string;
-  }
-  
-  export interface NewProject {
+}
+
+export interface NewProject {
     title: string;
     lastUpdate: string;
     status: string;
-  }
+}
