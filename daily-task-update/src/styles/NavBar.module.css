@@ -4,10 +4,10 @@
     left: 0;
     width: 250px; /* Adjust the width as needed */
     height: 100%; /* Full height */
-    background-color: #f8f8f8;
+    background-color: white;
     border-right: 1px solid #ddd;
     padding: 1rem;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 900; /* Below the header */
     padding-top: 50px;
   }

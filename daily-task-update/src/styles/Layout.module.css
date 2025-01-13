@@ -1,12 +1,13 @@
 .layout {
     display: flex;
     min-height: 100vh;
-    padding-top: 60px; /* Header height */
-    margin-left: 250px; /* Navbar width */
+    padding-top: 50px; /* Header height */
+    margin-left: 230px; /* Navbar width */
   }
   
   .mainContent {
     flex: 1;
     padding: 2rem;
+    background-color: #ddd;
   }
   
