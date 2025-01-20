@@ -4,11 +4,13 @@ import Layout from "@/components/layout/layout";
 import ProjectCard from "@/views/my-tasks/projectCard";
 import PageContainer from "@/components/layout/pageContainer";
 import Modal from "@/components/common/modal/modal";
+import SearchBar from "@/components/common/searchBar";
 
 const MyTasks: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
+  const [searchProjectName, setSearchProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
 
   const handleAddProjectClick = () => {
@@ -23,6 +25,19 @@ const MyTasks: React.FC = () => {
     // Handle form submission (e.g., send data to API or update state)
     console.log('Project Added:', { projectName, projectDescription });
     setIsModalOpen(false);
+  };
+
+  const handleSubmitSearch = () => {
+    // Handle form submission (e.g., send data to API or update state)
+    console.log('Searching:', { searchProjectName });
+  };
+
+  const searchPayload = {
+    label: 'Search',
+    placeholder: 'project name/Code',
+    value: searchProjectName,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setSearchProjectName(e.target.value),
+    onSubmit: handleSubmitSearch,
   };
 
   const modalPayload = {
@@ -46,16 +61,17 @@ const MyTasks: React.FC = () => {
 
   return (
     <Layout>
+      <SearchBar payload={searchPayload} />
       <PageContainer title={"My Project"}>
         <div className={styles.container}>
           <div className={styles.header}>
             <h1>Project List</h1>
-            <button className={styles.addProjectBtn} onClick={handleAddProjectClick}>Add Project</button>
+            <button className={styles.addProjectBtn} onClick={handleAddProjectClick}>+ Add Project</button>
           </div>
           <ProjectCard />
         </div>
       </PageContainer>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal} payload={modalPayload}/>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} payload={modalPayload} />
     </Layout>
   );
 };

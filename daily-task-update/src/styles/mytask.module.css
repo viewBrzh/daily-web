@@ -1,10 +1,10 @@
-.container {
+/* .container {
   padding: 20px;
   max-width: 1250px;
   min-height: 550px;
   margin: 0 auto;
   height: 100%;
-}
+} */
 
 .header {
   display: flex;
@@ -14,8 +14,8 @@
 }
 
 .header h1 {
-  font-size: 24px;
-  color: #333;
+  font-size: 20px;
+  color: #555;
 }
 
 .header p {
@@ -50,7 +50,6 @@
   border-radius: 10px;
   padding: 15px;
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
 }
@@ -72,89 +71,8 @@
 }
 
 .projectCard h2 {
-  font-weight: bold00;
+  font-weight: bold;
   margin-bottom: 10px;
   color: #333;
   margin: 0;
-}
-
-.activeStatus {
-  display: inline-block;
-  padding: 5px 10px;
-  color: #fff;
-  background-color: #28a745;
-  border-radius: 20px;
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-
-.inactiveStatus {
-  display: inline-block;
-  padding: 5px 10px;
-  color: #fff;
-  background-color: #dc3545;
-  border-radius: 20px;
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-
-.pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  font-size: 14px;
-  color: #555;
-}
-
-.paginationContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  position: sticky;
-  bottom: 0;
-}
-
-.paginationInfo {
-  font-size: 14px;
-  color: #666;
-}
-
-.paginationControls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.paginationControls button {
-  padding: 8px 8px;
-  color: black;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  width: 40px;
-  /* Set a fixed width for the button */
-  height: 40px;
-  /* Set a fixed height for the button */
-  border-radius: 50%;
-  /* Makes the button circular */
-}
-
-.paginationControls button:hover {
-  background-color: #ccc;
-}
-
-.paginationControls button:disabled {
-  background-color: white;
-  color: #ccc;
-  cursor: not-allowed;
-}
-
-.paginationControls input {
-  width: 40px;
-  text-align: center;
-  border: 1px solid #ddd;
-  border-radius: 4px;
 }

@@ -8,11 +8,13 @@ const port = 10080;
 app.use(express.json());
 
 const ProjectRoutes = require('./route/projectRoute');
+const MytasksRoutes = require('./route/myTaskRoute');
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/projects", ProjectRoutes);
+app.use("/myTasks", MytasksRoutes);
 
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {

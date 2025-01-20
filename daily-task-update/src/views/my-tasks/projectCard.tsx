@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import styles from "../../styles/mytask.module.css";
+import styles from "@/styles/mytask.module.css";
 import { Project, NewProject } from "./types";
 import { fetchProjects } from "@/pages/api/my-task/getProject";
 import StatusBadge from "./statusBadge";
@@ -33,7 +33,7 @@ const ProjectCard: React.FC = () => {
   
 
   const handleViewProject = (projectId: string) => {
-    router.push("/view-project/" + projectId);
+    router.push(`/my-tasks/view-project/${projectId}`);
   };
 
   const handlePageChange = (page: number) => {
@@ -50,6 +50,14 @@ const ProjectCard: React.FC = () => {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, projects.length);
 
+  const formatDate = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div>
       <div className={styles.projects}>
@@ -64,17 +72,17 @@ const ProjectCard: React.FC = () => {
               <StatusBadge status={project.status} />
             </div>
             {/* <p>Team member: {project.member}</p> */}
-            <p>Last Update: {project.lastUpdate}</p>
+            <p>Last Update: {formatDate(project.lastUpdate)}</p>
             {/* <p>Responsible Role: {project.responsibleRole}</p> */}
           </div>
         ))}
       </div>
-      <div className={styles.paginationContainer}>
-        <div className={styles.paginationInfo}>
+      <div className={"paginationContainer"}>
+        <div className={"paginationInfo"}>
           Showing {startItem} - {endItem} of {projects.length}
         </div>
-        <div className={styles.paginationControls}>
-          <span className={styles.paginationInfo}>
+        <div className="paginationControls">
+          <span className="paginationInfo">
             Page <input
               type="number"
               value={currentPage}

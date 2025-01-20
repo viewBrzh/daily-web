@@ -8,7 +8,7 @@ interface LayoutProps {
 
 const PageContainer: React.FC<LayoutProps> = ({ title, children }) => {
   return (
-    <div className={styles.pageContainer}>
+    <div className={"pageContainer"}>
       {/* Page Title */}
       <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}>{title}</h1>
       

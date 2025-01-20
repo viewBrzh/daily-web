@@ -50,23 +50,96 @@ body {
 
 /* Basic styles for all status badges */
 .status-badge {
-  padding: 5px 5px;
+  display: inline-block;
+  white-space: nowrap;
+  background-color: #ffc107; /* Yellow background */
+  color: #fff; /* Black text color */
+  padding: 5px 10px;
   border-radius: 5px;
-  color: white;
-  text-transform: capitalize;
+  text-align: center;
   font-weight: lighter;
+  text-transform: capitalize;
   font-size: smaller;
 }
 
 /* Styles for different status types */
 .status-in-progress {
-  background-color: #ffc107; /* Yellow for in-progress */
+  background-color: orange; /* Yellow for in-progress */
 }
 
 .status-complete {
-  background-color: #28a745; /* Green for complete */
+  background-color: #34C759; /* Green for complete */
 }
 
 .status-pending {
-  background-color: #6c757d; /* Gray for pending */
+  background-color: darkgrey; /* Gray for pending */
 }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  bottom: 0;
+}
+
+.paginationInfo {
+  font-size: 14px;
+  color: #666;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.paginationControls button {
+  padding: 8px 8px;
+  color: black;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 40px;
+  /* Set a fixed width for the button */
+  height: 40px;
+  /* Set a fixed height for the button */
+  border-radius: 50%;
+  /* Makes the button circular */
+}
+
+.paginationControls button:hover {
+  background-color: #ccc;
+}
+
+.paginationControls button:disabled {
+  background-color: white;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.paginationControls input {
+  width: 40px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.pageContainer {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 24px;
+  min-height: 630.22px;
+}
+
