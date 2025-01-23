@@ -140,6 +140,8 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 24px;
-  min-height: 630.22px;
 }
 
+p {
+  color: #555;
+}

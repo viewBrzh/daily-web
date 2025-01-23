@@ -9,7 +9,7 @@ interface StatusBadgeProps {
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   return (
     <span className={`status-badge status-${status}`}>
-      {status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+      {status?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
     </span>
   );
 };

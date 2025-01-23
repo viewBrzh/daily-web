@@ -11,7 +11,6 @@ module.exports = class Project {
   static async findAll() {
     try {
       const [results] = await db.execute('SELECT * FROM projects');
-  
       return { results };
     } catch (error) {
       console.error('Error fetching projects:', error.message);

@@ -6,6 +6,6 @@ router.get('/', (req, res) => {
     res.json({ message: 'Hello from My Tasks Route' });
   });
 
-router.get('/get-all', MyTasksController.getMyTasks);
+router.post('/getMyTasks', MyTasksController.getMyTasks);
 
 module.exports = router;

@@ -13,6 +13,7 @@ const ProjectCard: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState<NewProject>({
     title: '',
+    description: '',
     lastUpdate: '',
     status: '',
   });
@@ -22,7 +23,7 @@ const ProjectCard: React.FC = () => {
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const data = await fetchProjects(); // Use the imported getProjects function
+        const data = await fetchProjects("1"); // Use the imported getProjects function
         setProjects(data);
       } catch (error) {
         console.error('Failed to fetch projects');
@@ -71,8 +72,9 @@ const ProjectCard: React.FC = () => {
               <h2>{project.title}</h2>
               <StatusBadge status={project.status} />
             </div>
-            {/* <p>Team member: {project.member}</p> */}
-            <p>Last Update: {formatDate(project.lastUpdate)}</p>
+            <p>{project.description}</p>
+            <p><strong>Responding Role: </strong> {project.role}</p>
+            <p><strong>Last Update: </strong> {formatDate(project.lastUpdate)}</p>
             {/* <p>Responsible Role: {project.responsibleRole}</p> */}
           </div>
         ))}
