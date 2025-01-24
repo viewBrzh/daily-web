@@ -5,6 +5,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #2E43C7;
+  --primaryHover: #004fa3;
+  --secondary: #4E91E9;
+  --secondaryHover: #0155ae;
+  --lightBlueBG: #ebf2fc;
+  --darkerBlueBG: #cce2ff;
+  --lightGreyBG: #ccc;
+  --darkerGreyBG: #878787;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,7 +30,7 @@ body {
 
 .btn {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: var(--primary);
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -31,12 +39,26 @@ body {
 }
 
 .btn:hover {
-  background-color: #0056b3;
+  background-color: var(--primaryHover);
+}
+
+.btn-second{
+  padding: 10px 20px;
+  background-color: var(--secondary);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-second:hover {
+  background-color: var(--secondaryHover);
 }
 
 .cancel {
   padding: 10px 20px;
-  background-color: #ccc;
+  background-color: var(--lightGreyBG);
   color: black;
   border: none;
   border-radius: 5px;
@@ -45,7 +67,7 @@ body {
 }
 
 .cancel:hover {
-  background-color: #c0c0c0;
+  background-color: var(--darkerGreyBG);
 }
 
 /* Basic styles for all status badges */
@@ -55,11 +77,12 @@ body {
   background-color: #ffc107; /* Yellow background */
   color: #fff; /* Black text color */
   padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 25px;
   text-align: center;
   font-weight: lighter;
   text-transform: capitalize;
   font-size: smaller;
+  font-weight: bolder;
 }
 
 /* Styles for different status types */
@@ -73,6 +96,11 @@ body {
 
 .status-pending {
   background-color: darkgrey; /* Gray for pending */
+}
+
+.status-on-planning {
+  color: var(--primary);
+  background-color: rgb(186, 221, 255); /* Gray for pending */
 }
 
 .pagination {
@@ -144,4 +172,10 @@ body {
 
 p {
   color: #555;
+}
+
+.data-not-found{
+  padding: 42px;
+  text-align: center;
+  color: var(--darkerGreyBG);
 }

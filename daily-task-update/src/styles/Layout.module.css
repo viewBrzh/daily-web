@@ -8,6 +8,6 @@
   .mainContent {
     flex: 1;
     padding: 24px;
-    background-color: #ddd;
+    background-color: var(--lightBlueBG);
   }
   

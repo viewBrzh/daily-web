@@ -1,52 +1,183 @@
-/* Add styles to make the modal look nice */
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.formActions {
+  display: flex;
+  justify-content: end;
+  gap: 20px;
+}
+
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal h2 {
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  .formGroup label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .formGroup input,
-  .formGroup textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-  }
-  
-  .formActions {
-    display: flex;
-    justify-content: end;
-    gap: 20px;
-  }
-  
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.tableContainer {
+  max-height: 300px;
+  /* Adjust height as needed */
+  overflow-y: auto;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.tableContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+.teamTable {
+  max-height: 260px;
+  width: 100%;
+  border-collapse: collapse;
+  position: relative;
+}
+
+.teamTable th,
+.teamTable td {
+  padding: 5px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.teamTable th {
+  background-color: #dfdede;
+  color: #333;
+  font-weight: bolder;
+  position: sticky;
+  top: 0;
+  /* Sticks the header to the top of the container */
+}
+
+.teamTable td {
+  background-color: #fff;
+  /* Add background color for table rows */
+}
+
+.addMember {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.addMember input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.addMember .btn {
+  background: #2E43C7;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.addMember .btn:hover {
+  background: #0056b3;
+}
+
+.formActions .cancel {
+  background: #f5f5f5;
+  color: #555;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.formActions .cancel:hover {
+  background: #e0e0e0;
+}
+
+.formActions .btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.formActions .btn:hover {
+  background: #0056b3;
+}
+
+.teamTable th:nth-child(4),
+.teamTable td:nth-child(4) {
+  width: 50px;
+  /* Keep the column small */
+  text-align: center;
+  /* Center align content */
+}
+
+.deleteRowButton {
+  background-color: transparent;
+  border: none;
+  color: red;
+  /* Bright color for the bin icon */
+  font-size: 1.2rem;
+  /* Adjust icon size */
+  cursor: pointer;
+}
+
+.deleteRowButton:hover {
+  color: rgb(231, 0, 0);
+  /* Darker shade for hover effect */
+}

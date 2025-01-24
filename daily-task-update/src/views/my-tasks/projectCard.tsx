@@ -8,7 +8,7 @@ import StatusBadge from "./statusBadge";
 const ProjectCard: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 6;
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState<NewProject>({
@@ -24,7 +24,7 @@ const ProjectCard: React.FC = () => {
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const data = await fetchProjects("3"); // Use the imported getProjects function
+        const data = await fetchProjects("7"); // Use the imported getProjects function
         setProjects(data);
       } catch (error) {
         console.error('Failed to fetch projects');
@@ -62,7 +62,7 @@ const ProjectCard: React.FC = () => {
 
   return (
     <div>
-      <div className={styles.projects}>
+      {currentProjects.length > 0 && <div className={styles.projects}>
         {currentProjects.map((project, index) => (
           <div
             key={index}
@@ -79,7 +79,10 @@ const ProjectCard: React.FC = () => {
             {/* <p>Responsible Role: {project.responsibleRole}</p> */}
           </div>
         ))}
-      </div>
+      </div>}
+      {<div className="data-not-found">
+        Project not found.  
+      </div>}
       <div className={"paginationContainer"}>
         <div className={"paginationInfo"}>
           Showing {startItem} - {endItem} of {projects.length}
