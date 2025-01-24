@@ -6,6 +6,8 @@ router.get('/', (req, res) => {
     res.json({ message: 'Hello from Project Route' });
   });
 
-router.get('/get-all', ProjectController.getAllProject);
+
+router.post('/getMyProjectLists', ProjectController.getMyProject);
+router.post('/addProject', ProjectController.addProject);
 
 module.exports = router;

@@ -12,10 +12,11 @@ const ProjectCard: React.FC = () => {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState<NewProject>({
-    title: '',
+    projectCode: '',
+    name: '',
     description: '',
-    lastUpdate: '',
-    status: '',
+    start_date: new Date(),
+    end_date: new Date(),
   });
   const totalPages = Math.ceil(projects.length / itemsPerPage);
 
@@ -23,7 +24,7 @@ const ProjectCard: React.FC = () => {
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const data = await fetchProjects("1"); // Use the imported getProjects function
+        const data = await fetchProjects("3"); // Use the imported getProjects function
         setProjects(data);
       } catch (error) {
         console.error('Failed to fetch projects');
@@ -69,7 +70,7 @@ const ProjectCard: React.FC = () => {
             onClick={() => handleViewProject(project.projectId.toString())}
           >
             <div className={styles.projectCardHeader}>
-              <h2>{project.title}</h2>
+              <h2>{project.name}</h2>
               <StatusBadge status={project.status} />
             </div>
             <p>{project.description}</p>

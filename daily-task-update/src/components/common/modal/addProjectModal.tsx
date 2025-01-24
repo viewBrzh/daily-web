@@ -21,7 +21,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, payload }) => {
   }
 
   const handleBack = () => {
-    setCurrentPage(2);
+    setCurrentPage(1);
   }
 
   return (

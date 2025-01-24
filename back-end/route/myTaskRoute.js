@@ -6,6 +6,7 @@ router.get('/', (req, res) => {
     res.json({ message: 'Hello from My Tasks Route' });
   });
 
-router.post('/getMyTasks', MyTasksController.getMyTasks);
+// router.post('/getMyTasksProjectLists', MyTasksController.getMyTasks);
+// router.post('/addMyTasksProjectLists', MyTasksController.getMyTasks);
 
 module.exports = router;

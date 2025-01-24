@@ -1,6 +1,7 @@
 export interface Project {
+    projectCode: string;
     projectId: number;
-    title: string;
+    name: string;
     description: string;
     role: string;
     lastUpdate: string;
@@ -8,8 +9,9 @@ export interface Project {
 }
 
 export interface NewProject {
-    title: string;
+    projectCode: string;
+    name: string;
     description: string;
-    lastUpdate: string;
-    status: string;
+    start_date: Date;
+    end_date: Date;
 }

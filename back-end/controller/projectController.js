@@ -1,13 +1,37 @@
 const ProjectModel = require("../model/projectModel");
 
-exports.getAllProject = async (req, res) => {
-    try {
-      const projects = ProjectModel.findAll();
-      res.status(200).json((await projects).results);
-    } catch (error) {
-      res.status(500).json({
-        message: 'Failed to fetch courses',
-        error: error.message
+exports.getMyProject = async (req, res) => {
+  try {
+    const resUserId = req.body.resUserId;
+    const myTasks = ProjectModel.findMyProject(resUserId);
+    res.status(200).json((await myTasks).finalResults);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch projects',
+      error: error.message
+    });
+  }
+};
+
+exports.addProject = async (req, res) => {
+  try {
+    const { projectCode, name, description, start_date, end_date } = req.body;
+    if (!projectCode || !name || !description || !start_date || !end_date) {
+      return res.status(400).json({
+        message: 'Missing required fields: projectCode, name, description, start_date, end_date',
       });
     }
+    ProjectModel.addProject(projectCode, name, description, start_date, end_date);
+    
+    res.status(201).json({
+      message: 'Project added successfully',
+      project: { projectCode, name, description, start_date, end_date },
+    });
+  } catch (error) {
+    console.error('Error adding new project:', error.message);
+    res.status(500).json({
+      message: 'Failed to add new project',
+      error: error.message,
+    });
+  }
 };

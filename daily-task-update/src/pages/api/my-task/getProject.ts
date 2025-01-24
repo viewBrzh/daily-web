@@ -4,7 +4,7 @@ import { baseApiUrl } from '@/api/Instance';
 
 export const fetchProjects = async (userId: string): Promise<Project[]> => {
   try {
-    const response = await axios.post<Project[]>(`/api/myTasks/getMyTasks`,{
+    const response = await axios.post<Project[]>(`/api/projects/getMyProjectLists`,{
       resUserId: userId,
     })
     console.log(response);
@@ -17,7 +17,7 @@ export const fetchProjects = async (userId: string): Promise<Project[]> => {
 
 export const addProject = async (project: NewProject): Promise<Project> => {
   try {
-    const response = await axios.post<Project>(`/api/projects`, project);
+    const response = await axios.post<Project>(`/api/projects/addProject`, project);
     return response.data;
   } catch (error) {
     console.error('Error adding project:', error);
