@@ -2,10 +2,11 @@ import axios from 'axios';
 import { Project, NewProject } from '@/views/my-tasks/types'
 import { baseApiUrl } from '@/api/Instance';
 
-export const fetchProjects = async (userId: string): Promise<Project[]> => {
+export const fetchProjects = async (userId: number, searchValue: string): Promise<Project[]> => {
   try {
     const response = await axios.post<Project[]>(`/api/projects/getMyProjectLists`,{
       resUserId: userId,
+      searchValue: searchValue,
     })
     console.log(response);
     return response.data;

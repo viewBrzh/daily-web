@@ -2,37 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "@/styles/mytask.module.css";
 import { Project, NewProject } from "./types";
-import { fetchProjects } from "@/pages/api/my-task/getProject";
 import StatusBadge from "./statusBadge";
 
-const ProjectCard: React.FC = () => {
+interface ProjectCardProps {
+  pageData: Project[];
+}
+
+const ProjectCard: React.FC<ProjectCardProps> = ({pageData}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const router = useRouter();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [newProject, setNewProject] = useState<NewProject>({
-    projectCode: '',
-    name: '',
-    description: '',
-    start_date: new Date(),
-    end_date: new Date(),
-  });
+  const [projects, setProjects] = useState(pageData);
   const totalPages = Math.ceil(projects.length / itemsPerPage);
-
-
-  useEffect(() => {
-    const fetchProjectData = async () => {
-      try {
-        const data = await fetchProjects("7"); // Use the imported getProjects function
-        setProjects(data);
-      } catch (error) {
-        console.error('Failed to fetch projects');
-      }
-    };
-    fetchProjectData(); // Call the renamed function
-  }, []);
-  
 
   const handleViewProject = (projectId: string) => {
     router.push(`/my-tasks/view-project/${projectId}`);
@@ -49,6 +31,10 @@ const ProjectCard: React.FC = () => {
     currentPage * itemsPerPage
   );
 
+  useEffect(() => {
+    setProjects(pageData);
+  });
+
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, projects.length);
 
@@ -62,7 +48,7 @@ const ProjectCard: React.FC = () => {
 
   return (
     <div>
-      {currentProjects.length > 0 && <div className={styles.projects}>
+      {currentProjects?.length > 0 ?( <div className={styles.projects}>
         {currentProjects.map((project, index) => (
           <div
             key={index}
@@ -79,10 +65,10 @@ const ProjectCard: React.FC = () => {
             {/* <p>Responsible Role: {project.responsibleRole}</p> */}
           </div>
         ))}
-      </div>}
-      {<div className="data-not-found">
+      </div>):(<div className="data-not-found">
         Project not found.  
-      </div>}
+      </div>)}
+      
       <div className={"paginationContainer"}>
         <div className={"paginationInfo"}>
           Showing {startItem} - {endItem} of {projects.length}

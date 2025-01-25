@@ -175,6 +175,7 @@ p {
 }
 
 .data-not-found{
+  text-transform: capitalize;
   padding: 42px;
   text-align: center;
   color: var(--darkerGreyBG);

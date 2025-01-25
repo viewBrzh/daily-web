@@ -3,7 +3,8 @@ const ProjectModel = require("../model/projectModel");
 exports.getMyProject = async (req, res) => {
   try {
     const resUserId = req.body.resUserId;
-    const myTasks = ProjectModel.findMyProject(resUserId);
+    const searchValue = req.body.searchValue; 
+    const myTasks = ProjectModel.findMyProject(resUserId, searchValue);
     res.status(200).json((await myTasks).finalResults);
   } catch (error) {
     res.status(500).json({

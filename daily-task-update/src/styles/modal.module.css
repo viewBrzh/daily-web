@@ -100,6 +100,13 @@
   /* Add background color for table rows */
 }
 
+.dateForm {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px; /* Adds space between the child elements */
+}
+
 .addMember {
   display: flex;
   gap: 10px;
@@ -180,4 +187,10 @@
 .deleteRowButton:hover {
   color: rgb(231, 0, 0);
   /* Darker shade for hover effect */
+}
+
+.error{
+  color: red;
+  font-weight: lighter;
+  font-size: smaller;
 }
