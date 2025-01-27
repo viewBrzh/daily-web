@@ -44,9 +44,9 @@ module.exports = class Project {
         projectCode: project.projectCode,
         name: project.name,
         description: project.description,
-        startDate: project.start_date,
-        endDate: project.end_date,
-        lastUpdate: project.updated_at,
+        startDate: formatDateToDDMMYYYY(project.start_date),
+        endDate: formatDateToDDMMYYYY(project.end_date),
+        lastUpdate: formatDateToDDMMYYYY(project.updated_at),
         status: project.status,
       }));
   
@@ -58,6 +58,10 @@ module.exports = class Project {
         AND projectId IN (${projectIds.join(",")})
       `;
       const [roleDataResults] = await db.execute(queryRole);
+
+      const queryMember = `
+        COUNT projectId IN projectId = ${resUserId}
+        `;
   
       // Map roles by project ID
       const rolesByProject = roleDataResults.reduce((acc, role) => {
@@ -66,10 +70,30 @@ module.exports = class Project {
       }, {});
   
       // Combine project data with roles
-      const finalResults = mappedProjects.map(project => ({
-        ...project,
-        role: rolesByProject[project.projectId] || "No role assigned",
-      }));
+      const finalResults = await Promise.all(
+        mappedProjects.map(async (project) => {
+          const queryMemberCount = `
+            SELECT COUNT(*) AS memberCount 
+            FROM projectMembers 
+            WHERE projectId = ?
+          `;
+          const [memberCountResult] = await db.execute(queryMemberCount, [project.projectId]);
+
+          const queryTaskCount = `
+            SELECT COUNT(*) AS taskCount 
+            FROM tasks 
+            WHERE projectId = ?
+          `;
+          const [taskCountResult] = await db.execute(queryTaskCount, [project.projectId]);
+  
+          return {
+            ...project,
+            role: rolesByProject[project.projectId] || "-",
+            members: memberCountResult[0]?.memberCount || 0, // Include member count
+            task: taskCountResult[0]?.taskCount || 0,
+          };
+        })
+      );
   
       return { finalResults };
     } catch (error) {
@@ -96,3 +120,10 @@ module.exports = class Project {
 
 };
 
+function formatDateToDDMMYYYY(dateString) {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
