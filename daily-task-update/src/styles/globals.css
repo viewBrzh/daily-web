@@ -11,7 +11,7 @@
   --secondaryHover: #0155ae;
   --lightBlueBG: #ebf2fc;
   --darkerBlueBG: #cce2ff;
-  --lightGreyBG: #ccc;
+  --lightGreyBG: #efefef;
   --darkerGreyBG: #878787;
 }
 
@@ -87,15 +87,18 @@ body {
 
 /* Styles for different status types */
 .status-in-progress {
-  background-color: orange; /* Yellow for in-progress */
+  color: orange;
+  background-color: rgba(255, 166, 0, 0.266); /* Yellow for in-progress */
 }
 
-.status-complete {
-  background-color: #34C759; /* Green for complete */
+.status-completed {
+  color: #34C759;
+  background-color: #34c75951; /* Green for complete */
 }
 
 .status-pending {
-  background-color: darkgrey; /* Gray for pending */
+  color: var(--darkerGreyBG);
+  background-color: var(--lightGreyBG); /* Gray for pending */
 }
 
 .status-on-planning {

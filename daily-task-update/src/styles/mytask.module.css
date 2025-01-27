@@ -52,7 +52,7 @@
   background-color: #fff;
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
-  width: 360px;
+  width: 380px;
 }
 
 .projectCard:hover {
@@ -73,7 +73,33 @@
 
 .projectCard h2 {
   font-weight: bold;
-  margin-bottom: 10px;
   color: #333;
   margin: 0;
+}
+
+.projectCode {
+  margin-bottom: 10px;
+  color: var(--darkerGreyBG)
+}
+
+.statsContainer {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  background-color: var(--lightGreyBG);
+  color: #475569;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.statItem {
+  flex: 1;
+}
+
+.statValue {
+  font-weight: 600;
+}
+
+.statLabel {
+  font-size: smaller;
 }

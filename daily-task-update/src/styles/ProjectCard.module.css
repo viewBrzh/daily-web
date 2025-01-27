@@ -1,0 +1,19 @@
+.statsContainer {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  color: #475569;
+  margin-bottom: 1rem;
+}
+
+.statItem {
+  flex: 1;
+}
+
+.statValue {
+  font-weight: 600;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+}

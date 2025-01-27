@@ -6,6 +6,8 @@ export interface Project {
     role: string;
     lastUpdate: string;
     status: string;
+    members: number;
+    task: number;
 }
 
 export interface NewProject {
