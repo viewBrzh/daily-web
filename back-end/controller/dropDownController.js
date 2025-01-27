@@ -1,4 +1,4 @@
-const dropDownUserModel = require("../model/dropDownUserModel");
+const dropDownUserModel = require("../model/dropDownModel");
 
 exports.getDropDownUser = async (req, res) => {
   try {

@@ -14,11 +14,11 @@ module.exports = class Project {
 
             // Base query for matching rows
             let userQuery = `
-                (SELECT * FROM users 
+                (SELECT userId, username, fullName, empId FROM users 
                 ${searchValue ? `WHERE fullName LIKE ? OR username LIKE ?` : ``}
                 LIMIT ?)
                 UNION
-                (SELECT * FROM users 
+                (SELECT userId, username, fullName, empId FROM users 
                 ${searchValue ? `WHERE NOT (fullName LIKE ? OR username LIKE ?)` : ``}
                 LIMIT ?)`;
 

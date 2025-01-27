@@ -9,14 +9,14 @@ app.use(express.json());
 
 const ProjectRoutes = require('./route/projectRoute');
 const MytasksRoutes = require('./route/myTaskRoute');
-const dropDownUserRoutes = require('./route/dropDownUserRoute');
+const dropDownUserRoutes = require('./route/dropDownRoute');
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/projects", ProjectRoutes);
 app.use("/myTasks", MytasksRoutes);
-app.use("/dropDownUser", dropDownUserRoutes);
+app.use("/dropDown", dropDownUserRoutes);
 
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {

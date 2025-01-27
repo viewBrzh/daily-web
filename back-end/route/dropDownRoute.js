@@ -1,5 +1,5 @@
 const express = require('express');
-const dropDownUserController = require('../controller/dropDownUserController');
+const dropDownUserController = require('../controller/dropDownController');
 const router = express.Router();
 
 router.get('/', (req, res) => {
