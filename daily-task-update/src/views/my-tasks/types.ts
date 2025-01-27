@@ -23,3 +23,16 @@ export interface NewProject {
     start_date: Date;
     end_date: Date;
 }
+
+export interface NewMember {
+    projectId: number;
+    userId: number;
+    role: string;
+}
+
+export interface User {
+    userId: number;
+    username: string;
+    fullName: string;
+    empId: string;
+}

@@ -112,6 +112,7 @@
   gap: 10px;
   align-items: center;
   margin-bottom: 20px;
+  grid-row: 12;
 }
 
 .addMember input {
@@ -121,6 +122,11 @@
   border-radius: 4px;
   font-size: 0.9rem;
 }
+
+.addMember .inputRow {
+  width: 100%;
+}
+
 
 .addMember .btn {
   background: #2E43C7;
@@ -193,4 +199,52 @@
   color: red;
   font-weight: lighter;
   font-size: smaller;
+}
+
+.container {
+  position: relative;
+  width: 260px;
+}
+
+.inputName {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #007bff;
+}
+
+.dropdown {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 5px 0;
+  z-index: 1000;
+}
+
+.dropdownItem {
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: #f0f0f0;
+}
+
+.noResults {
+  padding: 8px;
+  color: #aaa;
 }

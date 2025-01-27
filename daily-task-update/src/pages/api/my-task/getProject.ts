@@ -9,7 +9,7 @@ export const fetchProjects = async (userId: number, searchValue: string, current
       page: currentPage,
     })
     return {
-      projects:response.data.projects,
+      projects: response.data.projects,
       totalPage: response.data.totalPage,
       totalRow: response.data.totalRow,
     };

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styles from "@/styles/modal.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { NewProject } from "@/views/my-tasks/types";
+import UserDropdown from "../drop-down/userDropDown";
 
 interface ModalProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [teamMembers, setTeamMembers] = useState<{ name: string; role: string }[]>([]);
-  const [newMember, setNewMember] = useState({ name: "", role: "" });
+  const [newMember, setNewMember] = useState<{ name: string; role: string }>({ name: "", role: "" });
 
   // Validation logic
   const validatePageOne = () => {
@@ -32,7 +33,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     if (!newProject.description.trim()) validationErrors.description = "Project Description is required!";
     if (!newProject.start_date) validationErrors.start_date = "Start Date is required!";
     if (!newProject.end_date) validationErrors.end_date = "End Date is required!";
-    if (newProject.start_date >= newProject.end_date) validationErrors.end_date = "End Date is not right!";
+    if (newProject.start_date >= newProject.end_date) validationErrors.end_date = "End Date is not valid!";
 
     setErrors(validationErrors);
 
@@ -56,6 +57,10 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleUserSelect = (userId: number, name: string) => {
+    setNewMember({ ...newMember, name });
+  };
+
   const handleSubmit = () => {
     console.log("Creating new Project Code:", newProject.projectCode);
     console.log("Name:", newProject.name);
@@ -75,6 +80,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       {currentPage === 1 && (
         <div className={styles.modal}>
           <h2>Add Project</h2>
+          {/* Form for project details */}
           <div className={styles.formGroup}>
             <label>Code</label>
             <input
@@ -183,20 +189,16 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             </table>
           </div>
           <div className={styles.addMember}>
-            <input
-              type="text"
-              placeholder="Name"
-              value={newMember.name}
-              onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-            />
+            <UserDropdown onSelectUser={handleUserSelect} />
             <input
               type="text"
               placeholder="Role"
               value={newMember.role}
               onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
+              className={styles.inputRow}
             />
             <button className="btn-second" onClick={handleAddMember}>
-              +
+              <FontAwesomeIcon icon={faUserPlus} />
             </button>
           </div>
           <div className={styles.formActions}>

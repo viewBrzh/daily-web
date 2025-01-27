@@ -7,6 +7,8 @@ import AddProjectModal from "@/components/common/modal/addProjectModal";
 import SearchBar from "@/components/common/searchBar";
 import { NewProject, Project } from "@/views/my-tasks/types";
 import { fetchProjects } from "../api/my-task/getProject";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const MyTasks: React.FC = () => {
   const itemsPerPage = 6;
@@ -81,7 +83,7 @@ const MyTasks: React.FC = () => {
         <div className={styles.container}>
           <div className={styles.header}>
             <h1>Project List</h1>
-            <button className='btn' onClick={handleAddProjectClick}>+ Add Project</button>
+            <button className='btn' onClick={handleAddProjectClick}><FontAwesomeIcon icon={faPlus} /> Add Project</button>
           </div>
           <ProjectCard pageData={projects} />
         </div>
