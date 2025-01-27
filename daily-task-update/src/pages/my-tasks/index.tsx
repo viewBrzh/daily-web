@@ -9,6 +9,10 @@ import { NewProject, Project } from "@/views/my-tasks/types";
 import { fetchProjects } from "../api/my-task/getProject";
 
 const MyTasks: React.FC = () => {
+  const itemsPerPage = 6;
+  const [totalPage, setTotalPage] = useState(1);
+  const [totalRow, settotalRow] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [projects, setProjects] = useState<Project[]>([]);
@@ -48,15 +52,27 @@ const MyTasks: React.FC = () => {
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const data = await fetchProjects(1, debouncedSearchValue); // Pass the debounced value
-        setProjects(data);
+        const data = await fetchProjects(1, debouncedSearchValue, currentPage); // Pass the debounced value
+        const projectData = data.projects;
+        setProjects(projectData);
+        setTotalPage(data.totalPage);
+        settotalRow(data.totalRow);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       }
     };
 
     fetchProjectData();
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    if (page > 0 && page <= totalPage) {
+      setCurrentPage(page);
+    }
+  };
+
+  const startItem = (currentPage - 1) * itemsPerPage;
+  const endItem = startItem + projects.length;
 
   return (
     <Layout>
@@ -67,7 +83,36 @@ const MyTasks: React.FC = () => {
             <h1>Project List</h1>
             <button className='btn' onClick={handleAddProjectClick}>+ Add Project</button>
           </div>
-          <ProjectCard pageData={projects}/>
+          <ProjectCard pageData={projects} />
+        </div>
+        <div className={"paginationContainer"}>
+          <div className={"paginationInfo"}>
+            Showing {startItem + 1} - {endItem} of {totalRow}
+          </div>
+          <div className="paginationControls">
+            <span className="paginationInfo">
+              Page <input
+                type="number"
+                value={currentPage}
+                onChange={(e) => handlePageChange(Number(e.target.value))}
+                min="1"
+                max={totalPage}
+              />{" "}
+              / {totalPage}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              &lt;
+            </button>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPage}
+            >
+              &gt;
+            </button>
+          </div>
         </div>
       </PageContainer>
       <AddProjectModal isOpen={isModalOpen} onClose={handleCloseModal} />

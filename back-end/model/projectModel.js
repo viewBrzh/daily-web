@@ -8,8 +8,11 @@ module.exports = class Project {
     this.status = status;
   }
 
-  static async findMyProject(resUserId, searchValue) {
+  static async findMyProject(resUserId, searchValue, page) {
     try {
+      const itemPerPage = 6;
+      const offset = (page - 1) * itemPerPage;
+  
       // Query to fetch tasks for the user
       const queryMytasks = `SELECT * FROM tasks WHERE resUserID = ${resUserId}`;
       const [myTasksDataResults] = await db.execute(queryMytasks);
@@ -27,10 +30,23 @@ module.exports = class Project {
         filterConditions += ` AND (name LIKE '%${searchValue}%' OR projectCode LIKE '%${searchValue}%')`;
       }
   
-      // Query to fetch projects that match the filter
+      // Query to fetch the total count of projects that match the filter (without LIMIT and OFFSET)
+      const queryProjectCount = `
+        SELECT COUNT(*) AS totalProjects
+        FROM projects 
+        WHERE ${filterConditions}
+      `;
+      const [totalProjectsResult] = await db.execute(queryProjectCount);
+      const totalProjects = totalProjectsResult[0].totalProjects;
+  
+      // Calculate the total number of pages
+      const totalPages = Math.ceil(totalProjects / itemPerPage);
+  
+      // Now query to fetch projects with LIMIT and OFFSET
       const queryProjectData = `
         SELECT * FROM projects 
-        WHERE ${filterConditions}
+        WHERE ${filterConditions} 
+        LIMIT ${itemPerPage} OFFSET ${offset}
       `;
       const [projectDataResults] = await db.execute(queryProjectData);
   
@@ -58,10 +74,6 @@ module.exports = class Project {
         AND projectId IN (${projectIds.join(",")})
       `;
       const [roleDataResults] = await db.execute(queryRole);
-
-      const queryMember = `
-        COUNT projectId IN projectId = ${resUserId}
-        `;
   
       // Map roles by project ID
       const rolesByProject = roleDataResults.reduce((acc, role) => {
@@ -78,7 +90,7 @@ module.exports = class Project {
             WHERE projectId = ?
           `;
           const [memberCountResult] = await db.execute(queryMemberCount, [project.projectId]);
-
+  
           const queryTaskCount = `
             SELECT COUNT(*) AS taskCount 
             FROM tasks 
@@ -95,12 +107,13 @@ module.exports = class Project {
         })
       );
   
-      return { finalResults };
+      return { finalResults, totalPages, totalProjects };
     } catch (error) {
       console.error("Error fetching tasks, projects, or roles:", error.message);
       throw error;
     }
-  }  
+  }
+  
 
   static async addProject(projectCode, name, description, start_date, end_date) {
     try {

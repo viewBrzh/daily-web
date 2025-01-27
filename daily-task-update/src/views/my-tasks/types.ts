@@ -10,6 +10,12 @@ export interface Project {
     task: number;
 }
 
+export interface MyProjectPage {
+    projects: Project[];
+    totalPage: number;
+    totalRow: number;
+}
+
 export interface NewProject {
     projectCode: string;
     name: string;

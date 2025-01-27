@@ -1,15 +1,18 @@
 import axios from 'axios';
-import { Project, NewProject } from '@/views/my-tasks/types'
-import { baseApiUrl } from '@/api/Instance';
+import { Project, NewProject, MyProjectPage } from '@/views/my-tasks/types'
 
-export const fetchProjects = async (userId: number, searchValue: string): Promise<Project[]> => {
+export const fetchProjects = async (userId: number, searchValue: string, currentPage: number): Promise<MyProjectPage> => {
   try {
-    const response = await axios.post<Project[]>(`/api/projects/getMyProjectLists`,{
+    const response = await axios.post<MyProjectPage>(`/api/projects/getMyProjectLists`,{
       resUserId: userId,
       searchValue: searchValue,
+      page: currentPage,
     })
-    console.log(response);
-    return response.data;
+    return {
+      projects:response.data.projects,
+      totalPage: response.data.totalPage,
+      totalRow: response.data.totalRow,
+    };
   } catch (error) {
     console.error('Error fetching projects:', error);
     throw error;
