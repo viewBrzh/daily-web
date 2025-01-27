@@ -4,8 +4,13 @@ exports.getMyProject = async (req, res) => {
   try {
     const resUserId = req.body.resUserId;
     const searchValue = req.body.searchValue; 
-    const myTasks = ProjectModel.findMyProject(resUserId, searchValue);
-    res.status(200).json((await myTasks).finalResults);
+    const page = req.body.page; 
+    const myProject = ProjectModel.findMyProject(resUserId, searchValue, page);
+    res.status(200).json({
+      projects: (await myProject).finalResults,
+      totalPage: (await myProject).totalPages,
+      totalRow: (await myProject).totalProjects,
+    });
   } catch (error) {
     res.status(500).json({
       message: 'Failed to fetch projects',
