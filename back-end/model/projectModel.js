@@ -14,11 +14,11 @@ module.exports = class Project {
       const offset = (page - 1) * itemPerPage;
   
       // Query to fetch tasks for the user
-      const queryMytasks = `SELECT * FROM tasks WHERE resUserID = ${resUserId}`;
-      const [myTasksDataResults] = await db.execute(queryMytasks);
+      const memberQuery = `SELECT * FROM projectMembers WHERE userId = ${resUserId}`;
+      const [memberResult] = await db.execute(memberQuery);
   
       // Map project IDs from the tasks
-      const projectIds = myTasksDataResults.map(task => task.projectId);
+      const projectIds = memberResult.map(task => task.projectId);
   
       if (projectIds.length === 0) {
         return { message: "No tasks found for this user." };
@@ -114,20 +114,51 @@ module.exports = class Project {
     }
   }
   
-
-  static async addProject(projectCode, name, description, start_date, end_date) {
+  static async addProject(projectCode, name, description, start_date, end_date, member) {
     try {
       // Assuming you're using a database model or connection object
       const query = `INSERT INTO projects (projectCode, name, description, start_date, end_date) 
                        VALUES (?, ?, ?, ?, ?)`;
 
       // Assuming you have a DB connection or ORM, replace this with the actual query execution
-      await db.query(query, [projectCode, name, description, start_date, end_date]);
+      const [result] = await db.query(query, [projectCode, name, description, start_date, end_date]);
 
-      console.log('Project added successfully:', projectCode);
+      console.log('Project added successfully:', projectCode, result.insertId);
+      return result.insertId;
     } catch (error) {
       console.error('Error adding Project Code:', projectCode, error.message);
       throw error;
+    }
+  }
+
+  static async addMembers(projectId, members) {
+    try {
+      const query = `INSERT INTO projectMembers (projectId, userId, role) VALUES ?`;
+
+      const values = members.map(member => [projectId, member.userId, member.role]);
+
+      const [result] = await db.query(query, [values]);
+      console.log(result)
+
+      return result;
+    } catch (error) {
+      throw new Error('Error adding members: ' + error.message);
+    }
+  }
+
+  static async getViewProject(projectId, userId) {
+    try {
+      const queryProject = `SELECT * FROM projects WHERE projectId = ${projectId}`;
+      const queryMytasks = `SELECT * FROM tasks WHERE resUserId = ${userId} AND projectId = ${projectId}`;
+      const queryMembers = `SELECT * FROM projectMembers WHERE projectId = ${projectId}`;
+
+      const [projectResult] = await db.query(queryProject);
+      const mytasksResult = await db.query(queryMytasks);
+      const projectMembers = await db.query(queryMembers);
+
+      return { projectResult,  mytasksResult, projectMembers};
+    } catch (error) {
+      throw new Error('Error adding members: ' + error.message);
     }
   }
 

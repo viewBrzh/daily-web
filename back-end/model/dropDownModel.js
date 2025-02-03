@@ -9,10 +9,8 @@ module.exports = class Project {
 
     static async getUserDropdown(searchValue) {
         try {
-            // Set the limit to 5 users
             const limit = 5;
 
-            // Base query for matching rows
             let userQuery = `
                 (SELECT userId, username, fullName, empId FROM users 
                 ${searchValue ? `WHERE fullName LIKE ? OR username LIKE ?` : ``}

@@ -9,5 +9,6 @@ router.get('/', (req, res) => {
 
 router.post('/getMyProjectLists', ProjectController.getMyProject);
 router.post('/addProject', ProjectController.addProject);
+router.post('/getViewProject', ProjectController.getViewProject);
 
 module.exports = router;
