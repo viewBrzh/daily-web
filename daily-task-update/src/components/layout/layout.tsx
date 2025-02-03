@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "./header";
-import styles from "../../styles/Layout.module.css";
+import styles from "../../styles/layout/Layout.module.css";
 import NavBar from "./navbar";
 
 interface LayoutProps {

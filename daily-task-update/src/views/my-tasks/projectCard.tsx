@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import styles from "@/styles/mytask.module.css";
+import styles from "@/styles/my-project/mytask.module.css";
 import { Project } from "./types";
 import StatusBadge from "./statusBadge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

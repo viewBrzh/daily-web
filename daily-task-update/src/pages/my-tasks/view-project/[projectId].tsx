@@ -1,4 +1,5 @@
 import Layout from '@/components/layout/layout';
+import styles from "@/styles/view-project/viewProject.module.css";
 import PageContainer from '@/components/layout/pageContainer';
 import { getViewProject } from '@/pages/api/my-task/project';
 import { ViewProject, Task, Member } from '@/views/my-tasks/types';
@@ -36,6 +37,8 @@ const initialPageData = {
   ],
 };
 
+const tabs = ["Overview", "Member", "Sprint", "Calendar"];
+
 const ViewProjectPage = () => {
   const router = useRouter();
   const { projectId } = router.query;
@@ -43,6 +46,7 @@ const ViewProjectPage = () => {
   const [project, setProject] = useState<ViewProject>(pageData.project);
   const [members, setMembers] = useState<Member[]>(pageData.members);
   const [tasks, setTasks] = useState<Task[]>(pageData.tasks);
+  const [activeTab, setActiveTab] = useState("Overview"); // Track active tab
 
   useEffect(() => {
     if (!router.isReady || !projectId) return;
@@ -69,7 +73,20 @@ const ViewProjectPage = () => {
   return (
     <Layout>
       <PageContainer title={project.name}>
-        <></>
+        <div className={styles.tabBar}>
+          {tabs.map((tab) => (
+            <div 
+              key={tab} 
+              className={`${styles.tab} ${activeTab === tab ? styles.active : ""}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </div>
+          ))}
+        </div>
+        <div className={styles.contentContainer}>
+          
+        </div>
       </PageContainer>
     </Layout>
   );

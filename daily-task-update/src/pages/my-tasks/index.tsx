@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "@/styles/mytask.module.css";
+import styles from "@/styles/my-project/mytask.module.css";
 import Layout from "@/components/layout/layout";
 import ProjectCard from "@/views/my-tasks/projectCard";
 import PageContainer from "@/components/layout/pageContainer";
