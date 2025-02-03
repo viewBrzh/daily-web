@@ -14,15 +14,19 @@ const Overview: React.FC<OverviewProps> = ({ pageData, isOverview }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const handleEdit = () =>{ 
-        setIsEditing(true)
+        setIsEditing(true);
     };
 
     const handleSave = () => {
-        setIsEditing(false)
+        setIsEditing(false);
     };
 
     const handleCancel = () => {
-        setIsEditing(false)
+        setIsEditing(false);
+    };
+
+    const handleAdd = () =>{ 
+        setIsEditing(true);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -114,7 +118,8 @@ const Overview: React.FC<OverviewProps> = ({ pageData, isOverview }) => {
 
             <div className={styles.card}>
             <div className={styles.header}>
-                    <h1 className={styles.title}>📈 Dashboard</h1>
+                    <h1 className={styles.title}>👥 Members</h1>
+                    <button className={styles.editButton} onClick={handleAdd}>Add</button>
                     
                 </div>
             </div>

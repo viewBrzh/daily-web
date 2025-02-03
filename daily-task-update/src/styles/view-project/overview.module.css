@@ -7,9 +7,9 @@
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin: auto;
-    width: 500px;
-    border-left: 5px solid #007bff;
+    margin: 0 auto auto;
+    min-width: 500px;
+    border-left: 5px solid var(--secondary);
 }
 
 .header {
@@ -71,24 +71,18 @@
 
 .details select {
     width: 100%;
-    padding: 8px;
+    padding: 6px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    font-size: 16px;
-    color: #333;
+    border-radius: 4px;
+    font-size: 14px;
     cursor: pointer;
     outline: none;
 }
 
 .details select:disabled {
     background-color: #f5f5f5;
-    color: #999;
-    cursor: not-allowed;
-}
-
-.details select:hover {
-    border-color: #007bff;
+    color: #888;
+    cursor: default;
 }
 
 .details select:focus {

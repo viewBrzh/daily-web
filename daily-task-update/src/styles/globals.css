@@ -4,7 +4,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0d1d85;
   --primaryText: #0d1d85;
   --primary: #2E43C7;
   --primaryHover: #004fa3;
@@ -188,5 +188,10 @@ p {
 
 strong {
   font-weight: bolder;
-  color: var(--primaryText)
+  color: var(--primaryText);
+}
+
+.emoji {
+  font-size: 24px; /* Adjust size as needed */
+  color: var(--secondary); /* Blue color */
 }

@@ -1,7 +1,7 @@
 .tabBar {
     display: flex;
     align-items: center;
-    background-color: var(--lightBlueBG);
+    background-color: white;
     padding: 5px 10px;
     border-radius: 8px 8px 0 0;
     border: 1px black;
@@ -31,7 +31,7 @@
     padding-bottom: 12px;
     position: relative;
     color: var(--secondary);
-    background-color: white;
+    background-color: var(--lightBlueBG);
     border-radius: 8px 8px 0 0;
     margin-bottom: none;
     transition: 0.2s;
@@ -43,7 +43,7 @@
 }
 
 .contentContainer {
-    background-color: white;
+    background-color: var(--lightBlueBG);
     border-radius: 8px;
     padding: 20px;
     min-height: 450px;

@@ -38,7 +38,7 @@ const initialPageData = {
   ],
 };
 
-const tabs = ["Overview", "Member", "Sprint", "Calendar"];
+const tabs = ["Overview", "Dashboard", "Sprint", "Calendar"];
 
 const ViewProjectPage = () => {
   const router = useRouter();
