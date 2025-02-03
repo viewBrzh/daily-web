@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/modal.module.css";
 import { User } from "@/views/my-tasks/types";
-import { fetchDropDownUser } from "@/pages/api/drop-down/getDropDown";
+import { fetchDropDownUser } from "@/pages/api/drop-down/dropDown";
 
 interface UserDropdownProps {
   onSelectUser: (userId: number, userName: string) => void; // Callback to handle user selection

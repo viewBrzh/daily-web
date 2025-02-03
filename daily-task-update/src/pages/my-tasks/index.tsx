@@ -6,7 +6,7 @@ import PageContainer from "@/components/layout/pageContainer";
 import AddProjectModal from "@/components/common/modal/addProjectModal";
 import SearchBar from "@/components/common/searchBar";
 import { NewProject, Project } from "@/views/my-tasks/types";
-import { fetchProjects } from "../api/my-task/getProject";
+import { fetchProjects } from "../api/my-task/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
@@ -74,7 +74,7 @@ const MyTasks: React.FC = () => {
   };
 
   const startItem = (currentPage - 1) * itemsPerPage;
-  const endItem = startItem + projects.length;
+  const endItem = startItem + projects?.length;
 
   return (
     <Layout>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Project, NewProject, MyProjectPage } from '@/views/my-tasks/types'
+import { Project, NewProject, MyProjectPage, Member } from '@/views/my-tasks/types'
 
 export const fetchProjects = async (userId: number, searchValue: string, currentPage: number): Promise<MyProjectPage> => {
   try {
@@ -19,12 +19,23 @@ export const fetchProjects = async (userId: number, searchValue: string, current
   }
 };
 
-export const addProject = async (project: NewProject): Promise<Project> => {
+export const addProject = async (project: NewProject, members: Member[]): Promise<number> => {
   try {
-    const response = await axios.post<Project>(`/api/projects/addProject`, project);
-    return response.data;
+    const users = members.map(({ userId, role }) => ({ userId, role }));
+    console.log({project, users})
+    const response = await axios.post<Project>(`/api/projects/addProject`, {project, users});
+    return response.data.projectId;
   } catch (error) {
     console.error('Error adding project:', error);
     throw error;
   }
 };
+
+export const getViewProject = async (projectId: any, userId: any) => {
+  try {
+    const response = await axios.post(`/api/projects/getViewProject`, {projectId, userId});
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

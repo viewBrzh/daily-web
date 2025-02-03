@@ -2,12 +2,19 @@ import React, { useState } from "react";
 import styles from "@/styles/modal.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { NewProject } from "@/views/my-tasks/types";
+import { Member, NewProject } from "@/views/my-tasks/types";
 import UserDropdown from "../drop-down/userDropDown";
+import { addProject } from "@/pages/api/my-task/project";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+interface NewMember {
+  userId: number;
+  name: string; 
+  role: string
 }
 
 const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
@@ -22,22 +29,22 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     end_date: new Date(),
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [teamMembers, setTeamMembers] = useState<{ name: string; role: string }[]>([]);
-  const [newMember, setNewMember] = useState<{ name: string; role: string }>({ name: "", role: "" });
+  const [teamMembers, setTeamMembers] = useState<Member[]>([]);
+  const [newMember, setNewMember] = useState<NewMember>({ userId: 0, name: "", role: "" });
+  const [projectId, setProjectId] = useState<number>(0);
 
   // Validation logic
   const validatePageOne = () => {
     const validationErrors: Record<string, string> = {};
     if (!newProject.projectCode.trim()) validationErrors.projectCode = "Project Code is required!";
     if (!newProject.name.trim()) validationErrors.name = "Project Name is required!";
-    if (!newProject.description.trim()) validationErrors.description = "Project Description is required!";
     if (!newProject.start_date) validationErrors.start_date = "Start Date is required!";
     if (!newProject.end_date) validationErrors.end_date = "End Date is required!";
     if (newProject.start_date >= newProject.end_date) validationErrors.end_date = "End Date is not valid!";
 
     setErrors(validationErrors);
 
-    return Object.keys(validationErrors).length === 0; // Returns true if no errors
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleNext = () => {
@@ -52,22 +59,21 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const handleAddMember = () => {
     if (newMember.name && newMember.role) {
-      setTeamMembers([...teamMembers, newMember]);
-      setNewMember({ name: "", role: "" });
+      setTeamMembers([...teamMembers, {
+        userId: newMember.userId,
+        fullName: newMember.name,
+        role: newMember.role,
+      }]);
+      setNewMember({ userId: 0,name: "", role: "" });
     }
   };
 
   const handleUserSelect = (userId: number, name: string) => {
-    setNewMember({ ...newMember, name });
+    setNewMember({ ...newMember, name, userId });
   };
 
   const handleSubmit = () => {
-    console.log("Creating new Project Code:", newProject.projectCode);
-    console.log("Name:", newProject.name);
-    console.log("Description:", newProject.description);
-    console.log("Start Date:", newProject.start_date);
-    console.log("End Date:", newProject.end_date);
-    console.log("Team Members:", teamMembers);
+    addProject(newProject, teamMembers);
     onClose();
   };
 
@@ -110,7 +116,6 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               value={newProject.description}
               onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
             />
-            {errors.description && <span className={styles.error}>{errors.description}</span>}
           </div>
           <div className={styles.dateForm}>
             <div className={styles.dateWrapper}>
@@ -172,7 +177,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 {teamMembers.map((member, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{member.name}</td>
+                    <td>{member.fullName}</td>
                     <td>{member.role}</td>
                     <td style={{ textAlign: "center" }}>
                       <button
