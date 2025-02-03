@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User } from '@/views/my-tasks/types';
+import { User } from '@/components/common/types';
 
 export const fetchDropDownUser = async (searchValue: string): Promise<User[]> => {
   try {

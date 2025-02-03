@@ -1,0 +1,97 @@
+.overviewContainer {
+    display: flex;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: auto;
+    width: 500px;
+    border-left: 5px solid #007bff;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.editButton, .saveButton, .cancelButton{
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.saveButton {
+    background: #28a745;
+}
+
+.cancelButton {
+    background: #a1a1a1;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    row-gap: 10px;
+    column-gap: 15px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.details label {
+    font-weight: bold;
+    color: #555;
+}
+
+.details input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.details input:disabled {
+    background: #f5f5f5;
+    color: #888;
+}
+
+.details select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+}
+
+.details select:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.details select:hover {
+    border-color: #007bff;
+}
+
+.details select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}

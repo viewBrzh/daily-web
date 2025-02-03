@@ -9,6 +9,7 @@
 
 .tab {
     display: flex;
+    color: var(--secondaryDisable);
     align-items: center;
     justify-content: center;
     padding: 8px 16px;
@@ -16,10 +17,12 @@
     cursor: pointer;
     font-size: smaller;
     border-radius: 8px;
+    font-weight: bolder;
 }
 
 .tab:hover {
     background-color: var(--darkerBlueBG);
+    color: var(--secondaryHover);
 }
 
 
@@ -27,9 +30,11 @@
     border-bottom: none;
     padding-bottom: 12px;
     position: relative;
+    color: var(--secondary);
     background-color: white;
     border-radius: 8px 8px 0 0;
     margin-bottom: none;
+    transition: 0.2s;
     transform: translateY(6px);
 }
 

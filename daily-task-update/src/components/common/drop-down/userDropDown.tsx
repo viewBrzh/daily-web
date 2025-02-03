@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/my-project/modal.module.css";
-import { User } from "@/views/my-tasks/types";
+import { User } from "@/components/common/types";
 import { fetchDropDownUser } from "@/pages/api/drop-down/dropDown";
 
 interface UserDropdownProps {

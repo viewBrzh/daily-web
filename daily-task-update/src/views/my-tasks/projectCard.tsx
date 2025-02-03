@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "@/styles/my-project/mytask.module.css";
-import { Project } from "./types";
-import StatusBadge from "./statusBadge";
+import { Project } from "@/components/common/types";
+import StatusBadge from "@/components/common/statusBadge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faCalendarDays, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
 

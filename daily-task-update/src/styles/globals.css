@@ -5,10 +5,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primaryText: #141d5b;
+  --primaryText: #0d1d85;
   --primary: #2E43C7;
   --primaryHover: #004fa3;
   --secondary: #4E91E9;
+  --secondaryDisable: #a9c2e3;
   --secondaryHover: #0155ae;
   --lightBlueBG: #ebf2fc;
   --darkerBlueBG: #cce2ff;
@@ -183,4 +184,9 @@ p {
   padding: 42px;
   text-align: center;
   color: var(--darkerGreyBG);
+}
+
+strong {
+  font-weight: bolder;
+  color: var(--primaryText)
 }

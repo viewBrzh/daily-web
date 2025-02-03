@@ -5,7 +5,7 @@ import ProjectCard from "@/views/my-tasks/projectCard";
 import PageContainer from "@/components/layout/pageContainer";
 import AddProjectModal from "@/components/common/modal/addProjectModal";
 import SearchBar from "@/components/common/searchBar";
-import { NewProject, Project } from "@/views/my-tasks/types";
+import { NewProject, Project } from "@/components/common/types";
 import { fetchProjects } from "../api/my-task/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";

@@ -2,9 +2,10 @@ import Layout from '@/components/layout/layout';
 import styles from "@/styles/view-project/viewProject.module.css";
 import PageContainer from '@/components/layout/pageContainer';
 import { getViewProject } from '@/pages/api/my-task/project';
-import { ViewProject, Task, Member } from '@/views/my-tasks/types';
+import { ViewProject, Task, Member } from '@/components/common/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Overview from '@/views/view-project/overview';
 
 const initialPageData = {
   project: {
@@ -46,7 +47,7 @@ const ViewProjectPage = () => {
   const [project, setProject] = useState<ViewProject>(pageData.project);
   const [members, setMembers] = useState<Member[]>(pageData.members);
   const [tasks, setTasks] = useState<Task[]>(pageData.tasks);
-  const [activeTab, setActiveTab] = useState("Overview"); // Track active tab
+  const [activeTab, setActiveTab] = useState("Overview");
 
   useEffect(() => {
     if (!router.isReady || !projectId) return;
@@ -85,7 +86,7 @@ const ViewProjectPage = () => {
           ))}
         </div>
         <div className={styles.contentContainer}>
-          
+          <Overview pageData={project} isOverview={activeTab} />
         </div>
       </PageContainer>
     </Layout>

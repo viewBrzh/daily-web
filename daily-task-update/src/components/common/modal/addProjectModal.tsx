@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "@/styles/my-project/modal.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { Member, NewProject } from "@/views/my-tasks/types";
+import { Member, NewProject } from "@/components/common/types";
 import UserDropdown from "../drop-down/userDropDown";
 import { addProject } from "@/pages/api/my-task/project";
 
