@@ -10,10 +10,12 @@ app.use(express.json());
 const ProjectRoutes = require('./route/projectRoute');
 const MytasksRoutes = require('./route/myTaskRoute');
 const dropDownUserRoutes = require('./route/dropDownRoute');
+const memberRoute = require('./route/memberRoute');
 
 app.use(cors());
 app.use(express.json());
 
+app.use("/members", memberRoute);
 app.use("/projects", ProjectRoutes);
 app.use("/myTasks", MytasksRoutes);
 app.use("/dropDown", dropDownUserRoutes);

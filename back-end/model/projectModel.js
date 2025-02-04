@@ -12,24 +12,24 @@ module.exports = class Project {
     try {
       const itemPerPage = 6;
       const offset = (page - 1) * itemPerPage;
-  
+
       // Query to fetch tasks for the user
       const memberQuery = `SELECT * FROM projectMembers WHERE userId = ${resUserId}`;
       const [memberResult] = await db.execute(memberQuery);
-  
+
       // Map project IDs from the tasks
       const projectIds = memberResult.map(task => task.projectId);
-  
+
       if (projectIds.length === 0) {
         return { message: "No tasks found for this user." };
       }
-  
+
       // Build the WHERE clause to filter by name or code
       let filterConditions = `projectId IN (${projectIds.join(",")})`;
       if (searchValue) {
         filterConditions += ` AND (name LIKE '%${searchValue}%' OR projectCode LIKE '%${searchValue}%')`;
       }
-  
+
       // Query to fetch the total count of projects that match the filter (without LIMIT and OFFSET)
       const queryProjectCount = `
         SELECT COUNT(*) AS totalProjects
@@ -38,10 +38,10 @@ module.exports = class Project {
       `;
       const [totalProjectsResult] = await db.execute(queryProjectCount);
       const totalProjects = totalProjectsResult[0].totalProjects;
-  
+
       // Calculate the total number of pages
       const totalPages = Math.ceil(totalProjects / itemPerPage);
-  
+
       // Now query to fetch projects with LIMIT and OFFSET
       const queryProjectData = `
         SELECT * FROM projects 
@@ -49,11 +49,11 @@ module.exports = class Project {
         LIMIT ${itemPerPage} OFFSET ${offset}
       `;
       const [projectDataResults] = await db.execute(queryProjectData);
-  
+
       if (projectDataResults.length === 0) {
         return { message: "No projects found with the given search criteria." };
       }
-  
+
       // Map project data
       const mappedProjects = projectDataResults.map(project => ({
         projectId: project.projectId,
@@ -65,7 +65,7 @@ module.exports = class Project {
         lastUpdate: formatDateToDDMMYYYY(project.updated_at),
         status: project.status,
       }));
-  
+
       // Query to fetch roles for the user in the filtered projects
       const queryRole = `
         SELECT projectId, role 
@@ -74,13 +74,13 @@ module.exports = class Project {
         AND projectId IN (${projectIds.join(",")})
       `;
       const [roleDataResults] = await db.execute(queryRole);
-  
+
       // Map roles by project ID
       const rolesByProject = roleDataResults.reduce((acc, role) => {
         acc[role.projectId] = role.role;
         return acc;
       }, {});
-  
+
       // Combine project data with roles
       const finalResults = await Promise.all(
         mappedProjects.map(async (project) => {
@@ -90,14 +90,14 @@ module.exports = class Project {
             WHERE projectId = ?
           `;
           const [memberCountResult] = await db.execute(queryMemberCount, [project.projectId]);
-  
+
           const queryTaskCount = `
             SELECT COUNT(*) AS taskCount 
             FROM tasks 
             WHERE projectId = ?
           `;
           const [taskCountResult] = await db.execute(queryTaskCount, [project.projectId]);
-  
+
           return {
             ...project,
             role: rolesByProject[project.projectId] || "-",
@@ -106,14 +106,14 @@ module.exports = class Project {
           };
         })
       );
-  
+
       return { finalResults, totalPages, totalProjects };
     } catch (error) {
       console.error("Error fetching tasks, projects, or roles:", error.message);
       throw error;
     }
   }
-  
+
   static async addProject(projectCode, name, description, start_date, end_date, member) {
     try {
       // Assuming you're using a database model or connection object
@@ -150,17 +150,23 @@ module.exports = class Project {
     try {
       const queryProject = `SELECT * FROM projects WHERE projectId = ${projectId}`;
       const queryMytasks = `SELECT * FROM tasks WHERE resUserId = ${userId} AND projectId = ${projectId}`;
-      const queryMembers = `SELECT * FROM projectMembers WHERE projectId = ${projectId}`;
+      const queryMembers = `
+        SELECT projectMembers.*, users.fullName 
+        FROM projectMembers 
+        JOIN users ON projectMembers.userId = users.userId 
+        WHERE projectMembers.projectId = ${projectId}
+      `;
 
       const [projectResult] = await db.query(queryProject);
       const mytasksResult = await db.query(queryMytasks);
       const projectMembers = await db.query(queryMembers);
 
-      return { projectResult,  mytasksResult, projectMembers};
+      return { projectResult, mytasksResult, projectMembers };
     } catch (error) {
       throw new Error('Error adding members: ' + error.message);
     }
   }
+
 
 };
 
