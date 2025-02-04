@@ -16,6 +16,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 14px;
 }
 
 .title {
@@ -40,6 +41,7 @@
 
 .cancelButton {
     background: #a1a1a1;
+    margin-right: 14px;
 }
 
 .details {

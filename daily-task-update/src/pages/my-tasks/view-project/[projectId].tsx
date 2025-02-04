@@ -55,7 +55,6 @@ const ViewProjectPage = () => {
     const fetchData = async () => {
       try {
         const res = await getViewProject(projectId, 1);
-        console.log(res);
         setPageData(await res);
       } catch (error) {
         console.error('Error fetching project data:', error);
@@ -86,7 +85,7 @@ const ViewProjectPage = () => {
           ))}
         </div>
         <div className={styles.contentContainer}>
-          <Overview pageData={project} isOverview={activeTab} />
+          <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectId? projectId[0] : "0"} />
         </div>
       </PageContainer>
     </Layout>

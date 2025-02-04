@@ -31,7 +31,6 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [teamMembers, setTeamMembers] = useState<Member[]>([]);
   const [newMember, setNewMember] = useState<NewMember>({ userId: 0, name: "", role: "" });
-  const [projectId, setProjectId] = useState<number>(0);
 
   // Validation logic
   const validatePageOne = () => {

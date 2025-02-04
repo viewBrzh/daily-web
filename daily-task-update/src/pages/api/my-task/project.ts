@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Project, NewProject, MyProjectPage, Member } from '@/components/common/types'
+import { Project, NewProject, MyProjectPage, Member } from '@/components/common/types';
 
 export const fetchProjects = async (userId: number, searchValue: string, currentPage: number): Promise<MyProjectPage> => {
   try {
