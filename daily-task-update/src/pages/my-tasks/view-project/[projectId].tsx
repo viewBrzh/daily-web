@@ -43,6 +43,7 @@ const tabs = ["Overview", "Dashboard", "Sprint", "Calendar"];
 const ViewProjectPage = () => {
   const router = useRouter();
   const { projectId } = router.query;
+  const projectIdStr = Array.isArray(projectId) ? projectId.join("") : projectId ?? "0";
   const [pageData, setPageData] = useState(initialPageData);
   const [project, setProject] = useState<ViewProject>(pageData.project);
   const [members, setMembers] = useState<Member[]>(pageData.members);
@@ -51,6 +52,7 @@ const ViewProjectPage = () => {
 
   useEffect(() => {
     if (!router.isReady || !projectId) return;
+
 
     const fetchData = async () => {
       try {
@@ -85,7 +87,7 @@ const ViewProjectPage = () => {
           ))}
         </div>
         <div className={styles.contentContainer}>
-          <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectId? projectId[0] : "0"} />
+          <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectIdStr} />
         </div>
       </PageContainer>
     </Layout>

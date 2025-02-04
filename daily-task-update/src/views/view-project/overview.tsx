@@ -113,14 +113,14 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             {/* Project Overview Section */}
             <div className={styles.card}>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>📖 Project Overview</h1>
+                    <h1 className={styles.title}>📖 Detail</h1>
                     {isEditing ? (
                         <div>
                             <button className={styles.cancelButton} onClick={handleCancel}>Cancel</button>
                             <button className={styles.saveButton} onClick={handleSave}>Save</button>
                         </div>
                     ) : (
-                        <button className="btn" onClick={handleEdit}>Edit</button>
+                        <button className="btn" onClick={handleEdit}>Update</button>
                     )}
                 </div>
 
@@ -160,7 +160,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
                             <button className={styles.saveButton} onClick={handleSaveMember}>Save</button>
                         </div>
                     ) : (
-                        <button className="btn" onClick={handleEditMember}>Edit</button>
+                        <button className="btn" onClick={handleEditMember}>Update</button>
                     )}
                 </div>
                 <div className={stylesModal.tableContainer}>
