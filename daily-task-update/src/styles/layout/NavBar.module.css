@@ -1,26 +1,29 @@
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px; /* Adjust the width as needed */
-    height: 100%; /* Full height */
-    background-color: white;
-    border-right: 1px solid #ddd;
-    padding: 1rem;
-    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
-    z-index: 900; /* Below the header */
-    padding-top: 50px;
-  }
-  
-  .navLink {
-    display: block;
-    padding: 0.5rem 0;
-    color: #333;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  
-  .navLink:hover {
-    color: #0070f3;
-  }
+  position: fixed;
+  top: 78.8;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background-color: white;
+  border-right: 1px solid #ddd;
+  padding-top: 1rem;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 900;
+}
+
+.navLink {
+  display: block;
+  padding: 0.6rem;
+  color: var(--darkerGreyText);
+  font-weight: 400;
+  border-radius: 4px;
+}
+
+.navLink:hover {
+  color: var(--primary);
+  background-color: var(--lightBlueBG);
+}
+
+.active {
+  color: var(--secondary);
+}

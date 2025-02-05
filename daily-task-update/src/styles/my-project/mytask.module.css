@@ -15,7 +15,7 @@
 
 .header h1 {
   font-size: 20px;
-  color: #555;
+  color: var(--primaryTextLighter);
 }
 
 .header p {
@@ -46,8 +46,9 @@
 }
 
 .projectCard {
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin: auto 0;
   padding: 16px;
   background-color: #fff;
   transition: transform 0.2s ease-in-out;
@@ -56,38 +57,30 @@
 }
 
 .projectCard:hover {
-  transform: scale(1.04);
-
+  transform: scale(1.02);
 }
 
 .projectCardHeader {
   display: flex;
-  /* Flexbox for horizontal layout */
   justify-content: space-between;
-  /* Space between title and status */
   align-items: center;
-  /* Align items vertically */
-  margin-bottom: 8px;
-  /* Spacing below header */
 }
 
 .projectCard h2 {
   font-weight: bold;
-  color: #333;
+  color: var(--primaryText);
   margin: 0;
 }
 
 .projectCode {
   margin-bottom: 10px;
-  color: var(--darkerGreyBG)
+  color: var(--primaryTextLighter)
 }
 
 .statsContainer {
   display: flex;
   justify-content: space-between;
   text-align: center;
-  background-color: var(--lightBlueBG);
-  color: #475569;
   padding: 5px;
   border-radius: 5px;
 }
@@ -97,9 +90,12 @@
 }
 
 .statValue {
-  font-weight: 600;
+  color: var(--primaryText);
+  font-size: smaller;
+  font-weight: bolder;
 }
 
 .statLabel {
+  color: var(--primaryTextLighter);
   font-size: smaller;
 }

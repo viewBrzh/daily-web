@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+Thai:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +8,7 @@
   --background: #ffffff;
   --foreground: #0d1d85;
   --primaryText: #0d1d85;
+  --primaryTextLighter: #8aa7eb;
   --primary: #2E43C7;
   --primaryHover: #004fa3;
   --secondary: #4E91E9;
@@ -15,6 +18,7 @@
   --darkerBlueBG: #cce2ff;
   --lightGreyBG: #efefef;
   --darkerGreyBG: #878787;
+  --darkerGreyText: #606060;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,7 +31,7 @@
 body {
   color: var(--primaryText);
   background: var(--background);
-  font-family: monospace, sans-serif;
+  font-family: 'Noto Sans', 'Noto Sans Thai', sans-serif;
 }
 
 .btn {
@@ -78,13 +82,18 @@ body {
   white-space: nowrap;
   background-color: #ffc107; /* Yellow background */
   color: #fff; /* Black text color */
-  padding: 5px 10px;
+  padding: 2px 8px;
   border-radius: 25px;
   text-align: center;
   font-weight: lighter;
   text-transform: capitalize;
   font-size: smaller;
-  font-weight: bolder;
+}
+
+.status-badge::before {
+  content: "●";
+  font-size: 16px;
+  margin-right: 5px;
 }
 
 /* Styles for different status types */
@@ -166,13 +175,6 @@ body {
   text-align: center;
   border: 1px solid #ddd;
   border-radius: 4px;
-}
-
-.pageContainer {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 24px;
 }
 
 p {

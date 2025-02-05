@@ -35,10 +35,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ pageData }) => {
             <div className={styles.projectCardHeader}>
               <div>
                 <h2>{project.name}</h2>
-                <p className={styles.projectCode}>{project.projectCode}</p>
               </div>
               <StatusBadge status={project.status} />
             </div>
+            <p className={styles.projectCode}>{project.projectCode}</p>
             <div className={styles.statsContainer}>
               <div className={styles.statItem}>
                 <p className={styles.statLabel}><FontAwesomeIcon icon={faClipboard} /> Task</p>

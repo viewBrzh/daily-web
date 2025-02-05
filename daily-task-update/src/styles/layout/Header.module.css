@@ -1,47 +1,54 @@
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000; /* Ensure it stays on top */
-    background-color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .logo a {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .navLinks {
-    display: flex;
-    list-style: none;
-    gap: 1rem;
-  }
-  
-  .navLinks a {
-    text-decoration: none;
-    color: #0070f3;
-  }
-  
-  .userInfo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .signOutBtn {
-    background: none;
-    border: 1px solid #0070f3;
-    padding: 0.5rem 1rem;
-    color: #0070f3;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  /* Ensure it stays on top */
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+  width: auto;
+  height: 46px;
+}
+
+/* .logo img {
+  background: linear-gradient(to top right, var(--primaryText), rgba(255, 128, 0, 0.527));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  font-size: 36px;
+} */
+
+.navLinks {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #0070f3;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.signOutBtn {
+  background: none;
+  border: 1px solid #0070f3;
+  padding: 0.5rem 1rem;
+  color: #0070f3;
+  cursor: pointer;
+  border-radius: 5px;
+}

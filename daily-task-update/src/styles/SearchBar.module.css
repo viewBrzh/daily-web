@@ -1,15 +1,18 @@
-/* From Uiverse.io by alexruix */
-
 .searchContainer {
-    display: grid;
-    justify-content: end; /* Aligns the content to the right */
+    display: flex;
+    justify-content: end;
+    padding-bottom: 12px;
+}
+
+.searchWrapper {
+    position: relative;
+    width: 300px;
 }
 
 .search {
-    width: 300px;
-    background-color: #f5f5f5;
-    color: #242424;
-    margin-bottom: 8px;
+    width: 100%;
+    background-color: #ffffff;
+    color: var(--primary);
     padding: .15rem .5rem;
     min-height: 40px;
     border-radius: 4px;
@@ -18,14 +21,27 @@
     line-height: 1.15;
     border: 1px solid #ddd;
     text-transform: capitalize;
-    justify-content: space-between; /* Aligns the content to the right */
+    padding-left: 2.5rem; 
 }
 
 .search:focus {
-    border-bottom: 2px solid #5b5fc7;
+    border-bottom: 2px solid var(--primary);
     border-radius: 4px 4px 2px 2px;
 }
 
 .search:hover {
     outline: 1px solid lightgrey;
+}
+
+/* Icon inside input field */
+.searchIcon {
+    position: absolute;
+    left: 6px;
+    padding-right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px;
+    border-right: 2px solid var(--darkerBlueBG);
+    color: var(--primary);
+    font-size: 16px;
 }

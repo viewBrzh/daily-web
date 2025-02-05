@@ -1,23 +1,27 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import styles from "../../styles/layout/NavBar.module.css";
 
 const NavBar: React.FC = () => {
+  const router = useRouter();
+  
+  const tabs = ["My Project", "About", "Contact"];
+  const hrefs = ["/my-tasks", "/about", "/contact"];
+
   return (
     <nav className={styles.navbar}>
-      <div className={styles.logo}>
-        <Link href="/">Daily</Link>
-      </div>
-      <ul className={styles.navLinks}>
-        <li>
-          <Link href="/my-tasks" className={styles.navLink}>My Project</Link>
-        </li>
-        <li>
-          <Link href="/about" className={styles.navLink}>About</Link>
-        </li>
-        <li>
-          <Link href="/contact" className={styles.navLink}>Contact</Link>
-        </li>
+      <ul>
+        {tabs.map((tab, index) => (
+          <li key={index}>
+            <Link 
+              href={hrefs[index]} 
+              className={`${styles.navLink} ${router.pathname === hrefs[index] ? styles.active : ""}`}
+            >
+              {tab}
+            </Link>
+          </li>
+        ))}
       </ul>
     </nav>
   );

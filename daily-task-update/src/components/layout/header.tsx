@@ -6,7 +6,7 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
-        <Link href="/">Daily</Link>
+        <Link href="/"><img src="/logo/logo-name.png" className={styles.logo}></img></Link>
       </div>
       <nav>
       </nav>
