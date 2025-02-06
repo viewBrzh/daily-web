@@ -5,7 +5,8 @@ exports.getMyProject = async (req, res) => {
     const resUserId = req.body.resUserId;
     const searchValue = req.body.searchValue;
     const page = req.body.page;
-    const myProject = ProjectModel.findMyProject(resUserId, searchValue, page);
+    const sortBy = req.body.sortBy;
+    const myProject = ProjectModel.findMyProject(resUserId, searchValue, page, sortBy);
     res.status(200).json({
       projects: (await myProject).finalResults,
       totalPage: (await myProject).totalPages,

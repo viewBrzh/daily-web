@@ -8,29 +8,45 @@ module.exports = class Project {
     this.status = status;
   }
 
-  static async findMyProject(resUserId, searchValue, page) {
+  static async findMyProject(resUserId, searchValue, page, sortBy) {
     try {
       const itemPerPage = 6;
       const offset = (page - 1) * itemPerPage;
-
+  
       // Query to fetch tasks for the user
       const memberQuery = `SELECT * FROM projectMembers WHERE userId = ${resUserId}`;
       const [memberResult] = await db.execute(memberQuery);
-
+  
       // Map project IDs from the tasks
       const projectIds = memberResult.map(task => task.projectId);
-
+  
       if (projectIds.length === 0) {
         return { message: "No tasks found for this user." };
       }
-
+  
       // Build the WHERE clause to filter by name or code
       let filterConditions = `projectId IN (${projectIds.join(",")})`;
       if (searchValue) {
         filterConditions += ` AND (name LIKE '%${searchValue}%' OR projectCode LIKE '%${searchValue}%')`;
       }
-
-      // Query to fetch the total count of projects that match the filter (without LIMIT and OFFSET)
+  
+      // Determine sort column based on input
+      let sortOrder = 'ASC';
+      let sortColumn;
+      switch (sortBy) {
+        case "name":
+          sortColumn = "name";
+          break;
+        case "status":
+          sortColumn = "status";
+          break;
+        case "last-updated":
+        default:
+          sortColumn = "updated_at";
+          sortOrder = "DESC"
+      }
+  
+      // Query to fetch the total count of projects that match the filter
       const queryProjectCount = `
         SELECT COUNT(*) AS totalProjects
         FROM projects 
@@ -38,22 +54,23 @@ module.exports = class Project {
       `;
       const [totalProjectsResult] = await db.execute(queryProjectCount);
       const totalProjects = totalProjectsResult[0].totalProjects;
-
+  
       // Calculate the total number of pages
       const totalPages = Math.ceil(totalProjects / itemPerPage);
-
-      // Now query to fetch projects with LIMIT and OFFSET
+  
+      // Query to fetch projects with sorting, LIMIT, and OFFSET
       const queryProjectData = `
         SELECT * FROM projects 
         WHERE ${filterConditions} 
+        ORDER BY ${sortColumn} ${sortOrder} 
         LIMIT ${itemPerPage} OFFSET ${offset}
       `;
       const [projectDataResults] = await db.execute(queryProjectData);
-
+  
       if (projectDataResults.length === 0) {
         return { message: "No projects found with the given search criteria." };
       }
-
+  
       // Map project data
       const mappedProjects = projectDataResults.map(project => ({
         projectId: project.projectId,
@@ -62,10 +79,10 @@ module.exports = class Project {
         description: project.description,
         startDate: formatDateToDDMMYYYY(project.start_date),
         endDate: formatDateToDDMMYYYY(project.end_date),
-        lastUpdate: formatDateToDDMMYYYY(project.updated_at),
+        lastUpdate: formatDate(project.updated_at),
         status: project.status,
       }));
-
+  
       // Query to fetch roles for the user in the filtered projects
       const queryRole = `
         SELECT projectId, role 
@@ -74,13 +91,13 @@ module.exports = class Project {
         AND projectId IN (${projectIds.join(",")})
       `;
       const [roleDataResults] = await db.execute(queryRole);
-
+  
       // Map roles by project ID
       const rolesByProject = roleDataResults.reduce((acc, role) => {
         acc[role.projectId] = role.role;
         return acc;
       }, {});
-
+  
       // Combine project data with roles
       const finalResults = await Promise.all(
         mappedProjects.map(async (project) => {
@@ -90,29 +107,30 @@ module.exports = class Project {
             WHERE projectId = ?
           `;
           const [memberCountResult] = await db.execute(queryMemberCount, [project.projectId]);
-
+  
           const queryTaskCount = `
             SELECT COUNT(*) AS taskCount 
             FROM tasks 
             WHERE projectId = ?
           `;
           const [taskCountResult] = await db.execute(queryTaskCount, [project.projectId]);
-
+  
           return {
             ...project,
             role: rolesByProject[project.projectId] || "-",
-            members: memberCountResult[0]?.memberCount || 0, // Include member count
+            members: memberCountResult[0]?.memberCount || 0,
             task: taskCountResult[0]?.taskCount || 0,
           };
         })
       );
-
+  
       return { finalResults, totalPages, totalProjects };
     } catch (error) {
       console.error("Error fetching tasks, projects, or roles:", error.message);
       throw error;
     }
   }
+  
 
   static async addProject(projectCode, name, description, start_date, end_date, member) {
     try {
@@ -177,3 +195,12 @@ function formatDateToDDMMYYYY(dateString) {
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 }
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};
