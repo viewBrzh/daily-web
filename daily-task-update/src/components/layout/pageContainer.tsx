@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "@/styles/layout/PageContainer.module.css"
+import styles from "@/styles/layout/PageContainer.module.css";
 
 interface LayoutProps {
   title: string;
@@ -9,7 +9,7 @@ interface LayoutProps {
 const PageContainer: React.FC<LayoutProps> = ({ title, children }) => {
   return (
     <div className={styles.pageContainer}>
-      <h1 className={styles.title}>{title}</h1>
+      <h1 className={styles.pageTitle}>{title}</h1>
       <div>{children}</div>
     </div>
   );

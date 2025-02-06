@@ -17,14 +17,8 @@ const MyTasks: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [sort, setSort] = useState('');
   const [projects, setProjects] = useState<Project[]>([]);
-  const [newProject, setNewProject] = useState<NewProject>({
-    projectCode: '',
-    name: '',
-    description: '',
-    start_date: new Date(),
-    end_date: new Date(),
-  });
   const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
 
   const handleAddProjectClick = () => {
@@ -42,6 +36,11 @@ const MyTasks: React.FC = () => {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value),
   };
 
+  const handleSort = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { value } = e.target;
+    setSort(value);
+  };
+
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       setDebouncedSearchValue(searchValue);
@@ -54,7 +53,7 @@ const MyTasks: React.FC = () => {
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const data = await fetchProjects(1, debouncedSearchValue, currentPage); // Pass the debounced value
+        const data = await fetchProjects(1, debouncedSearchValue, currentPage, sort); 
         const projectData = data.projects;
         setProjects(projectData);
         setTotalPage(data.totalPage);
@@ -65,7 +64,7 @@ const MyTasks: React.FC = () => {
     };
 
     fetchProjectData();
-  }, [debouncedSearchValue, currentPage]);
+  }, [debouncedSearchValue, currentPage, sort]);
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPage) {
@@ -82,7 +81,14 @@ const MyTasks: React.FC = () => {
       <PageContainer title={"My Project"}>
         <div className={styles.container}>
           <div className={styles.header}>
-            <h1>Project List</h1>
+            <div className={styles.divContainer}>
+              <h2>Project List</h2>
+              <select onChange={handleSort}>
+                <option value='last-update'>Last updated</option>
+                <option value='name'>Name</option>
+                <option value='status'>Status</option>
+              </select>
+            </div>
             <button className='btn' onClick={handleAddProjectClick}><FontAwesomeIcon icon={faPlus} /> Add Project</button>
           </div>
           <ProjectCard pageData={projects} />

@@ -18,7 +18,7 @@
   --darkerBlueBG: #cce2ff;
   --lightGreyBG: #efefef;
   --darkerGreyBG: #878787;
-  --darkerGreyText: #606060;
+  --darkerGreyText: #666666;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +32,12 @@ body {
   color: var(--primaryText);
   background: var(--background);
   font-family: 'Noto Sans', 'Noto Sans Thai', sans-serif;
+}
+
+h2 {
+  color: var(--darkerGreyText);
+  font-weight: 400;
+  font-size: larger;
 }
 
 .btn {
@@ -196,4 +202,13 @@ strong {
 .emoji {
   font-size: 24px; /* Adjust size as needed */
   color: var(--secondary); /* Blue color */
+}
+
+select {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
 }

@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { Project, NewProject, MyProjectPage, Member } from '@/components/common/types';
 
-export const fetchProjects = async (userId: number, searchValue: string, currentPage: number): Promise<MyProjectPage> => {
+export const fetchProjects = async (userId: number, searchValue: string, currentPage: number, sortBy: string): Promise<MyProjectPage> => {
   try {
     const response = await axios.post<MyProjectPage>(`/api/projects/getMyProjectLists`,{
       resUserId: userId,
       searchValue: searchValue,
       page: currentPage,
+      sortBy: sortBy,
     })
     return {
       projects: response.data.projects,
