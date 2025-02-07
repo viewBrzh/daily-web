@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import stylesModal from "@/styles/my-project/modal.module.css";
 import styles from "@/styles/view-project/overview.module.css";
-import { Member, ViewProject } from "@/components/common/types";
+import { Member, UpdateProject, ViewProject } from "@/components/common/types";
 import UserDropdown from "@/components/common/drop-down/userDropDown";
 import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,6 +28,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
     const [isEditingMember, setIsEditingMember] = useState(false);
     const [teamMembers, setTeamMembers] = useState<Member[]>(memberData);
     const [newMember, setNewMember] = useState<NewMember>({ userId: 0, fullName: "", role: "" });
+    const [updateProject, setUpdateProject] = useState<UpdateProject>();
 
     // Enable Project Editing
     const handleEdit = () => setIsEditing(true);
@@ -95,6 +96,16 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
 
     const saveProjectChanges = async () => {
         console.log("Saving Project Changes...", project);
+        const updateData = {
+            projectId: project.projectId,
+            projectCode: project.projectCode,
+            name: project.name,
+            description: project.description,
+            start_date: project.start_date,
+            end_date: project.end_date,
+            status: project.status,
+        }
+        setUpdateProject(await updateData);
     };
 
     const saveTeamMembersChanges = async () => {

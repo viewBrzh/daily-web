@@ -24,6 +24,16 @@ export interface NewProject {
     end_date: Date;
 }
 
+export interface UpdateProject {
+    projectId: number;
+    projectCode: string;
+    name: string;
+    description: string;
+    start_date: Date;
+    end_date: Date;
+    status: string;
+}
+
 export interface Member {
     fullName: string;
     userId: number;

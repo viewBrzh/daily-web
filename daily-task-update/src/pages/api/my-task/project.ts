@@ -39,4 +39,5 @@ export const getViewProject = async (projectId: any, userId: any) => {
   } catch (error) {
     throw error;
   }
-}
+};
+

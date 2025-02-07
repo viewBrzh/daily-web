@@ -9,8 +9,8 @@
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-    width: 170px;
-    background: linear-gradient(to top right, var(--primaryText), rgba(255, 128, 0, 0.527));
+    width: 240px;
+    background: linear-gradient(to top right, var(--primaryText), rgb(255, 128, 0));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
