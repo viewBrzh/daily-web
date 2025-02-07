@@ -12,24 +12,24 @@ module.exports = class Project {
     try {
       const itemPerPage = 6;
       const offset = (page - 1) * itemPerPage;
-  
+
       // Query to fetch tasks for the user
       const memberQuery = `SELECT * FROM projectMembers WHERE userId = ${resUserId}`;
       const [memberResult] = await db.execute(memberQuery);
-  
+
       // Map project IDs from the tasks
       const projectIds = memberResult.map(task => task.projectId);
-  
+
       if (projectIds.length === 0) {
         return { message: "No tasks found for this user." };
       }
-  
+
       // Build the WHERE clause to filter by name or code
       let filterConditions = `projectId IN (${projectIds.join(",")})`;
       if (searchValue) {
         filterConditions += ` AND (name LIKE '%${searchValue}%' OR projectCode LIKE '%${searchValue}%')`;
       }
-  
+
       // Determine sort column based on input
       let sortOrder = 'ASC';
       let sortColumn;
@@ -45,7 +45,7 @@ module.exports = class Project {
           sortColumn = "updated_at";
           sortOrder = "DESC"
       }
-  
+
       // Query to fetch the total count of projects that match the filter
       const queryProjectCount = `
         SELECT COUNT(*) AS totalProjects
@@ -54,10 +54,10 @@ module.exports = class Project {
       `;
       const [totalProjectsResult] = await db.execute(queryProjectCount);
       const totalProjects = totalProjectsResult[0].totalProjects;
-  
+
       // Calculate the total number of pages
       const totalPages = Math.ceil(totalProjects / itemPerPage);
-  
+
       // Query to fetch projects with sorting, LIMIT, and OFFSET
       const queryProjectData = `
         SELECT * FROM projects 
@@ -66,11 +66,11 @@ module.exports = class Project {
         LIMIT ${itemPerPage} OFFSET ${offset}
       `;
       const [projectDataResults] = await db.execute(queryProjectData);
-  
+
       if (projectDataResults.length === 0) {
         return { message: "No projects found with the given search criteria." };
       }
-  
+
       // Map project data
       const mappedProjects = projectDataResults.map(project => ({
         projectId: project.projectId,
@@ -82,7 +82,7 @@ module.exports = class Project {
         lastUpdate: formatDate(project.updated_at),
         status: project.status,
       }));
-  
+
       // Query to fetch roles for the user in the filtered projects
       const queryRole = `
         SELECT projectId, role 
@@ -91,13 +91,13 @@ module.exports = class Project {
         AND projectId IN (${projectIds.join(",")})
       `;
       const [roleDataResults] = await db.execute(queryRole);
-  
+
       // Map roles by project ID
       const rolesByProject = roleDataResults.reduce((acc, role) => {
         acc[role.projectId] = role.role;
         return acc;
       }, {});
-  
+
       // Combine project data with roles
       const finalResults = await Promise.all(
         mappedProjects.map(async (project) => {
@@ -107,14 +107,14 @@ module.exports = class Project {
             WHERE projectId = ?
           `;
           const [memberCountResult] = await db.execute(queryMemberCount, [project.projectId]);
-  
+
           const queryTaskCount = `
             SELECT COUNT(*) AS taskCount 
             FROM tasks 
             WHERE projectId = ?
           `;
           const [taskCountResult] = await db.execute(queryTaskCount, [project.projectId]);
-  
+
           return {
             ...project,
             role: rolesByProject[project.projectId] || "-",
@@ -123,14 +123,14 @@ module.exports = class Project {
           };
         })
       );
-  
+
       return { finalResults, totalPages, totalProjects };
     } catch (error) {
       console.error("Error fetching tasks, projects, or roles:", error.message);
       throw error;
     }
   }
-  
+
 
   static async addProject(projectCode, name, description, start_date, end_date, member) {
     try {
@@ -185,6 +185,27 @@ module.exports = class Project {
     }
   }
 
+  static async updateProject(projectId, projectCode, name, description, start_date, end_date, status) {
+    try {
+      const query = `
+        UPDATE projects 
+        SET projectCode = ?, name = ?, description = ?, start_date = ?, end_date = ?, status = ?
+        WHERE projectId = ?
+      `;
+
+      const [result] = await db.query(query, [projectCode, name, description, start_date, end_date, status, projectId]);
+
+      if (result.affectedRows === 0) {
+        throw new Error("Project not found or no changes made.");
+      }
+
+      console.log("Project updated successfully:", projectId);
+      return { message: "Project updated successfully", projectId };
+    } catch (error) {
+      console.error("Error updating project:", error.message);
+      throw error;
+    }
+  }
 
 };
 
