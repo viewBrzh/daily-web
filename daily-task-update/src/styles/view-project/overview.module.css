@@ -1,5 +1,6 @@
 .overviewContainer {
     display: flex;
+    padding: 20px;
 }
 
 .card {

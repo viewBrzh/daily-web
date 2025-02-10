@@ -67,3 +67,11 @@ export interface ViewProject {
     start_date: Date;
     end_date: Date;
 }
+
+export interface CalendarItem {
+    id: number;
+    date: string;  // Format: YYYY-MM-DD
+    title: string;
+    description: string;
+    writer: string;
+}

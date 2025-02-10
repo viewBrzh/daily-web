@@ -6,6 +6,7 @@ import { ViewProject, Task, Member } from '@/components/common/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Overview from '@/views/view-project/overview';
+import ProjectCalendar from '@/views/view-project/projectCalendar';
 
 const initialPageData = {
   project: {
@@ -88,6 +89,7 @@ const ViewProjectPage = () => {
         </div>
         <div className={styles.contentContainer}>
           <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectIdStr} />
+          <ProjectCalendar isCalendar={activeTab} projectId={projectIdStr} />
         </div>
       </PageContainer>
     </Layout>

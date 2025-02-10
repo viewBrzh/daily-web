@@ -45,6 +45,5 @@
 .contentContainer {
     background-color: var(--lightBlueBG);
     border-radius: 8px;
-    padding: 20px;
     min-height: 450px;
 }
