@@ -32,7 +32,7 @@ const Calendar: React.FC = () => {
     <div className={styles.calendar}>
       <div className={styles.header}>
         <button onClick={() => changeMonth(-1)} className={styles.prevMonth}>◀</button>
-        <span className={styles.monthYear}>{`${currentDate.toLocaleString('default', { month: 'long' })} ${year}`}</span>
+        <span className={styles.monthYear}>{`${currentDate.toLocaleString('en-US', { month: 'long' })}, ${year}`}</span>
         <button onClick={() => changeMonth(1)} className={styles.nextMonth}>▶</button>
       </div>
       <div className={styles.daysOfWeek}>
