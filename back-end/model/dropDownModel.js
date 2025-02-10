@@ -15,20 +15,11 @@ module.exports = class Project {
                 (SELECT userId, username, fullName, empId FROM users 
                 ${searchValue ? `WHERE fullName LIKE ? OR username LIKE ?` : ``}
                 LIMIT ?)
-                UNION
-                (SELECT userId, username, fullName, empId FROM users 
-                ${searchValue ? `WHERE NOT (fullName LIKE ? OR username LIKE ?)` : ``}
-                LIMIT ?)`;
+                `;
 
             const queryParams = [];
 
             // If searchValue exists, add parameters for the first SELECT
-            if (searchValue) {
-                queryParams.push(`%${searchValue}%`, `%${searchValue}%`);
-            }
-            queryParams.push(limit);
-
-            // If searchValue exists, add parameters for the second SELECT
             if (searchValue) {
                 queryParams.push(`%${searchValue}%`, `%${searchValue}%`);
             }
