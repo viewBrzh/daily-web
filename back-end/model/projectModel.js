@@ -187,19 +187,20 @@ module.exports = class Project {
 
   static async updateProject(projectId, projectCode, name, description, start_date, end_date, status) {
     try {
-      const query = `
-        UPDATE projects 
-        SET projectCode = ?, name = ?, description = ?, start_date = ?, end_date = ?, status = ?
-        WHERE projectId = ?
-      `;
+      const formattedStartDate = new Date(start_date).toISOString().slice(0, 19).replace("T", " ");
+      const formattedEndDate = new Date(end_date).toISOString().slice(0, 19).replace("T", " ");
 
-      const [result] = await db.query(query, [projectCode, name, description, start_date, end_date, status, projectId]);
+      const query = `
+            UPDATE projects 
+            SET projectCode = ?, \`name\` = ?, description = ?, start_date = ?, end_date = ?, status = ?
+            WHERE projectId = ?
+        `;
+
+      const [result] = await db.query(query, [projectCode, name, description, formattedStartDate, formattedEndDate, status, projectId]);
 
       if (result.affectedRows === 0) {
-        throw new Error("Project not found or no changes made.");
+        return { message: "Project not found or no changes made", projectId }
       }
-
-      console.log("Project updated successfully:", projectId);
       return { message: "Project updated successfully", projectId };
     } catch (error) {
       console.error("Error updating project:", error.message);

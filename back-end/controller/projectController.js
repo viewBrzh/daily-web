@@ -104,13 +104,9 @@ exports.getViewProject = async (req, res) => {
 
 exports.updateProject = async (req, res) => {
   try {
-    const { projectId, projectCode, name, description, start_date, end_date, status } = req.body;
+    const { projectId, projectCode, name, description, start_date, end_date, status } = req.body.project;
     const result = ProjectModel.updateProject(projectId, projectCode, name, description, start_date, end_date, status);
-    res.status(200).json({
-      project: (await result).projectResult[0],
-      tasks: (await result).mytasksResult[0],
-      members: (await result).projectMembers[0],
-    });
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({
       message: 'Failed to fetch projects',
