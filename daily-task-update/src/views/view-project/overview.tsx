@@ -6,6 +6,7 @@ import UserDropdown from "@/components/common/drop-down/userDropDown";
 import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { updateMember } from "@/pages/api/my-task/member";
+import { updateProject } from "@/pages/api/my-task/project";
 
 interface OverviewProps {
     projectData: ViewProject;
@@ -20,6 +21,16 @@ interface NewMember {
     role: string;
 }
 
+const initUpdateData = {
+    projectId: 0,
+    projectCode: "",
+    name: "",
+    description: "",
+    start_date: new Date(),
+    end_date: new Date(),
+    status: "",
+}
+
 const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview, projectId }) => {
     if (isOverview !== "Overview") return null;
 
@@ -28,7 +39,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
     const [isEditingMember, setIsEditingMember] = useState(false);
     const [teamMembers, setTeamMembers] = useState<Member[]>(memberData);
     const [newMember, setNewMember] = useState<NewMember>({ userId: 0, fullName: "", role: "" });
-    const [updateProject, setUpdateProject] = useState<UpdateProject>();
+    const [updateProjectData, setUpdateProjectData] = useState<UpdateProject>(initUpdateData);
 
     // Enable Project Editing
     const handleEdit = () => setIsEditing(true);
@@ -95,7 +106,6 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
     }, [projectData, memberData]);
 
     const saveProjectChanges = async () => {
-        console.log("Saving Project Changes...", project);
         const updateData = {
             projectId: project.projectId,
             projectCode: project.projectCode,
@@ -105,11 +115,11 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             end_date: project.end_date,
             status: project.status,
         }
-        setUpdateProject(await updateData);
+        setUpdateProjectData(await updateData);
+        updateProject(updateProjectData);
     };
 
     const saveTeamMembersChanges = async () => {
-        console.log("Saving Team Members...", teamMembers);
         const response = await updateMember(projectId, teamMembers);
         console.log(response);
     };

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Project, NewProject, MyProjectPage, Member } from '@/components/common/types';
+import { Project, NewProject, MyProjectPage, Member, UpdateProject } from '@/components/common/types';
 
 export const fetchProjects = async (userId: number, searchValue: string, currentPage: number, sortBy: string): Promise<MyProjectPage> => {
   try {
@@ -35,6 +35,15 @@ export const addProject = async (project: NewProject, members: Member[]): Promis
 export const getViewProject = async (projectId: any, userId: any) => {
   try {
     const response = await axios.post(`/api/projects/getViewProject`, {projectId, userId});
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateProject = async (project: UpdateProject) => {
+  try {
+    const response = await axios.post(`/api/projects/updateProject`, {project});
     return response.data;
   } catch (error) {
     throw error;
