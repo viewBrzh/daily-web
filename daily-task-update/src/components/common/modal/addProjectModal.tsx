@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import styles from "@/styles/my-project/modal.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { Member, NewProject } from "@/components/common/types";
 import UserDropdown from "../drop-down/userDropDown";
 import { addProject } from "@/pages/api/my-task/project";
+import AlertModal from "./alert/alertModal";
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,8 +14,22 @@ interface ModalProps {
 
 interface NewMember {
   userId: number;
-  name: string; 
+  name: string;
   role: string
+}
+
+interface AlertModalProps {
+  isShow: boolean;
+  title: string;
+  description: string;
+  type: string;
+}
+
+const initAlertProps = {
+  isShow: false,
+  title: "",
+  description: "",
+  type: 'success',
 }
 
 const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
@@ -31,17 +46,24 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [teamMembers, setTeamMembers] = useState<Member[]>([]);
   const [newMember, setNewMember] = useState<NewMember>({ userId: 0, name: "", role: "" });
+  const [alertProps, setAlertProps] = useState<AlertModalProps>(initAlertProps);
 
   // Validation logic
   const validatePageOne = () => {
     const validationErrors: Record<string, string> = {};
-    if (!newProject.projectCode.trim()) validationErrors.projectCode = "Project Code is required!";
-    if (!newProject.name.trim()) validationErrors.name = "Project Name is required!";
-    if (!newProject.start_date) validationErrors.start_date = "Start Date is required!";
-    if (!newProject.end_date) validationErrors.end_date = "End Date is required!";
-    if (newProject.start_date >= newProject.end_date) validationErrors.end_date = "End Date is not valid!";
+    if (!newProject.projectCode.trim()) validationErrors.projectCode = "Project Code is required";
+    if (!newProject.name.trim()) validationErrors.name = "Project Name is required";
+    if (!newProject.start_date) validationErrors.start_date = "Start Date is required";
+    if (!newProject.end_date) validationErrors.end_date = "End Date is required";
+    if (newProject.start_date >= newProject.end_date) validationErrors.end_date = "End Date is not valid";
 
     setErrors(validationErrors);
+    setAlertProps({
+      isShow: true,
+      title: "Missing Data",
+      description: Object.values(validationErrors).join(", "), // Converts errors to a single string
+      type: "error"
+    });
 
     return Object.keys(validationErrors).length === 0;
   };
@@ -63,7 +85,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         fullName: newMember.name,
         role: newMember.role,
       }]);
-      setNewMember({ userId: 0,name: "", role: "" });
+      setNewMember({ userId: 0, name: "", role: "" });
     }
   };
 
@@ -78,6 +100,10 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const handleDeleteMember = (indexToDelete: number) => {
     setTeamMembers(teamMembers.filter((_, index) => index !== indexToDelete));
+  };
+
+  const closeModal = () => {
+    setAlertProps({ ...alertProps, isShow: false });
   };
 
   return (
@@ -148,7 +174,6 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           </div>
-
           <div className={styles.formActions}>
             <button type="button" className="cancel" onClick={onClose}>
               Cancel
@@ -215,6 +240,12 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       )}
+      <AlertModal
+        isShow={alertProps?.isShow}
+        title={alertProps?.title}
+        description={alertProps?.description}
+        type={alertProps.type}
+        onClose={closeModal} />
     </div>
   );
 };
