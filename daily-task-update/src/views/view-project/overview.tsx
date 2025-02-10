@@ -115,8 +115,9 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             end_date: project.end_date,
             status: project.status,
         }
-        setUpdateProjectData(await updateData);
-        updateProject(updateProjectData);
+        setUpdateProjectData(updateData);
+        updateProject(updateData);
+        console.log(updateProjectData);
     };
 
     const saveTeamMembersChanges = async () => {
@@ -134,7 +135,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             {/* Project Overview Section */}
             <div className={styles.card}>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>📖 Detail</h1>
+                    <h1 className={styles.title}>📖 Details</h1>
                     {isEditing ? (
                         <div>
                             <button className={styles.cancelButton} onClick={handleCancel}>Cancel</button>
@@ -174,7 +175,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             {/* Team Members Section */}
             <div className={styles.card}>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>👥 Members</h1>
+                    <h1 className={styles.title}>👥 Members ({teamMembers.length})</h1>
                     {isEditingMember ? (
                         <div>
                             <button className={styles.cancelButton} onClick={handleCancelMember}>Cancel</button>

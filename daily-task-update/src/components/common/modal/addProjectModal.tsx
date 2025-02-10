@@ -23,6 +23,7 @@ interface AlertModalProps {
   title: string;
   description: string;
   type: string;
+  onClose: () => void;
 }
 
 const initAlertProps = {
@@ -30,6 +31,7 @@ const initAlertProps = {
   title: "",
   description: "",
   type: 'success',
+  onClose: () => {},
 }
 
 const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
@@ -58,12 +60,15 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     if (newProject.start_date >= newProject.end_date) validationErrors.end_date = "End Date is not valid";
 
     setErrors(validationErrors);
-    setAlertProps({
-      isShow: true,
-      title: "Missing Data",
-      description: Object.values(validationErrors).join(", "), // Converts errors to a single string
-      type: "error"
-    });
+    if (Object.keys(validationErrors).length > 0) {
+      setAlertProps({
+        isShow: true,
+        title: "Missing Data",
+        description: Object.values(validationErrors).join(", "),
+        type: "error",
+        onClose: () => closeModal(),
+      });
+    }
 
     return Object.keys(validationErrors).length === 0;
   };
@@ -93,9 +98,16 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     setNewMember({ ...newMember, name, userId });
   };
 
-  const handleSubmit = () => {
-    addProject(newProject, teamMembers);
+  const handleSubmit = async () => {
+    await addProject(newProject, teamMembers);
     onClose();
+    setAlertProps({
+      isShow: true,
+      title: "Success",
+      description: "Project added.",
+      type: "success",
+      onClose: closeModal
+    });
   };
 
   const handleDeleteMember = (indexToDelete: number) => {
