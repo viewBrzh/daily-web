@@ -104,11 +104,6 @@
     font-size: small;
 }
 
-.day .item .title::before {
-    content: "●";
-    margin-right: 5px;
-}
-
 .item:hover p {
     -webkit-line-clamp: unset;
     max-height: 200px;

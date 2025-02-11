@@ -27,3 +27,7 @@
 .active {
   color: var(--secondary);
 }
+
+.icon {
+  width: 30px;
+}

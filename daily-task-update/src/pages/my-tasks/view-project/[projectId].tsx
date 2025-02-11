@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Overview from '@/views/view-project/overview';
 import ProjectCalendar from '@/views/view-project/projectCalendar';
+import { faArrowsTurnToDots, faBarsProgress, faCalendarDays, faChartPie } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const initialPageData = {
   project: {
@@ -38,6 +40,8 @@ const initialPageData = {
     }
   ],
 };
+
+const iconTabs = [faBarsProgress, faChartPie, faArrowsTurnToDots, faCalendarDays];
 
 const tabs = ["Overview", "Dashboard", "Sprint", "Calendar"];
 
@@ -77,13 +81,13 @@ const ViewProjectPage = () => {
     <Layout>
       <PageContainer title={project.name}>
         <div className={styles.tabBar}>
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <div 
               key={tab} 
               className={`${styles.tab} ${activeTab === tab ? styles.active : ""}`}
               onClick={() => setActiveTab(tab)}
             >
-              {tab}
+              <FontAwesomeIcon className={styles.icon} icon={iconTabs[index]} />  {tab}
             </div>
           ))}
         </div>

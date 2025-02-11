@@ -3,7 +3,7 @@ import stylesModal from "@/styles/modal/modal.module.css";
 import styles from "@/styles/view-project/overview.module.css";
 import { Member, UpdateProject, ViewProject } from "@/components/common/types";
 import UserDropdown from "@/components/common/drop-down/userDropDown";
-import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faPeopleGroup, faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { updateMember } from "@/pages/api/my-task/member";
 import { updateProject } from "@/pages/api/my-task/project";
@@ -135,7 +135,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             {/* Project Overview Section */}
             <div className={styles.card}>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>📖 Details</h1>
+                    <h1 className={styles.title}><FontAwesomeIcon className={styles.icon} icon={faCircleInfo} /> Details</h1>
                     {isEditing ? (
                         <div>
                             <button className='cancel' onClick={handleCancel}>Cancel</button>
@@ -175,7 +175,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             {/* Team Members Section */}
             <div className={styles.card}>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>👥 Members ({teamMembers.length})</h1>
+                    <h1 className={styles.title}><FontAwesomeIcon className={styles.icon} icon={faPeopleGroup} /> Members ({teamMembers.length})</h1>
                     {isEditingMember ? (
                         <div>
                             <button className='cancel' onClick={handleCancelMember}>Cancel</button>
