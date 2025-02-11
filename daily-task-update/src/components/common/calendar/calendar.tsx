@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import styles from '@/styles/component/Calendar.module.css';  // Importing CSS Module
 import Day from './day';
+import { getCalendar } from '@/pages/api/my-task/calendar';
+import { useRouter } from 'next/router';
+import { CalendarItem } from '../types';
+
+const calendarInit = [{
+  id: 0,
+  date: "",
+  title: "",
+  description: "",
+  created_by: "",
+  location: "",
+}];
 
 // Helper function to get days of the month
 const getDaysInMonth = (month: number, year: number): number[] => {
@@ -15,11 +27,13 @@ const getFirstDayOfMonth = (month: number, year: number): number => {
 
 const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-
+  const router = useRouter();
+  const { projectId } = router.query;
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
   const firstDayOfMonth = getFirstDayOfMonth(month, year);
   const daysInMonth = getDaysInMonth(month, year);
+  const [calendar, setCalendar] = useState<CalendarItem[]>(calendarInit);
 
   // Handle previous and next month changes
   const changeMonth = (direction: number) => {
@@ -27,6 +41,26 @@ const Calendar: React.FC = () => {
     newDate.setMonth(currentDate.getMonth() + direction);
     setCurrentDate(newDate);
   };
+
+  useEffect(() => {
+    if (!router.isReady || !projectId) return;
+
+    const fetchData = async () => {
+      try {
+        const res = await getCalendar(projectId, currentDate.getMonth() + 1);
+        setCalendar(res);
+      } catch (error) {
+        console.error('Error fetching calendar data:', error);
+      }
+    };
+
+    fetchData();
+  }, [router.isReady, currentDate]);
+
+  useEffect(() => {
+    console.log(calendar);
+  }, [calendar]);
+
 
   return (
     <div className={styles.calendar}>
@@ -49,7 +83,7 @@ const Calendar: React.FC = () => {
         {Array.from({ length: firstDayOfMonth }).map((_, i) => (
           <div key={`empty-${i}`} className={`${styles.day} ${styles.dayDisabled}`}></div>
         ))}
-        
+
         {/* Days of the current month */}
         {daysInMonth.map(day => (
           <div
@@ -58,8 +92,8 @@ const Calendar: React.FC = () => {
             onClick={() => alert(`Selected date: ${day}/${month + 1}/${year}`)}
           >
             {day}
-            
-            <Day date={`${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`} />
+
+            <Day calendar={calendar} date={`${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`} />
           </div>
         ))}
       </div>

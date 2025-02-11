@@ -12,8 +12,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: var(--secondary);
-    color: white;
+    background-color: var(--lightBlueBG);
+    color: var(--primaryText);
     font-weight: bolder;
 }
 
@@ -21,14 +21,15 @@
     background: none;
     border: none;
     font-size: 20px;
-    color: white;
+    color: var(--primaryText);
     cursor: pointer;
 }
 
 .daysOfWeek {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    background-color: #f0f0f0;
+    background-color: var(--secondary);
+    color: white;
     padding: 5px 0;
     text-align: center;
     font-weight: bold;
@@ -82,6 +83,10 @@
     max-height: 0; /* ซ่อนเริ่มต้น */
     opacity: 0;
     transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.item div {
+    font-size: small;
 }
 
 .day .item .title::before {

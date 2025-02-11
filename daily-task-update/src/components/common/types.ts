@@ -70,8 +70,9 @@ export interface ViewProject {
 
 export interface CalendarItem {
     id: number;
-    date: string;  // Format: YYYY-MM-DD
+    date: string; 
     title: string;
     description: string;
-    writer: string;
+    created_by: string;
+    location: string;
 }
