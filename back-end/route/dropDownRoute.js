@@ -7,6 +7,5 @@ router.get('/', (req, res) => {
   });
 
 router.post('/getDropDownUser', dropDownUserController.getDropDownUser);
-// router.post('/addMyTasksProjectLists', MyTasksController.getMyTasks);
 
 module.exports = router;
