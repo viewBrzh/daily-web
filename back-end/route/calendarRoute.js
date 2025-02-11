@@ -7,5 +7,8 @@ router.get('/', (req, res) => {
   });
 
 router.post('/getAllCalendar', CalendarController.getAllCalendar);
+router.post('/getCalendarByDate', CalendarController.getCalendarByDate);
+router.post('/addCalendar', CalendarController.addCalendar);
+router.post('/deleteCalendar', CalendarController.deleteCalendar);
 
 module.exports = router;
