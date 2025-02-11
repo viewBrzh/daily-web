@@ -33,8 +33,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ pageData }) => {
             onClick={() => handleViewProject(project.projectId.toString())}
           >
             <div className={styles.projectCardHeader}>
-              <div>
-                <h2>{project.name}</h2>
+              <div className={styles.titleContainer}>
+                <h2 className={styles.title}>{project.name}</h2>
               </div>
               <StatusBadge status={project.status} />
             </div>

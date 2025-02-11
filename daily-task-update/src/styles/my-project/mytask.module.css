@@ -106,3 +106,14 @@
   align-items: center; /* Aligns items vertically */
   gap: 10px; /* Adds spacing between h2 and select */
 }
+
+.titleContainer {
+  width: 70%;
+}
+
+.title {
+  white-space: nowrap; /* Prevents wrapping */
+  overflow: hidden; /* Hides overflow */
+  text-overflow: ellipsis; /* Adds "..." to indicate overflow */
+  width: auto;
+}

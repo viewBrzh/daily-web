@@ -5,12 +5,17 @@
     padding: 24px;
 }
 
+.header {
+    display: flex;
+}
+
 .pageTitle {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-    width: 240px;
-    background: linear-gradient(to top right, var(--primaryText), rgb(255, 128, 0));
+    padding: 0;
+    width: auto;
+    background: linear-gradient(to top left, rgb(255, 123, 0), rgb(0, 72, 255));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

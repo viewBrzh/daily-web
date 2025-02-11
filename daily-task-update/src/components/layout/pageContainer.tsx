@@ -9,7 +9,10 @@ interface LayoutProps {
 const PageContainer: React.FC<LayoutProps> = ({ title, children }) => {
   return (
     <div className={styles.pageContainer}>
-      <h1 className={styles.pageTitle}>{title}</h1>
+      <div className={styles.header}>
+        <h1 className={styles.pageTitle}>{title}</h1>
+        <div className={styles.head}></div>
+      </div>
       <div>{children}</div>
     </div>
   );
