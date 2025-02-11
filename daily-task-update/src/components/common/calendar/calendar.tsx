@@ -4,6 +4,7 @@ import Day from './day';
 import { getCalendar } from '@/pages/api/my-task/calendar';
 import { useRouter } from 'next/router';
 import { CalendarItem } from '../types';
+import EditCalendarModal from '../modal/my-task/editCalendarModal';
 
 const calendarInit = [{
   id: 0,
@@ -27,6 +28,8 @@ const getFirstDayOfMonth = (month: number, year: number): number => {
 
 const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalDate, setModalDate] = useState("");
   const router = useRouter();
   const { projectId } = router.query;
   const month = currentDate.getMonth();
@@ -40,6 +43,22 @@ const Calendar: React.FC = () => {
     const newDate = new Date(currentDate);
     newDate.setMonth(currentDate.getMonth() + direction);
     setCurrentDate(newDate);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSaveModal = async () => {
+    setIsModalOpen(false);
+
+    const res = await getCalendar(projectId, currentDate.getMonth() + 1);
+    setCalendar(res);
+  };
+
+  const handleDayClick = (date: string) => {
+    setModalDate(date)
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -56,11 +75,6 @@ const Calendar: React.FC = () => {
 
     fetchData();
   }, [router.isReady, currentDate]);
-
-  useEffect(() => {
-    console.log(calendar);
-  }, [calendar]);
-
 
   return (
     <div className={styles.calendar}>
@@ -89,14 +103,14 @@ const Calendar: React.FC = () => {
           <div
             key={day}
             className={styles.day}
-            onClick={() => alert(`Selected date: ${day}/${month + 1}/${year}`)}
+            onClick={() => handleDayClick(`${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`)}
           >
             {day}
-
             <Day calendar={calendar} date={`${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`} />
           </div>
         ))}
       </div>
+      <EditCalendarModal date={modalDate} isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveModal} />
     </div>
   );
 };

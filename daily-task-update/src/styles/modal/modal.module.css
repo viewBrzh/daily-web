@@ -104,7 +104,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px; /* Adds space between the child elements */
+  gap: 20px;
+  /* Adds space between the child elements */
 }
 
 .addMember {
@@ -195,7 +196,7 @@
   /* Darker shade for hover effect */
 }
 
-.error{
+.error {
   color: red;
   font-weight: lighter;
   font-size: smaller;
@@ -247,4 +248,37 @@
 .noResults {
   padding: 8px;
   color: #aaa;
+}
+
+.modalContent {
+  display: grid;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+.modalContent h2 {
+  text-align: center;
+  font-weight: bolder;
+  color: var(--primaryText);
+}
+
+.modalContent input {
+  border: 1px solid var(--darkerGreyText);
+  border-radius: 4px;
+  padding: 6px;
+}
+
+.modalContent textarea {
+  border: 1px solid var(--primaryText);
+  border-radius: 4px;
+  padding: 6px;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: end;
+  gap: 6px;
+  margin-top: 10px;
 }

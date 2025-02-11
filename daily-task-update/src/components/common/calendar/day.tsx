@@ -1,5 +1,4 @@
 import styles from '@/styles/component/Calendar.module.css';
-import { mockCalendarItems } from "@/components/mockupData";
 import { CalendarItem } from "../types";
 import { useEffect } from 'react';
 
@@ -15,8 +14,7 @@ const Day: React.FC<DayProps> = ({ date, calendar }) => {
         return `${year}-${month}-${day}`;
     };
     
-    const itemsForDay = calendar.filter((item) => normalizeDate(item.date) === normalizeDate(date));
-    
+    const itemsForDay = calendar.filter((item) => normalizeDate(item.date) === normalizeDate(date));    
 
     useEffect(() => {
         console.log(calendar)
@@ -30,7 +28,7 @@ const Day: React.FC<DayProps> = ({ date, calendar }) => {
                     <div className={styles.title}>{item.title}</div>
                     <p>{item.description}</p>
                     <div>[{item.location}]</div>
-                    <small>{item.created_by}</small>
+                    <div className={styles.by}>{item.created_by}</div>
                 </div>
             ))}
         </>

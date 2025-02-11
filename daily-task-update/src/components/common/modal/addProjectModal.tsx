@@ -1,5 +1,5 @@
 import React, { use, useState } from "react";
-import styles from "@/styles/my-project/modal.module.css";
+import styles from "@/styles/modal/modal.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { Member, NewProject } from "@/components/common/types";

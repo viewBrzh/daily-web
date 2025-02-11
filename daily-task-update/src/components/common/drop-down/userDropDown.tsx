@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "@/styles/my-project/modal.module.css";
+import styles from "@/styles/modal/modal.module.css";
 import { User } from "@/components/common/types";
 import { fetchDropDownUser } from "@/pages/api/drop-down/dropDown";
 

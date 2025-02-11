@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import stylesModal from "@/styles/my-project/modal.module.css";
+import stylesModal from "@/styles/modal/modal.module.css";
 import styles from "@/styles/view-project/overview.module.css";
 import { Member, UpdateProject, ViewProject } from "@/components/common/types";
 import UserDropdown from "@/components/common/drop-down/userDropDown";
@@ -138,8 +138,8 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
                     <h1 className={styles.title}>📖 Details</h1>
                     {isEditing ? (
                         <div>
-                            <button className={styles.cancelButton} onClick={handleCancel}>Cancel</button>
-                            <button className={styles.saveButton} onClick={handleSave}>Save</button>
+                            <button className='cancel' onClick={handleCancel}>Cancel</button>
+                            <button className='btn' onClick={handleSave}>Save</button>
                         </div>
                     ) : (
                         <button className="btn" onClick={handleEdit}>Update</button>
@@ -178,8 +178,8 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
                     <h1 className={styles.title}>👥 Members ({teamMembers.length})</h1>
                     {isEditingMember ? (
                         <div>
-                            <button className={styles.cancelButton} onClick={handleCancelMember}>Cancel</button>
-                            <button className={styles.saveButton} onClick={handleSaveMember}>Save</button>
+                            <button className='cancel' onClick={handleCancelMember}>Cancel</button>
+                            <button className='btn' onClick={handleSaveMember}>Save</button>
                         </div>
                     ) : (
                         <button className="btn" onClick={handleEditMember}>Update</button>

@@ -21,8 +21,15 @@
     background: none;
     border: none;
     font-size: 20px;
-    color: var(--primaryText);
+    color: var(--secondary);
+    width: 30px;
+    transition: ease-out 0.2s;
     cursor: pointer;
+}
+
+.header:hover button {
+    background: rgba(211, 211, 211, 0.488);
+    border-radius: 50%;
 }
 
 .daysOfWeek {
@@ -52,7 +59,7 @@
     border: 0.5px solid #e0e0e0;
     gap: 5px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: ease-out 0.1s;
     min-height: 150px;
     background-color: white;
 }
@@ -85,6 +92,12 @@
     transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
+.item .by {
+    max-height: 0; /* ซ่อนเริ่มต้น */
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
 .item div {
     font-size: small;
 }
@@ -95,6 +108,13 @@
 }
 
 .item:hover p {
+    -webkit-line-clamp: unset;
+    max-height: 200px;
+    opacity: 1;
+    overflow: visible;
+}
+
+.item:hover .by {
     -webkit-line-clamp: unset;
     max-height: 200px;
     opacity: 1;

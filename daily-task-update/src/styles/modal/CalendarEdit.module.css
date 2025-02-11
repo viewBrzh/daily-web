@@ -1,0 +1,68 @@
+.date {
+    font-weight: bolder;
+    color: var(--primaryText);
+}
+
+.content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.item {
+    background-color: var(--lightGreyBG);
+    padding: 8px;
+    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.title::before {
+    content: "●";
+    margin-right: 5px;
+}
+
+.item p {
+    color: var(--darkerGreyText);
+}
+
+.btnDelete {
+    color: red;
+    font-size: larger;
+}
+
+.btnEdit {
+    margin-right: 16px;
+    color: var(--primaryText);
+}
+
+.btnAdd {
+    background-color: var(--secondary);
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+    width: 100%;
+    text-align: center;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 8px;
+    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btnAdd:hover {
+    background-color: rgb(103, 158, 254);
+}
+
+.noEvent {
+    margin: 0 auto;
+    color: var(--darkerGreyText);
+    text-align: center;
+    min-height: 50px;
+}
