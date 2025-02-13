@@ -12,6 +12,7 @@ const MytasksRoutes = require('./route/myTaskRoute');
 const dropDownUserRoutes = require('./route/dropDownRoute');
 const memberRoute = require('./route/memberRoute');
 const calendarRoute = require('./route/calendarRoute');
+const dashboardRoute = require('./route/dashboardRoute');
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use("/projects", ProjectRoutes);
 app.use("/myTasks", MytasksRoutes);
 app.use("/dropDown", dropDownUserRoutes);
 app.use("/calendar", calendarRoute);
+app.use("/dashboard", dashboardRoute);
 
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {

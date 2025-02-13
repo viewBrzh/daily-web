@@ -1,6 +1,6 @@
 const db = require('../util/db');
 
-module.exports = class Mytasks {
+module.exports = class Calendar {
 
     static async getAllCalendar(projectId, month) {
         try {
