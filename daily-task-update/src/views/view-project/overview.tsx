@@ -133,9 +133,9 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
     return (
         <div className={styles.overviewContainer}>
             {/* Project Overview Section */}
-            <div className={styles.card}>
-                <div className={styles.header}>
-                    <h1 className={styles.title}><FontAwesomeIcon className={styles.icon} icon={faCircleInfo} /> Details</h1>
+            <div className="card">
+                <div className="header">
+                    <h1 className="title"><FontAwesomeIcon className={styles.icon} icon={faCircleInfo} /> Details</h1>
                     {isEditing ? (
                         <div>
                             <button className='cancel' onClick={handleCancel}>Cancel</button>
@@ -173,9 +173,9 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
             </div>
 
             {/* Team Members Section */}
-            <div className={styles.card}>
-                <div className={styles.header}>
-                    <h1 className={styles.title}><FontAwesomeIcon className={styles.icon} icon={faPeopleGroup} /> Members ({teamMembers.length})</h1>
+            <div className="card">
+                <div className="header">
+                    <h1 className="title"><FontAwesomeIcon className={styles.icon} icon={faPeopleGroup} /> Members ({teamMembers.length})</h1>
                     {isEditingMember ? (
                         <div>
                             <button className='cancel' onClick={handleCancelMember}>Cancel</button>

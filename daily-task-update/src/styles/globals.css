@@ -54,7 +54,7 @@ h2 {
   background-color: var(--primaryHover);
 }
 
-.btn-second{
+.btn-second {
   padding: 10px 20px;
   background-color: var(--secondary);
   color: #fff;
@@ -87,8 +87,10 @@ h2 {
 .status-badge {
   display: inline-block;
   white-space: nowrap;
-  background-color: #ffc107; /* Yellow background */
-  color: #fff; /* Black text color */
+  background-color: #ffc107;
+  /* Yellow background */
+  color: #fff;
+  /* Black text color */
   padding: 2px 8px;
   border-radius: 25px;
   text-align: center;
@@ -106,22 +108,26 @@ h2 {
 /* Styles for different status types */
 .status-in-progress {
   color: orange;
-  background-color: rgba(255, 166, 0, 0.266); /* Yellow for in-progress */
+  background-color: rgba(255, 166, 0, 0.266);
+  /* Yellow for in-progress */
 }
 
 .status-completed {
   color: #34C759;
-  background-color: #34c75951; /* Green for complete */
+  background-color: #34c75951;
+  /* Green for complete */
 }
 
 .status-pending {
   color: var(--darkerGreyBG);
-  background-color: var(--lightGreyBG); /* Gray for pending */
+  background-color: var(--lightGreyBG);
+  /* Gray for pending */
 }
 
 .status-on-planning {
   color: var(--primary);
-  background-color: rgb(186, 221, 255); /* Gray for pending */
+  background-color: rgb(186, 221, 255);
+  /* Gray for pending */
 }
 
 .pagination {
@@ -188,7 +194,7 @@ p {
   color: #555;
 }
 
-.data-not-found{
+.data-not-found {
   text-transform: capitalize;
   padding: 42px;
   text-align: center;
@@ -201,8 +207,10 @@ strong {
 }
 
 .emoji {
-  font-size: 24px; /* Adjust size as needed */
-  color: var(--secondary); /* Blue color */
+  font-size: 24px;
+  /* Adjust size as needed */
+  color: var(--secondary);
+  /* Blue color */
 }
 
 select {
@@ -213,4 +221,49 @@ select {
   font-size: 14px;
   cursor: pointer;
   outline: none;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 0 auto auto;
+  min-width: 500px;
+  border-left: 5px solid var(--secondary);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 20px;
+  margin: auto;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 0 0 auto;
+  border-left: 5px solid var(--secondary);
+}
+
+.chart-container {
+  margin: 0 auto;
 }

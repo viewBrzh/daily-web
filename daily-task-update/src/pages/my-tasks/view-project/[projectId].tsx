@@ -9,6 +9,8 @@ import Overview from '@/views/view-project/overview';
 import ProjectCalendar from '@/views/view-project/projectCalendar';
 import { faArrowsTurnToDots, faBarsProgress, faCalendarDays, faChartPie } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DashboardCharts from '@/components/common/chart/dashboardCharts';
+import ProjectDashboard from '@/views/view-project/projectDashboard';
 
 const initialPageData = {
   project: {
@@ -94,6 +96,7 @@ const ViewProjectPage = () => {
         <div className={styles.contentContainer}>
           <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectIdStr} />
           <ProjectCalendar isCalendar={activeTab} projectId={projectIdStr} />
+          <ProjectDashboard isDashboard={activeTab} projectId={projectIdStr} />
         </div>
       </PageContainer>
     </Layout>

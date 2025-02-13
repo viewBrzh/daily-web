@@ -7,7 +7,7 @@ interface CalendarProps {
 }
 
 
-const ProjectCalendar: React.FC<CalendarProps> = ({ isCalendar, projectId }) => {
+const ProjectCalendar: React.FC<CalendarProps> = ({ isCalendar }) => {
     if (isCalendar !== "Calendar") return null;
 
     return (

@@ -27,7 +27,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/components/common/container"  ],
   "exclude": [
     "node_modules"
   ]

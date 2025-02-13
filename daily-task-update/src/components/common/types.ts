@@ -76,3 +76,27 @@ export interface CalendarItem {
     created_by: string;
     location: string;
 }
+
+interface SprintProgress {
+  sprintName: string;
+  totalTasks: number;
+  statusCount: {
+    [status: string]: number; // Key-value pairs where key is the status (e.g., "Done") and value is the count
+  };
+}
+
+interface TaskStatus {
+  status: string;
+  count: number;
+}
+
+interface MemberChartData {
+  role: string;
+  count: number;
+}
+
+export interface DashboardData {
+  taskStatus: TaskStatus[];
+  sprintProgress: SprintProgress[];
+  members: MemberChartData[];
+}
