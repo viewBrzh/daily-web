@@ -51,10 +51,12 @@ export interface Task {
     taskId: number;
     name: string;
     description: string;
-    status: string;
+    statusId: number;
     resUserId: number;
     sprintId: number;
     projectId: number;
+    resUserFullName: string;
+    priority: number;
 }
 
 export interface ViewProject {
@@ -99,4 +101,17 @@ export interface DashboardData {
   taskStatus: TaskStatus[];
   sprintProgress: SprintProgress[];
   members: MemberChartData[];
+}
+
+export interface SprintData {
+  sprintId: number;
+  start_date: Date;
+  end_date: Date;
+  sprintName: string;
+  projectId: number;
+}
+
+export interface Status {
+  statusId: number;
+  name: string;
 }

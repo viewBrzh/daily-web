@@ -4,7 +4,7 @@ import { User } from "@/components/common/types";
 import { fetchDropDownUser } from "@/pages/api/drop-down/dropDown";
 
 interface UserDropdownProps {
-  onSelectUser: (userId: number, userName: string) => void; // Callback to handle user selection
+  onSelectUser: (userId: number, userName: string) => void;
 }
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ onSelectUser }) => {

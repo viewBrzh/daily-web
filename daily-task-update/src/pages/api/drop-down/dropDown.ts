@@ -12,3 +12,15 @@ export const fetchDropDownUser = async (searchValue: string): Promise<User[]> =>
     throw error;
   }
 };
+
+export const fetchTasksFilterDropdownUser = async (sprintId: number): Promise<User[]> => {
+  try {
+    const response = await axios.post<User[]>('/api/dropDown/getTaskFilterDropdownUser', {
+      sprintId: sprintId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching dropdown users:', error);
+    throw error;
+  }
+};
