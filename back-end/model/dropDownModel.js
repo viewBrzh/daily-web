@@ -1,11 +1,6 @@
 const db = require('../util/db');
 
-module.exports = class Project {
-    constructor(username, empId, fullName) {
-        this.username = username;
-        this.empId = empId;
-        this.fullName = fullName;
-    }
+module.exports = class Dropdown {
 
     static async getUserDropdown(searchValue) {
         try {
@@ -32,4 +27,22 @@ module.exports = class Project {
             throw err;
         }
     }
+
+    static async getTaskFilterDropdown(sprintId) {
+        try {
+            const query = `
+                SELECT DISTINCT u.userId, u.username, u.fullName, u.empId
+                FROM users u
+                JOIN tasks t ON u.userId = t.resUserId
+                WHERE t.sprintId = ?;
+            `;
+    
+            const [rows] = await db.execute(query, [sprintId]); // Using MySQL2
+            console.log(rows)
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    }
+       
 };
