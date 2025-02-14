@@ -1,0 +1,128 @@
+const db = require('../util/db');
+
+module.exports = class Tasks {
+  constructor(
+    taskId,
+    sprint,
+    name,
+    description,
+    resUserId,
+    projectId,
+    startDate,
+    endDate,
+    priority,
+    status,
+  ) {
+    this.taskId = taskId;
+    this.sprint = sprint;
+    this.name = name;
+    this.description = description;
+    this.resUserId = resUserId;
+    this.projectId = projectId;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.priority = priority;
+    this.status = status;
+  }
+
+  static async getSprintByProject(projectId) {
+    try {
+      const [result] = await db.execute(
+        "SELECT * FROM sprints WHERE projectId = ?",
+        [projectId]
+      );
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getCurrentSprint(projectId) {
+    try {
+      // Query for the current active sprint
+      const currentSprintQuery = `
+            SELECT * FROM sprints
+            WHERE CURDATE() BETWEEN start_date AND end_date AND projectId = ?
+            ORDER BY end_date DESC
+            LIMIT 1;
+        `;
+
+      const [currentSprint] = await db.execute(currentSprintQuery, [projectId]);
+
+      if (currentSprint.length > 0) {
+        return currentSprint[0]; // Return the current sprint if found
+      }
+
+      // If no current sprint, find the closest one (past or future)
+      const closestSprintQuery = `
+            SELECT * FROM sprints
+            WHERE projectId = ?
+            ORDER BY ABS(DATEDIFF(start_date, CURDATE()))
+            LIMIT 1;
+        `;
+
+      const [closestSprint] = await db.execute(closestSprintQuery, [projectId]);
+
+      return closestSprint.length > 0 ? closestSprint[0] : null;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getPersonFilterOption(sprintId) {
+    try {
+
+      const personFilterQuery = `
+            SELECT DISTINCT u.userId, u.username, u.fullName, u.empId
+            FROM users u
+            JOIN tasks ON tasks.resUserId = u.userId
+            WHERE tasks.sprintId = ?;
+        `;
+
+      const [personFilter] = await db.execute(personFilterQuery, [sprintId]);
+
+      return personFilter;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async getTask(sprintId, userId) {
+    try {
+      let query = `
+        SELECT tasks.*, users.fullName AS resUserFullName
+        FROM tasks
+        LEFT JOIN users ON tasks.resUserId = users.userId
+        WHERE tasks.sprintId = ?
+      `;
+  
+      const params = [sprintId];
+      if (userId !== 0) {
+        query += " AND tasks.resUserId = ?";
+        params.push(userId);
+      }
+      
+      const [tasks] = await db.execute(query, params);
+  
+      return tasks;
+    } catch (err) {
+      throw err;
+    }
+  }
+  
+
+  static async getTaskStatus() {
+    try {
+      const query = `
+            SELECT * FROM task_status ORDER BY statusId ASC;
+        `;
+      
+      const [status] = await db.execute(query);
+
+      return status;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+};
