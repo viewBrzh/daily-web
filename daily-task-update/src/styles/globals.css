@@ -216,7 +216,6 @@ strong {
 select {
   padding: 4px;
   border: 1px solid #ccc;
-  background-color: var(--lightGreyBG);
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
@@ -266,4 +265,23 @@ select {
 
 .chart-container {
   margin: 0 auto;
+}
+
+.profile-icon {
+  width: 50px; /* Size of the circle */
+  height: 50px; /* Size of the circle */
+  background-color: #E695B5; /* Background color of the circle */
+  color: white; /* Text color */
+  display: flex; /* Use flexbox to center the text */
+  align-items: center; /* Vertically center the text */
+  justify-content: center; /* Horizontally center the text */
+  border-radius: 50%; /* Makes the element a circle */
+  font-size: 20px; /* Font size of the initials */
+  font-weight: bold; /* Make the letters bold */
+  text-transform: uppercase; /* Ensure letters are capitalized */
+}
+
+.profile-icon-container {
+  display: inline-block; /* Keep it inline */
+  margin-right: 10px; /* Optional, add margin if you have other elements next to it */
 }
