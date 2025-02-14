@@ -11,6 +11,7 @@ import { faArrowsTurnToDots, faBarsProgress, faCalendarDays, faChartPie } from '
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DashboardCharts from '@/components/common/chart/dashboardCharts';
 import ProjectDashboard from '@/views/view-project/projectDashboard';
+import SprintBoard from '@/views/view-project/sprintBoard';
 
 const initialPageData = {
   project: {
@@ -97,6 +98,7 @@ const ViewProjectPage = () => {
           <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectIdStr} />
           <ProjectCalendar isCalendar={activeTab} projectId={projectIdStr} />
           <ProjectDashboard isDashboard={activeTab} projectId={projectIdStr} />
+          <SprintBoard isSprint={activeTab} projectId={projectIdStr} />
         </div>
       </PageContainer>
     </Layout>
