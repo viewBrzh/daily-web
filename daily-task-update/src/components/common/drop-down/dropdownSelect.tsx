@@ -13,8 +13,9 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, value, onChang
             value={value}
             onChange={(e) => onChange(e.target.value)}
             style={{
-                padding: "8px 12px",
+                height: "70%",
                 borderRadius: "4px",
+                margin: 'auto',
                 border: "1px solid #ccc",
                 backgroundColor: "#fff",
                 cursor: "pointer",

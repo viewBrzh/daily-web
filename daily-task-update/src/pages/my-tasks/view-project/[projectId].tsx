@@ -9,7 +9,6 @@ import Overview from '@/views/view-project/overview';
 import ProjectCalendar from '@/views/view-project/projectCalendar';
 import { faArrowsTurnToDots, faBarsProgress, faCalendarDays, faChartPie } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import DashboardCharts from '@/components/common/chart/dashboardCharts';
 import ProjectDashboard from '@/views/view-project/projectDashboard';
 import SprintBoard from '@/views/view-project/sprintBoard';
 
@@ -29,10 +28,12 @@ const initialPageData = {
       taskId: 0,
       name: "",
       description: "",
-      status: "",
+      statusId: 0,
       resUserId: 0,
       sprintId: 0,
       projectId: 0,
+      resUserFullName: "",
+      priority: 0,
     }
   ],
   members: [

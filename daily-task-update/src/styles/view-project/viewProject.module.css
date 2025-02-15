@@ -18,6 +18,7 @@
     font-size: smaller;
     border-radius: 8px;
     font-weight: bolder;
+    text-transform: uppercase;
 }
 
 .tab:hover {

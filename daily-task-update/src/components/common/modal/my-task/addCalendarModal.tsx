@@ -51,8 +51,8 @@ const AddCalendarModal: React.FC<AddCalendarModalProps> = ({ date, isOpen, onClo
                 <input type="text" name="location" value={formData.location} onChange={handleChange} />
 
                 <div className={styles.buttonGroup}>
-                    <button onClick={handleAdd} className='btn'>Add</button>
                     <button onClick={onClose} type="button" className="cancel" >Cancel</button>
+                    <button onClick={handleAdd} className='btn'>Add</button>
                 </div>
             </div>
         </div>

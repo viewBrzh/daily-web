@@ -110,7 +110,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     }, [selectedSprint, selectedPerson]);
 
     const specialOptions = [
-        { value: "all", label: "All" }
+        { value: "all", label: "Person: All" }
     ];
 
     const personOptions = [
@@ -121,17 +121,34 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         }))
     ];
 
-    const sprintOptions = sprintOption.map((sprint) => ({
-        value: sprint.sprintId.toString(),
-        label: sprint.sprintName,
-    }));
+    const specialSprintOptions = [
+        { value: "newSprint", label: "+ New Sprint" }
+    ];
 
+    const sprintOptions = [
+        ...sprintOption.map((sprint) => ({
+            value: sprint.sprintId.toString(),
+            label: sprint.sprintName,
+        })),
+
+        ...specialSprintOptions,
+    ];
+
+    const handleNewSprint = () => {
+        console.log('New Sprint option clicked');
+    };
+    
     const handleSelectSprintChange = (selectedValue: string) => {
-        const selected = sprintOption.find((sprint) => sprint.sprintId.toString() === selectedValue);
-        if (selected) {
-            setSelectedSprint(selected);
+        if (selectedValue === "newSprint") {
+            handleNewSprint();
+        } else {
+            const selected = sprintOption.find((sprint) => sprint.sprintId.toString() === selectedValue);
+            if (selected) {
+                setSelectedSprint(selected);
+            }
         }
     };
+    
 
     const handleSelectPersonChange = (selectedValue: string) => {
         if (selectedValue === "all") {
@@ -173,7 +190,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
     const handleDragEnd = async (result: DropResult) => {
         setDraggingColumn(null);
-        
+
         if (!result.destination) return;
 
         const { source, destination } = result;
@@ -210,13 +227,12 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         <div>
             <div className={styles.header}>
                 <div className={styles.filterSelectContainer}>
-                    {selectedSprint &&
-                        <DropdownSelect
-                            options={sprintOptions}
-                            value={selectedSprint?.sprintId.toString()}
-                            onChange={handleSelectSprintChange}
-                        />
-                    }
+                    {selectedSprint ? <DropdownSelect
+                        options={sprintOptions}
+                        value={selectedSprint?.sprintId.toString()}
+                        onChange={handleSelectSprintChange}
+                    /> : <button className={styles.btn} onClick={handleNewSprint}>+ New Sprint</button>}
+
                     <DropdownSelect
                         placeholder={selectedPerson.userId === 0 ? "Person: All" : `Person: ${selectedPerson.fullName}`}
                         options={personOptions}

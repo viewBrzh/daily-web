@@ -1,13 +1,14 @@
 .filterSelectContainer {
     display: flex;
     gap: 8px;
-    padding: 18px;
+    height: 48px;
+    margin: 14px 14px 0 14px;
 }
 
 .manDay {
     justify-items: end;
     justify-content: center;
-    margin: auto 18px;
+    margin: 14px 14px 0 14px;
 }
 
 .header {
@@ -70,8 +71,8 @@
 }
 
 .statusColumn.draggingOver {
-    background-color: var(--lightGreenBG);  
-  }
+    background-color: var(--lightGreenBG);
+}
 
 .name {
     max-width: 90%;
@@ -106,7 +107,7 @@
 
 .resUser span {
     display: -webkit-box;
-    -webkit-line-clamp: 1; 
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -120,4 +121,16 @@
     content: "Priority ";
     margin-right: 12px;
     color: var(--darkerGreyText);
+}
+
+.btn {
+    height: 70%;
+    margin: auto;
+    padding: 4px 8px;
+    background-color: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
 }

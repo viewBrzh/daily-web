@@ -21,8 +21,8 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
         backgroundColor: [
           'rgb(255, 99, 132)',
           'rgb(54, 162, 235)',
+          'rgb(255, 206, 86)',
           'rgb(75, 192, 192)',
-          'rgb(255, 206, 86)'
         ],
         borderColor: '#fff',
         borderWidth: 1,
@@ -46,14 +46,14 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
         backgroundColor: 'rgb(54, 162, 235)',
       },
       {
-        label: 'New',
-        data: data.sprintProgress.map(sprint => sprint.statusCount?.New || 0), // Handle null safely
-        backgroundColor: 'rgb(75, 192, 192)',
-      },
-      {
         label: 'Pending',
         data: data.sprintProgress.map(sprint => sprint.statusCount?.Pending || 0), // Handle null safely
         backgroundColor: 'rgb(255, 206, 86)',
+      },
+      {
+        label: 'New',
+        data: data.sprintProgress.map(sprint => sprint.statusCount?.New || 0), // Handle null safely
+        backgroundColor: 'rgb(75, 192, 192)',
       }
     ]
   };
