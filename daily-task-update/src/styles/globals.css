@@ -301,7 +301,7 @@ select {
 }
 
 .taskStatus {
-  padding: 6px;
+  padding: 2px;
 }
 
 .taskStatus-New::before {

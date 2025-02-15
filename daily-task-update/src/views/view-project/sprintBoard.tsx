@@ -137,7 +137,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const handleNewSprint = () => {
         console.log('New Sprint option clicked');
     };
-    
+
     const handleSelectSprintChange = (selectedValue: string) => {
         if (selectedValue === "newSprint") {
             handleNewSprint();
@@ -148,7 +148,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
             }
         }
     };
-    
+
 
     const handleSelectPersonChange = (selectedValue: string) => {
         if (selectedValue === "all") {
@@ -241,13 +241,14 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                     />
                 </div>
                 {selectedSprint &&
-                    <div className={styles.manDay}>
-                        {formatDate(selectedSprint?.start_date.toString())} - {formatDate(selectedSprint?.end_date.toString())}
-                        <div>{getDaysCount(selectedSprint?.start_date.toString(), selectedSprint?.end_date.toString())} work days</div>
-                    </div>
+                    <div className={styles.newButtonEnd}><button className={styles.btn}>+ New Task</button></div>
                 }
             </div>
-
+            {selectedSprint &&
+                <div className={styles.manDay}>
+                    {formatDate(selectedSprint?.start_date.toString())} - {formatDate(selectedSprint?.end_date.toString())}| ({getDaysCount(selectedSprint?.start_date.toString(), selectedSprint?.end_date.toString())} work days)
+                </div>
+            }
             <DragDropContext onDragUpdate={handleDragUpdate} onDragEnd={handleDragEnd}>
                 <div className={styles.taskTableContainer}>
                     {status.map((statusItem) => (
