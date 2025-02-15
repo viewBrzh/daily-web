@@ -125,4 +125,35 @@ module.exports = class Tasks {
     }
   }
 
+  static async updateTaskStatus(taskId, statusId) {
+    try {
+      const query = `
+        UPDATE tasks 
+        SET statusId = ? 
+        WHERE taskId = ?;
+      `;
+      
+      await db.execute(query, [statusId, taskId]);
+      
+      return { message: "Task status updated successfully" };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async addNewSprint(start_date, end_date, sprintName, projectId) {
+    try {
+      const query = `
+        INSERT INTO sprints VALUE start_date = ?, end_date = ?, sprintName = ?, projectId = ?;
+      `;
+      
+      await db.execute(query, [start_date, end_date, sprintName, projectId]);
+      
+      return { message: "Insert Sprint successfully: " + sprintName };
+    } catch (err) {
+      throw err;
+    }
+  }
+  
+
 };

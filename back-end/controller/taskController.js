@@ -65,6 +65,31 @@ exports.getTaskStatus = async (req, res) => {
     }
 };
 
+exports.updateTaskStatus = async (req, res) => {
+    try {
+        const taskId = req.body.taskId;
+        const statusId = req.body.statusId;
+        const status = Tasks.updateTaskStatus(taskId, statusId);
+        res.status(200).json((await status).message);
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch task status',
+            error: error.message
+        });
+    }
+};
 
+exports.addNewSprint = async (req, res) => {
+    try {
+        const {start_date, end_date, sprintName, projectId} = req.body;
+        const status = Tasks.addNewSprint(start_date, end_date, sprintName, projectId);
+        res.status(200).json((await status).message);
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch task status',
+            error: error.message
+        });
+    }
+};
 
 

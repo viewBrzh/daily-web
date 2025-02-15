@@ -11,5 +11,7 @@ router.post('/getCurrentSprint', TasksController.getCurrentSprint);
 router.post('/getPersonFilterOption', TasksController.getPersonFilterOption);
 router.post('/getTasks', TasksController.getTask);
 router.post('/getTaskStatus', TasksController.getTaskStatus);
+router.post('/updateTaskStatus', TasksController.updateTaskStatus);
+router.post('/addNewSprint', TasksController.addNewSprint);
 
 module.exports = router;
