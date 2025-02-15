@@ -50,3 +50,17 @@ export const getTaskStatus = async (): Promise<Status[]> => {
         return {} as Status[]; 
     }
 };
+
+export const updateTaskStatus = async (taskId: any, statusId: any) => {
+    try {await axios.post(`/api/tasks/updateTaskStatus`, {taskId, statusId});
+    } catch (error) {
+        console.error("Error updating task status:", error);
+    }
+};
+
+export const addNewSprint = async (newSprint: SprintData) => {
+    try {await axios.post(`/api/tasks/addNewSprint`, {newSprint});
+    } catch (error) {
+        console.error("Error updating task status:", error);
+    }
+};

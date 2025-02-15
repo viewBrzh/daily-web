@@ -111,6 +111,13 @@ export interface SprintData {
   projectId: number;
 }
 
+export interface SprintDataInsert {
+  start_date: Date;
+  end_date: Date;
+  sprintName: string;
+  projectId: number;
+}
+
 export interface Status {
   statusId: number;
   name: string;

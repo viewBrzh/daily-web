@@ -19,6 +19,7 @@
   --lightGreyBG: #efefef;
   --darkerGreyBG: #cdcdcd;
   --darkerGreyText: #666666;
+  --lightGreenBG: #cffcd3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -268,20 +269,65 @@ select {
 }
 
 .profile-icon {
-  width: 50px; /* Size of the circle */
-  height: 50px; /* Size of the circle */
-  background-color: #E695B5; /* Background color of the circle */
-  color: white; /* Text color */
-  display: flex; /* Use flexbox to center the text */
-  align-items: center; /* Vertically center the text */
-  justify-content: center; /* Horizontally center the text */
-  border-radius: 50%; /* Makes the element a circle */
-  font-size: 20px; /* Font size of the initials */
-  font-weight: bold; /* Make the letters bold */
-  text-transform: uppercase; /* Ensure letters are capitalized */
+  width: 50px;
+  /* Size of the circle */
+  height: 50px;
+  /* Size of the circle */
+  background-color: #E695B5;
+  /* Background color of the circle */
+  color: white;
+  /* Text color */
+  display: flex;
+  /* Use flexbox to center the text */
+  align-items: center;
+  /* Vertically center the text */
+  justify-content: center;
+  /* Horizontally center the text */
+  border-radius: 50%;
+  /* Makes the element a circle */
+  font-size: 20px;
+  /* Font size of the initials */
+  font-weight: bold;
+  /* Make the letters bold */
+  text-transform: uppercase;
+  /* Ensure letters are capitalized */
 }
 
 .profile-icon-container {
-  display: inline-block; /* Keep it inline */
-  margin-right: 10px; /* Optional, add margin if you have other elements next to it */
+  display: inline-block;
+  /* Keep it inline */
+  margin-right: 10px;
+  /* Optional, add margin if you have other elements next to it */
+}
+
+.taskStatus {
+  padding: 6px;
+}
+
+.taskStatus-New::before {
+  color: rgb(75, 192, 192);
+  content: "●";
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.taskStatus-Pending::before {
+  color: rgb(255, 206, 86);
+  content: "●";
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.taskStatus-In-Progress::before {
+  color: rgb(54, 162, 235);
+  content: "●";
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.taskStatus-Done::before {
+  color: rgb(255, 99, 132);
+  content: "●";
+  font-size: 16px;
+  margin-right: 5px;
 }

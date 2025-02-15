@@ -40,6 +40,7 @@
     border: 1px solid #ddd;
     padding: 10px;
     background-color: #ffffff;
+    min-height: 350px;
 }
 
 .statusColumn .header {
@@ -68,13 +69,17 @@
     margin-bottom: 10px;
 }
 
+.statusColumn.draggingOver {
+    background-color: var(--lightGreenBG);  
+  }
+
 .name {
     max-width: 90%;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
     overflow: hidden;
-    padding-bottom: 14px;
+    padding: 6px;
 }
 
 .name strong {
@@ -88,10 +93,15 @@
     color: #333;
 }
 
+.task:hover {
+    transition: ease-in 0.2s;
+    transform: scale(1.02);
+}
+
 .resUser {
     display: flex;
     gap: 6px;
-    padding-bottom: 14px;
+    padding: 6px;
 }
 
 .resUser span {
@@ -100,4 +110,14 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.priority {
+    padding: 6px;
+}
+
+.priority::before {
+    content: "Priority ";
+    margin-right: 12px;
+    color: var(--darkerGreyText);
 }

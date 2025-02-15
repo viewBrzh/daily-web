@@ -1,10 +1,11 @@
 import styles from "@/styles/view-project/sprintBoard.module.css";
 import DropdownSelect from "@/components/common/drop-down/dropdownSelect";
 import { SprintData, Status, Task, User } from "@/components/common/types";
-import { getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus } from "@/pages/api/my-task/sprint";
+import { getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, updateTaskStatus } from "@/pages/api/my-task/sprint";
 import React, { useEffect, useState } from "react";
-import BigUserProfileIcon from "@/components/common/smallUserProfileIcon";
 import SmallUserProfileIcon from "@/components/common/smallUserProfileIcon";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
 
 interface CalendarProps {
     isSprint: string;
@@ -52,6 +53,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const [sprintOption, setSprintOption] = useState<SprintData[]>([initialSprintData]);
     const [tasks, setTasks] = useState<Task[]>([initTaskData]);
     const [status, setStatus] = useState<Status[]>([initStatus]);
+    const [draggingColumn, setDraggingColumn] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -81,6 +83,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     }, [projectId]);
 
     useEffect(() => {
+        if (!selectedSprint) return;
         const fetchPerson = async () => {
             try {
                 const personOptionRes = await getPersonFilterOption(selectedSprint?.sprintId);
@@ -93,6 +96,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     }, [selectedSprint]);
 
     useEffect(() => {
+        if (!selectedSprint) return;
         const fetchTasks = async () => {
             try {
                 const tasks = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
@@ -156,24 +160,63 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         const end = new Date(endDate);
         const timeDifference = end.getTime() - start.getTime();
         const daysDifference = timeDifference / (1000 * 3600 * 24);
-        
+
         return daysDifference;
     };
 
-    const groupedTasks = status.reduce((acc, currStatus) => {
-        acc[currStatus.statusId] = tasks.filter(task => task.statusId === currStatus.statusId);
-        return acc;
-    }, {} as { [key: number]: Task[] });
+    const handleDragUpdate = (update: any) => {
+        // Get the destination droppable id where the item is being dragged over
+        if (update.destination) {
+            setDraggingColumn(update.destination.droppableId);
+        }
+    };
+
+    const handleDragEnd = async (result: DropResult) => {
+        setDraggingColumn(null);
+        
+        if (!result.destination) return;
+
+        const { source, destination } = result;
+        const taskId = result.draggableId;
+
+        console.log('Source:', source, 'Destination:', destination);
+
+        if (source.index === destination.index && source.droppableId === destination.droppableId) {
+            return;
+        }
+
+        const updatedTasks = [...tasks];
+        const taskIndex = updatedTasks.findIndex((task) => task.taskId.toString() === taskId);
+
+        if (taskIndex === -1) {
+            console.error("Task not found!");
+            return;
+        }
+
+        const movedTask = updatedTasks[taskIndex];
+        movedTask.statusId = Number(destination.droppableId);
+
+        try {
+            await updateTaskStatus(movedTask.taskId, movedTask.statusId);
+            console.log('Task status updated successfully');
+            const newTask = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+            setTasks(newTask);
+        } catch (error) {
+            console.error("Error updating task status:", error);
+        }
+    };
 
     return (
         <div>
             <div className={styles.header}>
                 <div className={styles.filterSelectContainer}>
-                    <DropdownSelect
-                        options={sprintOptions}
-                        value={selectedSprint?.sprintId.toString()}
-                        onChange={handleSelectSprintChange}
-                    />
+                    {selectedSprint &&
+                        <DropdownSelect
+                            options={sprintOptions}
+                            value={selectedSprint?.sprintId.toString()}
+                            onChange={handleSelectSprintChange}
+                        />
+                    }
                     <DropdownSelect
                         placeholder={selectedPerson.userId === 0 ? "Person: All" : `Person: ${selectedPerson.fullName}`}
                         options={personOptions}
@@ -181,26 +224,28 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                         onChange={handleSelectPersonChange}
                     />
                 </div>
-                <div className={styles.manDay}>
-                    {formatDate(selectedSprint?.start_date.toString())} - {formatDate(selectedSprint?.end_date.toString())} 
-                    <div>{getDaysCount(selectedSprint?.start_date.toString(), selectedSprint?.end_date.toString())} work days</div>
-                </div>
+                {selectedSprint &&
+                    <div className={styles.manDay}>
+                        {formatDate(selectedSprint?.start_date.toString())} - {formatDate(selectedSprint?.end_date.toString())}
+                        <div>{getDaysCount(selectedSprint?.start_date.toString(), selectedSprint?.end_date.toString())} work days</div>
+                    </div>
+                }
             </div>
 
-            <div className={styles.taskTableContainer}>
-                {status.map((statusItem) => (
-                    <div key={statusItem.statusId} className={styles.statusColumn}>
-                        <div className={styles.header}>{statusItem.name}</div>
-                        {groupedTasks[statusItem.statusId]?.map((task) => (
-                            <div key={task.taskId} className={styles.task}>
-                                <div className={styles.name}><strong>{task.taskId} </strong>{task.name}</div>
-                                <div className={styles.resUser}><SmallUserProfileIcon fullName={task.resUserFullName} /> <span>{task.resUserFullName}</span></div>
-                                <div>Priority {task.priority}</div>
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
+            <DragDropContext onDragUpdate={handleDragUpdate} onDragEnd={handleDragEnd}>
+                <div className={styles.taskTableContainer}>
+                    {status.map((statusItem) => (
+                        <DragDropTaskColumn
+                            key={statusItem.statusId}
+                            statusItem={statusItem}
+                            tasks={tasks}
+                            draggingColumn={draggingColumn}
+                            onDragUpdate={handleDragUpdate}
+                            onDragEnd={handleDragEnd}
+                        />
+                    ))}
+                </div>
+            </DragDropContext>
         </div>
     );
 };

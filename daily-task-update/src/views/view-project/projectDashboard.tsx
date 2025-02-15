@@ -33,8 +33,6 @@ const initData: DashboardData = {
     ]
 };
 
-
-
 const ProjectDashboard: React.FC<CalendarProps> = ({ isDashboard, projectId }) => {
     if (isDashboard !== "Dashboard") return null;
 
