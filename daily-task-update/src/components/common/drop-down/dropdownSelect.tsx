@@ -5,11 +5,13 @@ interface DropdownSelectProps {
     value: string;
     onChange: (value: string) => void;
     placeholder?: string;
+    onClick?: () => void;
 }
 
-const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, value, onChange, placeholder = "Select an option" }) => {
+const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, value, onChange, placeholder = "Select an option", onClick }) => {
     return (
         <select
+            onClick={onClick}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             style={{
@@ -23,7 +25,18 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, value, onChang
             }}
         >
             {options.map((option) => (
-                <option key={option.value} value={option.value}>
+                <option
+                    key={option.value}
+                    value={option.value}
+                    style={{
+                        borderRadius: "4px",
+                        margin: 'auto',
+                        border: "1px solid #ccc",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                    }}
+                >
                     {option.label}
                 </option>
             ))}
