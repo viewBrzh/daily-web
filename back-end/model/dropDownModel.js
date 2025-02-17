@@ -22,7 +22,32 @@ module.exports = class Dropdown {
 
             // Execute the query with parameters
             const [finalResult] = await db.execute(userQuery, queryParams);
-            return {finalResult};
+            return { finalResult };
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async getUserDropdownByProject(projectId) {
+        try {
+            const limit = 5;
+
+            let userQuery = `
+                SELECT u.userId, u.username, u.fullName, u.empId
+                FROM users u
+                JOIN projectMembers pm ON u.userId = pm.userId
+                WHERE pm.projectId = ? LIMIT ?
+                `;
+
+            const queryParams = [projectId];
+
+            queryParams.push(limit);
+
+            console.log(userQuery, queryParams)
+
+            // Execute the query with parameters
+            const [finalResult] = await db.execute(userQuery, queryParams);
+            return { finalResult };
         } catch (err) {
             throw err;
         }
@@ -36,7 +61,7 @@ module.exports = class Dropdown {
                 JOIN tasks t ON u.userId = t.resUserId
                 WHERE t.sprintId = ?;
             `;
-    
+
             const [rows] = await db.execute(query, [sprintId]); // Using MySQL2
             console.log(rows)
             return rows;
@@ -44,5 +69,5 @@ module.exports = class Dropdown {
             throw err;
         }
     }
-       
+
 };

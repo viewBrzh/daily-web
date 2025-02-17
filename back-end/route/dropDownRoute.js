@@ -8,5 +8,6 @@ router.get('/', (req, res) => {
 
 router.post('/getDropDownUser', dropDownUserController.getDropDownUser);
 router.post('/getTaskFilterDropdownUser', dropDownUserController.getTaskfilterDropdown);
+router.post('/getDropdownUserByProject', dropDownUserController.getDropDownUserByProject);
 
 module.exports = router;
