@@ -63,4 +63,20 @@ module.exports = class Member {
             throw new Error('Error updating members: ' + error.message);
         }
     }
+
+    static async getUser(userId) {
+        try {
+            const query = `
+                SELECT userId, username, fullName, empId
+                FROM users 
+                WHERE userId = ?;
+            `;
+
+            const [rows] = await db.execute(query, [userId]); 
+            return rows;
+        } catch (err) {
+            throw err;
+        }
+    }
+
 };

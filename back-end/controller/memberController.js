@@ -29,3 +29,15 @@ exports.updateTeamMember = async (req, res) => {
         });
     }
 };
+
+exports.getUser = async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const user = await Member.getUser(userId);
+        res.status(200).json({user});
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        })
+    }
+}

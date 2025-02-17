@@ -7,5 +7,6 @@ router.get('/', (req, res) => {
   });
 
 router.post('/updateMember', MemberController.updateTeamMember);
+router.post('/getUser', MemberController.getUser);
 
 module.exports = router;
