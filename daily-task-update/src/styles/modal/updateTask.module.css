@@ -1,0 +1,141 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modalContainer {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 400px;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.inputGroup {
+    margin-bottom: 1rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.input {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.cancelButton {
+    background: #ccc;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+.submitButton {
+    background: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+}
+
+.modalContainerTask {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 80%;
+    margin: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+/* Form container that uses CSS Grid */
+.formContainer {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* Two equal columns */
+    gap: 20px;
+    margin-top: 10px;
+}
+
+/* Left column with name and description */
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    height: max-content;
+    gap: 10px;
+}
+
+/* Right column with the rest of the fields */
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    height: max-content;
+    gap: 10px;
+}
+
+/* Styling for the labels */
+.label {
+    font-weight: bold;
+}
+
+/* Styling for the input fields */
+.input {
+    padding: 4px;
+    font-size: 14px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+/* Button group for Cancel and Submit buttons */
+.buttonGroup {
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+}
+
+.name {
+    color: var(--primaryText);
+}
+
+.name strong {
+    margin-right: 18px;
+}
+
+.select {
+    width: 100%;
+    max-width: 100%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.option {
+    
+}
