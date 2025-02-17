@@ -1,7 +1,9 @@
 import { Droppable, Draggable } from "@hello-pangea/dnd";
-import { Task,Status } from "./types";
+import { Task, Status } from "./types";
 import SmallUserProfileIcon from "./smallUserProfileIcon";
 import styles from "@/styles/view-project/sprintBoard.module.css";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface DragDropTaskColumnProps {
     statusItem: Status;
@@ -9,6 +11,7 @@ interface DragDropTaskColumnProps {
     draggingColumn: string | null;
     onDragUpdate: (update: any) => void;
     onDragEnd: (result: any) => void;
+    onEdit: (task: Task) => void;
 }
 
 const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
@@ -17,6 +20,7 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
     draggingColumn,
     onDragUpdate,
     onDragEnd,
+    onEdit,
 }) => {
     return (
         <Droppable key={statusItem.statusId} droppableId={statusItem.statusId.toString()}>
@@ -24,9 +28,8 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
                 <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`${styles.statusColumn} ${
-                        draggingColumn === statusItem.statusId.toString() ? styles.draggingOver : ""
-                    }`}
+                    className={`${styles.statusColumn} ${draggingColumn === statusItem.statusId.toString() ? styles.draggingOver : ""
+                        }`}
                 >
                     <div className={styles.header}>{statusItem.name}</div>
                     {tasks
@@ -40,15 +43,19 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
                                         {...provided.dragHandleProps}
                                         className={styles.task}
                                     >
-                                        <div className={styles.name}>
-                                            <strong>{task.taskId}</strong> {task.name}
+                                        <div className={styles.head}>
+                                            <div className={styles.name}>
+                                                <strong>{task.taskId}</strong> {task.name}
+                                            </div>
+                                            <button className={styles.edit} onClick={() => onEdit(task)}><FontAwesomeIcon icon={faPenToSquare} /></button>
                                         </div>
+
                                         <div className={`taskStatus taskStatus-${statusItem.name}`}>
                                             {statusItem.name}
                                         </div>
                                         <div className={styles.resUser}>
                                             <SmallUserProfileIcon fullName={task.resUserFullName} />
-                                            <span>{task.resUserFullName}</span>
+                                            <span style={{ margin: 'auto 0' }} >{task.resUserFullName}</span>
                                         </div>
                                         <div className={styles.priority}>{task.priority}</div>
                                     </div>

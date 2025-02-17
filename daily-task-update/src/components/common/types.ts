@@ -48,15 +48,15 @@ export interface User {
 }
 
 export interface Task {
-    taskId: number;
-    name: string;
-    description: string;
-    statusId: number;
-    resUserId: number;
-    sprintId: number;
-    projectId: number;
-    resUserFullName: string;
-    priority: number;
+  taskId: number;
+  name: string;
+  description: string;
+  statusId: number;
+  resUserId: number;
+  sprintId: number;
+  projectId: number;
+  resUserFullName: string;
+  priority: number;
 }
 
 export interface ViewProject {
@@ -115,10 +115,18 @@ export interface SprintDataInsert {
   start_date: Date;
   end_date: Date;
   sprintName: string;
-  projectId: number;
+  projectId: string;
 }
 
 export interface Status {
   statusId: number;
   name: string;
+}
+
+export interface Field {
+  name: string;
+  label: string;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
 }

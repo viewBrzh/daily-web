@@ -1,11 +1,12 @@
 import styles from "@/styles/view-project/sprintBoard.module.css";
 import DropdownSelect from "@/components/common/drop-down/dropdownSelect";
-import { SprintData, Status, Task, User } from "@/components/common/types";
-import { getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, updateTaskStatus } from "@/pages/api/my-task/sprint";
-import React, { useEffect, useState } from "react";
-import SmallUserProfileIcon from "@/components/common/smallUserProfileIcon";
+import { SprintData, SprintDataInsert, Status, Task, User } from "@/components/common/types";
+import { addNewSprint, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, updateTaskStatus } from "@/pages/api/my-task/sprint";
+import React, { useCallback, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
+import Modal from "@/components/common/modal/addModal";
+import UpdateTaskModal from "@/components/common/modal/sprint/updateTaskModal";
 
 interface CalendarProps {
     isSprint: string;
@@ -51,9 +52,62 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const [selectedPerson, setSelectedPerson] = useState<User>(initUserData);
     const [personOption, setPersonOption] = useState<User[]>([initUserData]);
     const [sprintOption, setSprintOption] = useState<SprintData[]>([initialSprintData]);
+    const [newSprint, setnewSprint] = useState<SprintDataInsert>(
+        {
+            sprintName: "",
+            start_date: new Date(),
+            end_date: new Date(),
+            projectId: "0",
+        }
+    )
     const [tasks, setTasks] = useState<Task[]>([initTaskData]);
+    const [task, setTask] = useState<Task>(initTaskData);
+    const [newTask, setNewTask] = useState<Task>(initTaskData);
     const [status, setStatus] = useState<Status[]>([initStatus]);
     const [draggingColumn, setDraggingColumn] = useState<string | null>(null);
+    const [isUpdateTaskModalOpen, setIsUpdateTaskModalOpen] = useState(false);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleNewSprint = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setIsUpdateTaskModalOpen(false);
+    };
+
+    const handleSubmitSprint = (data: Record<string, string>) => {
+        const formattedData: SprintDataInsert = {
+            sprintName: data.sprintName,
+            start_date: new Date(data.start_date),
+            end_date: new Date(data.end_date),
+            projectId: projectId,
+        };
+        addNewSprint(formattedData);
+        setIsModalOpen(false);
+    };
+
+    const handleSubmitTask = (data: Task) => {
+        setNewTask(data);
+        setIsModalOpen(false);
+    };
+
+    const onClickSprintSelect = async () => {
+        const dropdownSprint = await getSprintByProject(projectId);
+        setSprintOption(dropdownSprint);
+    }
+
+    const onClickPersonSelect = async () => {
+        const personOptionRes = await getPersonFilterOption(selectedSprint?.sprintId);
+        setPersonOption(personOptionRes);
+    }
+
+    const handleEditTask = useCallback((task: Task) => {
+        setTask(task);
+        setIsUpdateTaskModalOpen(true);
+    }, []);
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -134,10 +188,6 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         ...specialSprintOptions,
     ];
 
-    const handleNewSprint = () => {
-        console.log('New Sprint option clicked');
-    };
-
     const handleSelectSprintChange = (selectedValue: string) => {
         if (selectedValue === "newSprint") {
             handleNewSprint();
@@ -182,7 +232,6 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     };
 
     const handleDragUpdate = (update: any) => {
-        // Get the destination droppable id where the item is being dragged over
         if (update.destination) {
             setDraggingColumn(update.destination.droppableId);
         }
@@ -215,7 +264,6 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
         try {
             await updateTaskStatus(movedTask.taskId, movedTask.statusId);
-            console.log('Task status updated successfully');
             const newTask = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
             setTasks(newTask);
         } catch (error) {
@@ -228,12 +276,14 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
             <div className={styles.header}>
                 <div className={styles.filterSelectContainer}>
                     {selectedSprint ? <DropdownSelect
+                        onClick={onClickSprintSelect}
                         options={sprintOptions}
                         value={selectedSprint?.sprintId.toString()}
                         onChange={handleSelectSprintChange}
                     /> : <button className={styles.btn} onClick={handleNewSprint}>+ New Sprint</button>}
 
                     <DropdownSelect
+                        onClick={onClickPersonSelect}
                         placeholder={selectedPerson.userId === 0 ? "Person: All" : `Person: ${selectedPerson.fullName}`}
                         options={personOptions}
                         value={selectedPerson.userId === 0 ? "all" : selectedPerson.userId.toString()}
@@ -259,10 +309,29 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                             draggingColumn={draggingColumn}
                             onDragUpdate={handleDragUpdate}
                             onDragEnd={handleDragEnd}
+                            onEdit={handleEditTask}
                         />
                     ))}
                 </div>
             </DragDropContext>
+            <Modal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                title="Create New Sprint"
+                fields={[
+                    { name: "sprintName", label: "Sprint Name", required: true },
+                    { name: "start_date", label: "Start Date", type: "date", required: true },
+                    { name: "end_date", label: "End Date", type: "date", required: true }
+                ]}
+                onSubmit={handleSubmitSprint}
+            />
+            <UpdateTaskModal
+                isOpen={isUpdateTaskModalOpen}
+                onClose={handleCloseModal}
+                title={task.name}
+                onSubmit={handleSubmitTask}
+                task={task}
+            />
         </div>
     );
 };

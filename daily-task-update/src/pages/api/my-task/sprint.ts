@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SprintData, Status, Task, User } from '@/components/common/types';
+import { SprintData, SprintDataInsert, Status, Task, User } from '@/components/common/types';
 
 export const getSprintByProject = async (projectId: any): Promise<SprintData[]> => {
     try {
@@ -58,7 +58,7 @@ export const updateTaskStatus = async (taskId: any, statusId: any) => {
     }
 };
 
-export const addNewSprint = async (newSprint: SprintData) => {
+export const addNewSprint = async (newSprint: SprintDataInsert) => {
     try {await axios.post(`/api/tasks/addNewSprint`, {newSprint});
     } catch (error) {
         console.error("Error updating task status:", error);

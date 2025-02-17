@@ -1,6 +1,5 @@
 import styles from '@/styles/component/Calendar.module.css';
 import { CalendarItem } from "../types";
-import { useEffect } from 'react';
 
 interface DayProps {
     date: string;
@@ -15,11 +14,6 @@ const Day: React.FC<DayProps> = ({ date, calendar }) => {
     };
     
     const itemsForDay = calendar.filter((item) => normalizeDate(item.date) === normalizeDate(date));    
-
-    useEffect(() => {
-        console.log(calendar)
-        console.log(itemsForDay , date);
-    })
 
     return (
         <>
