@@ -95,28 +95,28 @@ module.exports = class Tasks {
         LEFT JOIN users ON tasks.resUserId = users.userId
         WHERE tasks.sprintId = ?
       `;
-  
+
       const params = [sprintId];
       if (userId !== 0) {
         query += " AND tasks.resUserId = ?";
         params.push(userId);
       }
-      
+
       const [tasks] = await db.execute(query, params);
-  
+
       return tasks;
     } catch (err) {
       throw err;
     }
   }
-  
+
 
   static async getTaskStatus() {
     try {
       const query = `
             SELECT * FROM task_status ORDER BY statusId ASC;
         `;
-      
+
       const [status] = await db.execute(query);
 
       return status;
@@ -132,9 +132,9 @@ module.exports = class Tasks {
         SET statusId = ? 
         WHERE taskId = ?;
       `;
-      
+
       await db.execute(query, [statusId, taskId]);
-      
+
       return { message: "Task status updated successfully" };
     } catch (err) {
       throw err;
@@ -144,16 +144,41 @@ module.exports = class Tasks {
   static async addNewSprint(start_date, end_date, sprintName, projectId) {
     try {
       const query = `
-        INSERT INTO sprints VALUE start_date = ?, end_date = ?, sprintName = ?, projectId = ?;
+        INSERT INTO sprints (start_date, end_date, sprintName, projectId)
+        VALUES (?, ?, ?, ?);
       `;
-      
+
       await db.execute(query, [start_date, end_date, sprintName, projectId]);
-      
+
       return { message: "Insert Sprint successfully: " + sprintName };
     } catch (err) {
       throw err;
     }
   }
-  
 
+  static async updateTask(taskId, name, description, resUserId, sprintId, projectId, statusId, priority) {
+    try {
+      const query = `
+        UPDATE tasks 
+        SET 
+          name = ?, 
+          description = ?, 
+          resUserId = ?, 
+          sprintId = ?, 
+          projectId = ?, 
+          statusId = ?, 
+          priority = ?
+        WHERE taskId = ?;
+      `;
+      
+      const values = [name, description, resUserId, sprintId, projectId, statusId, priority, taskId];
+  
+      const [result] = await db.execute(query, values);
+      return result;
+    } catch (error) {
+      console.error("Error updating task:", error);
+      throw error;
+    }
+  }
+  
 };

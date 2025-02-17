@@ -81,15 +81,44 @@ exports.updateTaskStatus = async (req, res) => {
 
 exports.addNewSprint = async (req, res) => {
     try {
-        const {start_date, end_date, sprintName, projectId} = req.body;
-        const status = Tasks.addNewSprint(start_date, end_date, sprintName, projectId);
-        res.status(200).json((await status).message);
+        const { start_date, end_date, sprintName, projectId } = req.body.newSprint;
+        console.log(start_date, end_date, sprintName, projectId);
+        
+        if (!start_date || !end_date || !sprintName || !projectId) {
+            return res.status(400).json({
+                message: 'Missing required fields',
+            });
+        }
+        const formattedStartDate = formatDate(start_date);
+        const formattedEndDate = formatDate(end_date);
+
+        const status = await Tasks.addNewSprint(formattedStartDate, formattedEndDate, sprintName, projectId);
+        res.status(200).json(status.message);
     } catch (error) {
         res.status(500).json({
-            message: 'Failed to fetch task status',
-            error: error.message
+            message: 'Failed to insert sprint',
+            error: error.message,
         });
     }
 };
 
+exports.updateTask = async (req, res) => {
+    try {
+        const { taskId, name, description, resUserId, sprintId, projectId, statusId, priority } = req.body;
+        console.log( taskId, name, description, resUserId, sprintId, projectId, statusId, priority);
+
+        const status = await Tasks.updateTask( taskId, name, description, resUserId, sprintId, projectId, statusId, priority);
+        res.status(200).json(status);
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to insert sprint',
+            error: error.message,
+        });
+    }
+};
+
+const formatDate = (date) => {
+    const formattedDate = new Date(date);
+    return formattedDate.toISOString().split('T')[0]; // Extracts 'YYYY-MM-DD' format
+};
 
