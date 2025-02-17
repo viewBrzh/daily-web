@@ -69,7 +69,7 @@
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     border-radius: 5px;
-    cursor: pointer;
+    cursor: grab;
     font-size: small;
 }
 
@@ -142,4 +142,24 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+}
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    position: relative; /* Add this to position the edit button relative to this container */
+}
+
+.edit {
+    color: var(--primary);
+    margin-top: 0;
+    padding: 4px;
+    position: absolute; /* Position the edit button absolutely */
+    top: 0; /* Align to the top */
+    right: 0; /* Align to the right */
+}
+
+.edit:hover {
+    background-color: var(--lightGreyBG);
 }

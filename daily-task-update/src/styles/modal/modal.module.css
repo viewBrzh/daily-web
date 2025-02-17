@@ -274,6 +274,7 @@
   border: 1px solid var(--primaryText);
   border-radius: 4px;
   padding: 6px;
+  height: 160px;
 }
 
 .buttonGroup {
@@ -282,3 +283,5 @@
   gap: 6px;
   margin-top: 10px;
 }
+
+/* Modal.module.css */
