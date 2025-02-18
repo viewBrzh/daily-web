@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styles from '@/styles/modal/updateTask.module.css';
-import { Task } from '../../types';
+import { Status, Task } from '../../types';
 import ProjectMemberDropdown from '../../drop-down/projectMemberDropdown';
 
 interface ModalProps {
@@ -9,14 +9,15 @@ interface ModalProps {
     title: string;
     onSubmit: (data: Task) => void;
     task: Task;
+    status: Status[];
 }
 
-const UpdateTaskModal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, task }) => {
+const UpdateTaskModal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, task, status }) => {
     if (!isOpen) return null;
 
     const [formData, setFormData] = useState<Task>(task);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
@@ -25,18 +26,17 @@ const UpdateTaskModal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmi
     };
 
     const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const { value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
-            description: value
+            description: e.target.value
         }));
     };
 
     const handleSelectUser = (userId: number, userName: string) => {
         setFormData((prevState) => ({
             ...prevState,
-            assignedUserId: userId,  // Assuming 'assignedUserId' is the correct field in Task type
-            assignedUserName: userName // Optional: Store name if needed for display
+            resUserId: userId,
+            assignedUserName: userName
         }));
     };
 
@@ -55,67 +55,78 @@ const UpdateTaskModal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmi
                         name='name'
                         value={formData.name}
                         onChange={handleChange}
-                        style={{ width: '90%', padding: '8px' }}
+                        className={styles.nameInput}
                     />
                 </div>
-                <form onSubmit={handleSubmit} className={styles.formContainer}>
-                    <div className={styles.leftColumn}>
-                        <label className={styles.label}>Description</label>
-                        <textarea
-                            placeholder="Enter task description"
-                            value={formData.description}
-                            onChange={handleTextAreaChange}
-                            className={styles.input}
-                            rows={15}
-                        />
+                <form onSubmit={handleSubmit}>
+                    <div className={styles.formContainer}>
+                        <div className={styles.leftColumn}>
+                            <label className={styles.label}>Description</label>
+                            <textarea
+                                placeholder="Enter task description"
+                                value={formData.description}
+                                onChange={handleTextAreaChange}
+                                className={styles.input}
+                                rows={15}
+                            />
+                        </div>
+
+                        <div className={styles.rightColumn}>
+                            <label className={styles.label}>Assigned To</label>
+                            <ProjectMemberDropdown
+                                projectId={task.projectId}
+                                onSelectUser={handleSelectUser}
+                                userId={task.resUserId}
+                            />
+
+                            <label className={styles.label}>Status</label>
+                            <select
+                                name="statusId"
+                                className={styles.select}
+                                value={formData.statusId}
+                                onChange={handleChange}
+                            >
+                                {status.map((st) => (
+                                    <option key={st.statusId} value={st.statusId}>
+                                        {st.statusId} - {st.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <label className={styles.label}>Priority</label>
+                            <select
+                                name="priority"
+                                className={styles.select}
+                                value={formData.priority}
+                                onChange={handleChange}
+                            >
+                                <option key={1} value={1}>
+                                    1 - Highest
+                                </option>
+                                <option key={2} value={2}>
+                                    2 - High
+                                </option>
+                                <option key={3} value={3}>
+                                    3 - Medium
+                                </option>
+                                <option key={4} value={4}>
+                                    4 - Low
+                                </option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div className={styles.rightColumn}>
-                        <label className={styles.label}>Assigned To</label>
-                        <ProjectMemberDropdown
-                            projectId={task.projectId}
-                            onSelectUser={handleSelectUser}
-                            userId={task.resUserId}
-                        />
-
-                        <label className={styles.label}>Status</label>
-                        <input
-                            type="number"
-                            name="statusId"
-                            value={formData.statusId}
-                            onChange={handleChange}
-                            className={styles.input}
-                            required
-                        />
-
-                        <label className={styles.label}>Priority</label>
-                        <input
-                            type="text"
-                            name="priority"
-                            value={formData.priority}
-                            onChange={handleChange}
-                            className={styles.input}
-                        />
+                    <div className={styles.buttonGroup}>
+                        <button type="button" className="cancel" onClick={onClose}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="btn">
+                            Submit
+                        </button>
                     </div>
                 </form>
-                <div className={styles.buttonGroup}>
-                    <button
-                        type="button"
-                        className="cancel"
-                        onClick={onClose}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="btn"
-                    >
-                        Submit
-                    </button>
-                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default UpdateTaskModal;

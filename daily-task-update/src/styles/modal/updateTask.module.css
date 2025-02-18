@@ -21,6 +21,15 @@
     margin-bottom: 1rem;
 }
 
+.nameInput {
+    width: 90%;
+    padding: 8px;
+}
+
+.nameInput:hover {
+    border: 1px solid #ccc;
+}
+
 .inputGroup {
     margin-bottom: 1rem;
 }
@@ -136,6 +145,4 @@
     border-radius: 5px;
 }
 
-.option {
-    
-}
+.option {}

@@ -17,7 +17,7 @@ export const getCurrentSprintByProject = async (projectId: any): Promise<SprintD
         return response.data;
     } catch (error) {
         console.error("Error fetching sprint:", error);
-        return {} as SprintData; 
+        return {} as SprintData;
     }
 };
 
@@ -26,7 +26,7 @@ export const getPersonFilterOption = async (sprintId?: any): Promise<User[]> => 
         const response = await axios.post<User[]>(`/api/tasks/getPersonFilterOption`, { sprintId });
         return Array.isArray(response.data) ? response.data : []; // Ensure it returns an array
     } catch (error) {
-        console.error("Error fetching person option:", error );
+        console.error("Error fetching person option:", error);
         return []; // Return an empty array instead of an object
     }
 };
@@ -37,7 +37,7 @@ export const getTasks = async (sprintId?: any, userId?: any): Promise<Task[]> =>
         return response.data;
     } catch (error) {
         console.error("Error fetching person ontion:", error);
-        return {} as Task[]; 
+        return {} as Task[];
     }
 };
 
@@ -47,19 +47,29 @@ export const getTaskStatus = async (): Promise<Status[]> => {
         return response.data;
     } catch (error) {
         console.error("Error fetching person ontion:", error);
-        return {} as Status[]; 
+        return {} as Status[];
     }
 };
 
 export const updateTaskStatus = async (taskId: any, statusId: any) => {
-    try {await axios.post(`/api/tasks/updateTaskStatus`, {taskId, statusId});
+    try {
+        await axios.post(`/api/tasks/updateTaskStatus`, { taskId, statusId });
     } catch (error) {
         console.error("Error updating task status:", error);
     }
 };
 
 export const addNewSprint = async (newSprint: SprintDataInsert) => {
-    try {await axios.post(`/api/tasks/addNewSprint`, {newSprint});
+    try {
+        await axios.post(`/api/tasks/addNewSprint`, { newSprint });
+    } catch (error) {
+        console.error("Error updating task status:", error);
+    }
+};
+
+export const updateTask = async (task: Task) => {
+    try {
+        await axios.post(`/api/tasks/updateTask`, { task });
     } catch (error) {
         console.error("Error updating task status:", error);
     }

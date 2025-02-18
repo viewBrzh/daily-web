@@ -1,7 +1,7 @@
 import styles from "@/styles/view-project/sprintBoard.module.css";
 import DropdownSelect from "@/components/common/drop-down/dropdownSelect";
 import { SprintData, SprintDataInsert, Status, Task, User } from "@/components/common/types";
-import { addNewSprint, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, updateTaskStatus } from "@/pages/api/my-task/sprint";
+import { addNewSprint, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
 import React, { useCallback, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
@@ -89,9 +89,17 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         setIsModalOpen(false);
     };
 
-    const handleSubmitTask = (data: Task) => {
+    const handleSubmitTask = async (data: Task) => {
         setNewTask(data);
-        setIsModalOpen(false);
+        try {
+            await updateTask(data);
+            const tasks = getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+            setTasks(await tasks);
+        } catch (error) {
+            console.log(error)
+        }
+
+        setIsUpdateTaskModalOpen(false);
     };
 
     const onClickSprintSelect = async () => {
@@ -155,7 +163,6 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
             try {
                 const tasks = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
                 setTasks(tasks);
-                console.log(tasks)
             } catch (error) {
                 console.error("Error fetching tasks:", error);
             }
@@ -331,6 +338,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 title={task.name}
                 onSubmit={handleSubmitTask}
                 task={task}
+                status={status}
             />
         </div>
     );
