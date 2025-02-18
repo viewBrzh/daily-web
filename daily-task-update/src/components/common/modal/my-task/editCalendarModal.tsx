@@ -89,7 +89,7 @@ const EditCalendarModal: React.FC<EditCalendarModalProps> = ({ date, isOpen, onC
                                 <button className={stylesCalendar.btnDelete} onClick={() => deleteEvent(item.id)}><FontAwesomeIcon icon={faXmark} /></button>
                             </div>
                             <p>{item.description}</p>
-                            <div>[{item.location}]</div>
+                            <div className={stylesCalendar.location}>[{item.location}]</div>
                             <div>{item.created_by}</div>
                         </div>
                     )) : <div className={stylesCalendar.noEvent}> No Event</div>}

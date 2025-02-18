@@ -67,3 +67,7 @@
     text-align: center;
     min-height: 50px;
 }
+
+.location {
+    color: var(--primary)
+}
