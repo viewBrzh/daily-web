@@ -104,7 +104,7 @@ exports.addNewSprint = async (req, res) => {
 
 exports.updateTask = async (req, res) => {
     try {
-        const { taskId, name, description, resUserId, sprintId, projectId, statusId, priority } = req.body;
+        const { taskId, name, description, resUserId, sprintId, projectId, statusId, priority } = req.body.task;
         console.log( taskId, name, description, resUserId, sprintId, projectId, statusId, priority);
 
         const status = await Tasks.updateTask( taskId, name, description, resUserId, sprintId, projectId, statusId, priority);
