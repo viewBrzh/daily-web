@@ -117,6 +117,41 @@ exports.updateTask = async (req, res) => {
     }
 };
 
+exports.insertTask = async (req, res) => {
+    try {
+        const { name, description, resUserId, sprintId, projectId, statusId, priority } = req.body.task;
+
+        // Ensure required fields have valid values
+        if (!name) {
+            return res.status(400).json({ message: 'Task name is required' });
+        }
+
+        const newTask = {
+            name,
+            description: description.trim() || null,
+            resUserId: resUserId || null,
+            sprintId: sprintId || null, 
+            projectId: parseInt(projectId) || null, 
+            statusId: statusId || 1,
+            priority: priority || null
+        };
+
+        console.log(newTask)
+
+        const result = await Tasks.insertTask(newTask);
+        res.status(200).json({
+            message: 'Task inserted successfully',
+            taskId: result.insertId,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to insert task',
+            error: error.message,
+        });
+    }
+};
+
+
 const formatDate = (date) => {
     const formattedDate = new Date(date);
     return formattedDate.toISOString().split('T')[0]; // Extracts 'YYYY-MM-DD' format

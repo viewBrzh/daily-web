@@ -170,9 +170,9 @@ module.exports = class Tasks {
           priority = ?
         WHERE taskId = ?;
       `;
-      
+
       const values = [name, description, resUserId, sprintId, projectId, statusId, priority, taskId];
-  
+
       const [result] = await db.execute(query, values);
       return result;
     } catch (error) {
@@ -180,5 +180,38 @@ module.exports = class Tasks {
       throw error;
     }
   }
-  
+
+  static async insertTask(newTask) {
+    const query = `
+        INSERT INTO tasks (name, description, resUserId, sprintId, projectId, statusId, priority) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    if (!newTask.name) {
+      throw new Error('Task name is required');
+    }
+
+    const description = newTask.description && newTask.description.trim() ? newTask.description : null;
+
+    const values = [
+      newTask.name,
+      description,
+      newTask.resUserId || null,
+      newTask.sprintId || null,
+      newTask.projectId || null,
+      newTask.statusId || 1,
+      newTask.priority || null
+    ];
+
+    console.log("Inserting New Task Data:", values);
+
+    try {
+      const [result] = await db.execute(query, values);
+      return result;
+    } catch (error) {
+      console.error("Error inserting task:", error);
+      throw new Error('Failed to insert task');
+    }
+  }
+
 };

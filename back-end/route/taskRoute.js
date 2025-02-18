@@ -14,5 +14,6 @@ router.post('/getTaskStatus', TasksController.getTaskStatus);
 router.post('/updateTaskStatus', TasksController.updateTaskStatus);
 router.post('/addNewSprint', TasksController.addNewSprint);
 router.post('/updateTask', TasksController.updateTask);
+router.post('/insertTask', TasksController.insertTask);
 
 module.exports = router;
