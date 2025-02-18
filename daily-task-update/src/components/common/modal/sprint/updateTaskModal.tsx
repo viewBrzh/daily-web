@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '@/styles/modal/updateTask.module.css';
 import { Status, Task } from '../../types';
 import ProjectMemberDropdown from '../../drop-down/projectMemberDropdown';
@@ -10,12 +10,28 @@ interface ModalProps {
     onSubmit: (data: Task) => void;
     task: Task;
     status: Status[];
+    projectId?: any;
+    sprintId?: number;
 }
 
-const UpdateTaskModal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, task, status }) => {
+const UpdateTaskModal: React.FC<ModalProps> = ({
+    isOpen,
+    onClose,
+    title,
+    onSubmit,
+    task,
+    status,
+    projectId,
+    sprintId
+}) => {
     if (!isOpen) return null;
 
+    // Ensure formData updates when task changes
     const [formData, setFormData] = useState<Task>(task);
+
+    useEffect(() => {
+        setFormData(task);
+    }, [task]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -42,17 +58,21 @@ const UpdateTaskModal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmi
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSubmit(formData);
+        onSubmit({
+            ...formData,
+            projectId: projectId ?? formData.projectId,
+            sprintId: sprintId ?? formData.sprintId
+        });
     };
 
     return (
         <div className={styles.overlay}>
             <div className={styles.modalContainerTask}>
                 <div className={styles.name}>
-                    <strong>{task.taskId}</strong>
+                    <strong>{task.taskId !== 0 ? task.taskId : '#'}</strong>
                     <input
-                        type='text'
-                        name='name'
+                        type="text"
+                        name="name"
                         value={formData.name}
                         onChange={handleChange}
                         className={styles.nameInput}
@@ -74,7 +94,7 @@ const UpdateTaskModal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmi
                         <div className={styles.rightColumn}>
                             <label className={styles.label}>Assigned To</label>
                             <ProjectMemberDropdown
-                                projectId={task.projectId}
+                                projectId={projectId || task.projectId}
                                 onSelectUser={handleSelectUser}
                                 userId={task.resUserId}
                             />

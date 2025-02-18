@@ -1,7 +1,7 @@
 import styles from "@/styles/view-project/sprintBoard.module.css";
 import DropdownSelect from "@/components/common/drop-down/dropdownSelect";
 import { SprintData, SprintDataInsert, Status, Task, User } from "@/components/common/types";
-import { addNewSprint, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
+import { addNewSprint, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, insertTask, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
 import React, { useCallback, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
@@ -66,12 +66,17 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const [status, setStatus] = useState<Status[]>([initStatus]);
     const [draggingColumn, setDraggingColumn] = useState<string | null>(null);
     const [isUpdateTaskModalOpen, setIsUpdateTaskModalOpen] = useState(false);
+    const [isInsertTaskOpen, setIsInsertTaskOpen] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleNewSprint = () => {
         setIsModalOpen(true);
     };
+
+    const handleInsertTask = () => {
+        setIsInsertTaskOpen(true);
+    }
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -98,8 +103,19 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         } catch (error) {
             console.log(error)
         }
-
         setIsUpdateTaskModalOpen(false);
+    };
+
+    const handleSubmitAddTask = async (data: Task) => {
+        setNewTask(data);
+        try {
+            await insertTask(data);
+            const tasks = getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+            setTasks(await tasks);
+        } catch (error) {
+            console.log(error)
+        }
+        setIsInsertTaskOpen(false);
     };
 
     const onClickSprintSelect = async () => {
@@ -298,7 +314,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                     />
                 </div>
                 {selectedSprint &&
-                    <div className={styles.newButtonEnd}><button className={styles.btn}>+ New Task</button></div>
+                    <div className={styles.newButtonEnd}><button className={styles.btn} onClick={handleInsertTask}>+ New Task</button></div>
                 }
             </div>
             {selectedSprint &&
@@ -339,6 +355,16 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 onSubmit={handleSubmitTask}
                 task={task}
                 status={status}
+            />
+            <UpdateTaskModal
+                isOpen={isInsertTaskOpen}
+                onClose={handleCloseModal}
+                title={task.name}
+                onSubmit={handleSubmitAddTask}
+                task={task}
+                status={status}
+                projectId={projectId}
+                sprintId={selectedSprint.sprintId}
             />
         </div>
     );

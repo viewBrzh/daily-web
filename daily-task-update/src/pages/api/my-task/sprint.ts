@@ -74,3 +74,11 @@ export const updateTask = async (task: Task) => {
         console.error("Error updating task status:", error);
     }
 };
+
+export const insertTask = async (task: Task) => {
+    try {
+        await axios.post(`/api/tasks/insertTask`, { task });
+    } catch (error) {
+        console.error("Error inserting task:", error);
+    }
+};

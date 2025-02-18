@@ -4,7 +4,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(133, 133, 133, 0.5);
+    z-index: 10;
 }
 
 .modalContainer {
@@ -24,6 +25,8 @@
 .nameInput {
     width: 90%;
     padding: 8px;
+    border: 1px solid white;
+
 }
 
 .nameInput:hover {

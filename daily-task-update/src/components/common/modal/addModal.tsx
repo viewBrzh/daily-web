@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import styles from '@/styles/modal/modal.module.css';
+import styles from '@/styles/modal/updateTask.module.css';
 import { Field } from '../types';
 
 interface ModalProps {
