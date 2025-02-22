@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Overview from '@/views/view-project/overview';
 import ProjectCalendar from '@/views/view-project/projectCalendar';
-import { faArrowsTurnToDots, faBarsProgress, faCalendarDays, faChartPie } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsTurnToDots, faBarsProgress, faCalendarDays, faChartPie, faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProjectDashboard from '@/views/view-project/projectDashboard';
 import SprintBoard from '@/views/view-project/sprintBoard';
@@ -45,7 +45,7 @@ const initialPageData = {
   ],
 };
 
-const iconTabs = [faBarsProgress, faChartPie, faArrowsTurnToDots, faCalendarDays];
+const iconTabs = [faBarsProgress, faChartPie, faTachometerAlt, faCalendarDays];
 
 const tabs = ["Overview", "Dashboard", "Sprint", "Calendar"];
 

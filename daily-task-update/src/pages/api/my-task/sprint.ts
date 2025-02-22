@@ -82,3 +82,11 @@ export const insertTask = async (task: Task) => {
         console.error("Error inserting task:", error);
     }
 };
+
+export const deleteTask = async (taskId: number) => {
+    try {
+        await axios.post(`/api/tasks/deleteTask`, { taskId });
+    } catch (error) {
+        console.error("Error inserting task:", error);
+    }
+};

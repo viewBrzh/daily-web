@@ -1,12 +1,13 @@
 import styles from "@/styles/view-project/sprintBoard.module.css";
 import DropdownSelect from "@/components/common/drop-down/dropdownSelect";
-import { SprintData, SprintDataInsert, Status, Task, User } from "@/components/common/types";
-import { addNewSprint, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, insertTask, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
+import { initTaskData, SprintData, SprintDataInsert, Status, Task, User } from "@/components/common/types";
+import { addNewSprint, deleteTask, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, insertTask, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
 import React, { useCallback, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
 import Modal from "@/components/common/modal/addModal";
 import UpdateTaskModal from "@/components/common/modal/sprint/updateTaskModal";
+import AlertModal from "@/components/common/modal/alert/alertModal";
 
 interface CalendarProps {
     isSprint: string;
@@ -33,18 +34,6 @@ const initUserData: User = {
     empId: "",
 }
 
-const initTaskData: Task = {
-    taskId: 0,
-    name: "",
-    description: "",
-    statusId: 0,
-    resUserId: 0,
-    sprintId: 0,
-    projectId: 0,
-    resUserFullName: "",
-    priority: 1,
-}
-
 const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     if (isSprint !== "Sprint") return null;
 
@@ -67,6 +56,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const [draggingColumn, setDraggingColumn] = useState<string | null>(null);
     const [isUpdateTaskModalOpen, setIsUpdateTaskModalOpen] = useState(false);
     const [isInsertTaskOpen, setIsInsertTaskOpen] = useState(false);
+    const [isShowAlertDelete, setIsShowAlertDelete] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -81,6 +71,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setIsUpdateTaskModalOpen(false);
+        setIsInsertTaskOpen(false);
     };
 
     const handleSubmitSprint = (data: Record<string, string>) => {
@@ -121,17 +112,38 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const onClickSprintSelect = async () => {
         const dropdownSprint = await getSprintByProject(projectId);
         setSprintOption(dropdownSprint);
-    }
+    };
 
     const onClickPersonSelect = async () => {
         const personOptionRes = await getPersonFilterOption(selectedSprint?.sprintId);
         setPersonOption(personOptionRes);
-    }
+    };
 
     const handleEditTask = useCallback((task: Task) => {
         setTask(task);
         setIsUpdateTaskModalOpen(true);
     }, []);
+
+    const handleDeleteTaskAlert = (taskToDelete: Task) => {
+        setTask(taskToDelete);
+        setIsShowAlertDelete(true);
+    };
+
+    // Confirm handler
+    const handleDeleteTask = async () => {
+        console.log("Confirm to Deleting:", task);
+        try {
+            await deleteTask(task.taskId);
+
+            const tasks = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+            setTasks(tasks);
+
+            // Close modal after task deletion
+            setIsShowAlertDelete(false);
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+    };
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -333,6 +345,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                             onDragUpdate={handleDragUpdate}
                             onDragEnd={handleDragEnd}
                             onEdit={handleEditTask}
+                            onDelete={handleDeleteTaskAlert}
                         />
                     ))}
                 </div>
@@ -364,7 +377,16 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 task={task}
                 status={status}
                 projectId={projectId}
-                sprintId={selectedSprint.sprintId}
+                sprintId={selectedSprint?.sprintId}
+            />
+            <AlertModal
+                isShow={isShowAlertDelete}
+                title="Delete Task"
+                type="error"
+                description="This action is irreversible. Once deleted, the task cannot be recovered. Do you wish to proceed?"
+                onClose={() => setIsShowAlertDelete(false)}
+                onConfirm={handleDeleteTask}
+                isCancelable={true}
             />
         </div>
     );

@@ -130,3 +130,23 @@ export interface Field {
   placeholder?: string;
   required?: boolean;
 }
+
+export interface SelectModalProps {
+  show: boolean;
+  position: { x: number; y: number };
+  onClose: () => void;
+  onUpdate: () => void;
+  onDelete: () => void;
+}
+
+export const initTaskData: Task = {
+  taskId: 0,
+  name: "",
+  description: "",
+  statusId: 0,
+  resUserId: 0,
+  sprintId: 0,
+  projectId: 0,
+  resUserFullName: "",
+  priority: 1,
+}

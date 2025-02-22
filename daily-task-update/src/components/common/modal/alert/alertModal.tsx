@@ -7,11 +7,12 @@ interface AlertModalProps {
   description: string;
   type: string;
   onClose: () => void;
+  onConfirm: () => void;
+  isCancelable: boolean;
 }
 
-const AlertModal: React.FC<AlertModalProps> = ({ isShow, title, description, type , onClose}) => {
+const AlertModal: React.FC<AlertModalProps> = ({ isShow, title, description, type, onClose, isCancelable, onConfirm }) => {
   if (!isShow) return null;
-
 
   return (
     <div className={styles.overlay}>
@@ -20,7 +21,10 @@ const AlertModal: React.FC<AlertModalProps> = ({ isShow, title, description, typ
           {title}
         </div>
         <p className={styles.description}>{description}</p>
-        <button onClick={onClose} className='btn'>Confirm</button>
+        <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
+          {isCancelable && <button onClick={onClose} className='cancel'>Cancel</button>}
+          <button onClick={onConfirm} className='btn'>Confirm</button>
+        </div>
       </div>
     </div>
   );
