@@ -41,13 +41,13 @@ const AddCalendarModal: React.FC<AddCalendarModalProps> = ({ date, isOpen, onClo
             <div className={styles.modalContent}>
                 <h2>Add Calendar Event</h2>
 
-                <label>Title:</label>
+                <label>Title</label>
                 <input type="text" name="title" value={formData.title} onChange={handleChange} />
 
-                <label>Description:</label>
+                <label>Description</label>
                 <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
 
-                <label>Location:</label>
+                <label>Location</label>
                 <input type="text" name="location" value={formData.location} onChange={handleChange} />
 
                 <div className={styles.buttonGroup}>

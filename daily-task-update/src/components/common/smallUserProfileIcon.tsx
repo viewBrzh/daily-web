@@ -6,7 +6,7 @@ interface UserProfileIconProps {
 
 // Function to get initials from full name
 function getUserInitials(fullName: string): string {
-    const names = fullName.split(' ');
+    const names = fullName?.split(' ');
     const firstName = names[0] || '';
     const lastName = names[names.length - 2] || '';
 
