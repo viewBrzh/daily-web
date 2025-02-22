@@ -266,13 +266,13 @@
 }
 
 .modalContent input {
-  border: 1px solid var(--darkerGreyText);
+  border: 1px solid #ccc;
   border-radius: 4px;
   padding: 6px;
 }
 
 .modalContent textarea {
-  border: 1px solid var(--primaryText);
+  border: 1px solid #ccc;
   border-radius: 4px;
   padding: 6px;
   height: 160px;

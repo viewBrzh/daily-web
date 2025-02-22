@@ -1,0 +1,40 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2),
+    3px 3px 8px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionsList {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 8px;
+}
+
+.optionItem {
+  padding: 8px 16px;
+  background-color: #fffefe;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.optionItem:hover {
+  background-color: #f1f1f1;
+}
