@@ -151,6 +151,19 @@ exports.insertTask = async (req, res) => {
     }
 };
 
+exports.deleteTask = async (req, res) => {
+    try {
+        const taskId= req.body.taskId;
+        const status = await Tasks.deleteTask(taskId);
+        res.status(200).json(status);
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to delete task',
+            error: error.message,
+        });
+    }
+};
+
 
 const formatDate = (date) => {
     const formattedDate = new Date(date);

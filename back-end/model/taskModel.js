@@ -71,6 +71,10 @@ module.exports = class Tasks {
 
   static async getPersonFilterOption(sprintId) {
     try {
+      // If sprintId is null or undefined, set it to null explicitly
+      if (sprintId == null) {
+        sprintId = null; // Ensure that it's null instead of undefined
+      }
 
       const personFilterQuery = `
             SELECT DISTINCT u.userId, u.username, u.fullName, u.empId
@@ -81,11 +85,15 @@ module.exports = class Tasks {
 
       const [personFilter] = await db.execute(personFilterQuery, [sprintId]);
 
-      return personFilter;
+      // Return an empty array if no records are found
+      return personFilter.length > 0 ? personFilter : [];
     } catch (err) {
+      console.error("Error fetching person filter options:", err);
       throw err;
     }
   }
+
+
 
   static async getTask(sprintId, userId) {
     try {
@@ -211,6 +219,24 @@ module.exports = class Tasks {
     } catch (error) {
       console.error("Error inserting task:", error);
       throw new Error('Failed to insert task');
+    }
+  }
+
+  static async deleteTask(taskId) {
+    try {
+      // Use the correct DELETE query format
+      const query = `
+            DELETE FROM tasks
+            WHERE taskId = ?;
+        `;
+
+      const values = [taskId];
+
+      const [result] = await db.execute(query, values);
+      return result;
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      throw error;
     }
   }
 

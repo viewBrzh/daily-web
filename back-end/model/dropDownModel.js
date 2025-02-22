@@ -55,19 +55,26 @@ module.exports = class Dropdown {
 
     static async getTaskFilterDropdown(sprintId) {
         try {
+            // If sprintId is null or undefined, return an empty array immediately
+            if (!sprintId) {
+                return [];
+            }
+    
             const query = `
                 SELECT DISTINCT u.userId, u.username, u.fullName, u.empId
                 FROM users u
                 JOIN tasks t ON u.userId = t.resUserId
                 WHERE t.sprintId = ?;
             `;
-
-            const [rows] = await db.execute(query, [sprintId]); // Using MySQL2
-            console.log(rows)
-            return rows;
+    
+            const [rows] = await db.execute(query, [sprintId]);
+    
+            console.log(rows);
+            return rows.length > 0 ? rows : [];
         } catch (err) {
+            console.error("Error fetching task filter dropdown:", err);
             throw err;
         }
-    }
+    }    
 
 };
