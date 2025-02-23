@@ -59,6 +59,8 @@ const ViewProjectPage = () => {
   const [tasks, setTasks] = useState<Task[]>(pageData.tasks);
   const [activeTab, setActiveTab] = useState("Overview");
 
+  const [authenticated, setAuthenticated] = useState(false);
+
   useEffect(() => {
     if (!router.isReady || !projectId) return;
 
@@ -81,13 +83,27 @@ const ViewProjectPage = () => {
     setTasks(pageData.tasks);
   }, [pageData]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      setAuthenticated(true);
+    }
+  }, []);
+
+  // ✅ Instead of returning early, show loading conditionally
+  if (authenticated === null) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <Layout>
       <PageContainer title={project.name}>
         <div className={styles.tabBar}>
           {tabs.map((tab, index) => (
-            <div 
-              key={tab} 
+            <div
+              key={tab}
               className={`${styles.tab} ${activeTab === tab ? styles.active : ""}`}
               onClick={() => setActiveTab(tab)}
             >

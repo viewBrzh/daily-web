@@ -9,6 +9,8 @@ import { Project } from "@/components/common/types";
 import { fetchProjects } from "../api/my-task/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from 'next/router';
+
 
 const MyTasks: React.FC = () => {
   const itemsPerPage = 6;
@@ -20,6 +22,10 @@ const MyTasks: React.FC = () => {
   const [sort, setSort] = useState('');
   const [projects, setProjects] = useState<Project[]>([]);
   const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
+  const router = useRouter();
+
+  const [authenticated, setAuthenticated] = useState(false);
+
 
   const handleAddProjectClick = () => {
     setIsModalOpen(true);
@@ -44,16 +50,15 @@ const MyTasks: React.FC = () => {
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       setDebouncedSearchValue(searchValue);
-    }, 500); // 500ms delay
+    }, 500);
 
-    return () => clearTimeout(debounceTimer); // Cleanup the timer
+    return () => clearTimeout(debounceTimer);
   }, [searchValue]);
 
-  // Fetch projects when debouncedSearchValue changes
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const data = await fetchProjects(1, debouncedSearchValue, currentPage, sort); 
+        const data = await fetchProjects(1, debouncedSearchValue, currentPage, sort);
         const projectData = data.projects;
         setProjects(projectData);
         setTotalPage(data.totalPage);
@@ -74,6 +79,20 @@ const MyTasks: React.FC = () => {
 
   const startItem = (currentPage - 1) * itemsPerPage;
   const endItem = startItem + projects?.length;
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      setAuthenticated(true);
+    }
+  }, []);
+
+  // ✅ Instead of returning early, show loading conditionally
+  if (authenticated === null) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Layout>
