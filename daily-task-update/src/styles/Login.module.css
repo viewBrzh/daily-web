@@ -1,0 +1,305 @@
+/* Page styling */
+.page {
+    background-color: #f5f5f5;
+    height: 100vh;
+    padding: 50px;
+    position: relative;
+    overflow: hidden; /* Prevent overflow outside the page */
+}
+
+/* Create a triangle shape */
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 400px solid transparent;
+    border-right: 400px solid transparent;
+    border-bottom: 800px solid var(--primaryTextLighter); /* The color of your triangle */
+    position: absolute;
+    bottom: -30%; /* Adjust this to position triangles vertically on screen */
+    animation: moveTriangle 15s linear infinite; /* Animation to move the triangle */
+    z-index: 10;
+    left: -660px;
+}
+
+.triangleBig {
+    width: 0;
+    height: 0;
+    border-left: 500px solid transparent; /* Increased size */
+    border-right: 500px solid transparent; /* Increased size */
+    border-bottom: 1000px solid var(--primaryTextEvenLighter); /* Larger triangle */
+    position: absolute;
+    bottom: -30%; /* Adjust to position triangles vertically on screen */
+    animation: moveTriangleBig 30s linear infinite; /* Slower animation */
+    z-index: 1;
+    left: -660px;
+}
+
+/* Keyframe animation for the triangle moving from left to right */
+@keyframes moveTriangle {
+    0% {
+        transform: translateX(-100vw); /* Start offscreen to the left */
+    }
+    100% {
+        transform: translateX(140vw); /* Move to the right offscreen */
+    }
+}
+
+@keyframes moveTriangleBig {
+    0% {
+        transform: translateX(-100vw); /* Start offscreen to the left */
+    }
+    100% {
+        transform: translateX(140vw); /* Move to the right offscreen */
+    }
+}
+
+/* Multiple triangles with different sizes and timings */
+.triangle:nth-child(1) {
+    border-bottom-width: 600px; /* Larger triangle */
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.triangle:nth-child(2) {
+    border-bottom-width: 520px; /* Smaller triangle */
+    animation-delay: 2s;
+    animation-duration: 16s;
+}
+
+.triangle:nth-child(3) {
+    border-bottom-width: 300px; /* Medium triangle */
+    animation-delay: 4s;
+    animation-duration: 14s;
+}
+
+.triangle:nth-child(4) {
+    border-bottom-width: 500px; /* Smaller triangle */
+    animation-delay: 6s;
+    animation-duration: 12s;
+}
+
+.triangle:nth-child(5) {
+    border-bottom-width: 450px; /* Larger triangle */
+    animation-delay: 8s;
+    animation-duration: 20s;
+}
+
+.triangleBig:nth-child(1) {
+    border-bottom-width: 750px; /* Bigger triangle */
+    animation-delay: 1s;
+    animation-duration: 32s; /* Slower */
+}
+
+.triangleBig:nth-child(2) {
+    border-bottom-width: 680px; /* Bigger triangle */
+    animation-delay: 3s;
+    animation-duration: 34s; /* Slower */
+}
+
+.triangleBig:nth-child(3) {
+    border-bottom-width: 600px; /* Larger triangle */
+    animation-delay: 5s;
+    animation-duration: 36s; /* Slower */
+}
+
+.triangleBig:nth-child(4) {
+    border-bottom-width: 750px; /* Larger triangle */
+    animation-delay: 7s;
+    animation-duration: 38s; /* Slower */
+}
+
+.triangleBig:nth-child(5) {
+    border-bottom-width: 700px; /* Largest triangle */
+    animation-delay: 9s;
+    animation-duration: 40s; /* Slower */
+}
+
+
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    height: 75vh;
+    align-items: center;
+    background-color: #f5f5f5;
+    flex-wrap: wrap;
+}
+
+.headers {
+    background-color: #f5f5f5;
+    z-index: 10;
+}
+
+.logo img {
+    width: auto;
+    height: 62px;
+    background-color: none;
+    padding-left: 10%;
+    z-index: 100;
+}
+
+
+/* Promo text container styling */
+.promoTextContainer {
+    width: 50%;
+    margin: auto;
+}
+
+/* Styling for the promo text */
+.promoText strong {
+    font-size: 1.8rem;
+    z-index: 100;
+}
+
+.promoText {
+    flex: 1;
+    padding: 20px;
+    max-width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto 20%;
+    z-index: 100;
+}
+
+/* Styling for the promo heading */
+.promoText h2 {
+    font-size: 1rem;
+    color: var(--primary);
+    z-index: 100;
+}
+
+/* Form container styling */
+.formContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin-right: 20px;
+    margin: 10%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+/* Title styling */
+.title {
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+/* Input field styling */
+.input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Button styling */
+.button {
+    padding: 10px;
+    background-color: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: var(--secondary);
+}
+
+/* Error message styling */
+.error {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Media query for small screens (phones) */
+@media (max-width: 768px) {
+
+    /* Adjust the container to stack items in two rows */
+    .container {
+        flex-direction: column;
+        /* Stack elements vertically */
+        justify-content: center;
+        overflow: auto;
+    }
+
+    /* Adjust the promoText styling for mobile */
+    .promoTextContainer {
+        width: 100%;
+        /* Take full width */
+        margin: 0 auto;
+        /* Remove margin */
+        justify-items: center;
+    }
+
+    .promoText {
+        width: 100%;
+        /* Take full width */
+        margin: 0;
+        /* Remove margin */
+        padding: 15px;
+        /* Adjust padding */
+        text-align: center;
+    }
+
+    /* Adjust the form container to be full width on small screens */
+    .formContainer {
+        width: 90%;
+        /* Use a percentage that fits well */
+        max-width: 350px;
+        /* Set a maximum width */
+        margin: 5%;
+        /* Adjust the margin to prevent overflow */
+        padding: 15px;
+        /* Adjust padding to ensure form fits */
+    }
+
+    /* Adjust font size for better readability on small screens */
+    .promoText h2 {
+        font-size: 1.2rem;
+        /* Increase font size */
+    }
+
+    .title {
+        font-size: 1.5rem;
+        /* Adjust title font size */
+    }
+
+    .input,
+    .button {
+        font-size: 14px;
+        /* Adjust font size of input and button */
+    }
+}
+
+/* Additional media query for very small screens */
+@media (max-width: 410px) {
+
+    /* Ensure the form container doesn't disappear on very small screens */
+    .formContainer {}
+
+    /* Adjust input and button size for smaller screens */
+    .input,
+    .button {
+        font-size: 12px;
+        /* Smaller font size for very small screens */
+    }
+
+    .title {
+        font-size: 1.3rem;
+        /* Adjust title size */
+    }
+}

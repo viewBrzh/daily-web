@@ -52,3 +52,8 @@
   cursor: pointer;
   border-radius: 5px;
 }
+
+.signOutBtn:hover {
+  background: #0070f3;
+  color: white;
+}

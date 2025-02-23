@@ -32,8 +32,8 @@ const BigUserProfileIcon: React.FC<UserProfileIconProps> = ({ fullName }) => {
     const backgroundColor = getBackgroundColor(initials);
 
     const bigIconStyle: React.CSSProperties = {
-        width: '50px',
-        height: '50px',
+        width: '42px',
+        height: '42px',
         borderRadius: '50%',
         display: 'flex',
         justifyContent: 'center',
