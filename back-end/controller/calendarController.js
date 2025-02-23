@@ -1,4 +1,4 @@
-const CalendarModal = require("../model/calendarModal");
+const CalendarModal = require("../model/calendarModel");
 
 exports.getAllCalendar = async (req, res) => {
     try {

@@ -1,4 +1,4 @@
-const DashboardModal = require("../model/dashboardModal");
+const DashboardModal = require("../model/dashboardModel");
 
 exports.getProjectDashboard = async (req, res) => {
     try {
