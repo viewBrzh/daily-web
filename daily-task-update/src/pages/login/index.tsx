@@ -71,6 +71,8 @@ const Login = () => {
                             className={styles.input}
                         />
                         <button onClick={handleLogin} className={styles.button}>Login</button>
+                        <span>Don't have an account? <a href="/register" className={styles.link}>Sign Up</a></span>
+
                         {error && <p className={styles.error}><small>{error}</small></p>}
                     </div>
                 </div>

@@ -1,5 +1,9 @@
 /* Page styling */
 .page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color: #f5f5f5;
     height: 100vh;
     padding: 50px;
@@ -17,7 +21,7 @@
     position: absolute;
     bottom: -30%; /* Adjust this to position triangles vertically on screen */
     animation: moveTriangle 15s linear infinite; /* Animation to move the triangle */
-    z-index: 10;
+    z-index: 2;
     left: -660px;
 }
 
@@ -116,50 +120,34 @@
 
 
 
-
-.container {
-    display: flex;
-    justify-content: center;
-    height: 75vh;
-    align-items: center;
-    background-color: #f5f5f5;
-    flex-wrap: wrap;
-}
-
 .headers {
     background-color: #f5f5f5;
-    z-index: 10;
+    z-index: 100;
 }
 
 .logo img {
     width: auto;
-    height: 62px;
+    height: 100px;
     background-color: none;
     padding-left: 10%;
     z-index: 100;
 }
 
-
-/* Promo text container styling */
 .promoTextContainer {
-    width: 50%;
+    width: 326px;
     margin: auto;
-}
-
-/* Styling for the promo text */
-.promoText strong {
-    font-size: 1.8rem;
     z-index: 100;
+    height: 326px;
 }
 
-.promoText {
+.promoImg {
     flex: 1;
+    width: 326px;
     padding: 20px;
-    max-width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: auto 20%;
+    margin: auto;
     z-index: 100;
 }
 
@@ -170,32 +158,33 @@
     z-index: 100;
 }
 
-/* Form container styling */
-.formContainer {
-    flex: 1;
+.ResformContainer {
+    flex: 2;
     display: flex;
-    flex-direction: column;
-    width: 300px;
-    margin-right: 20px;
-    margin: 10%;
-    padding: 20px;
+    width: fit-content;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    flex-direction: row;
+    overflow: auto;
+    width: 806px;
+    padding: 40px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 100;
 }
 
-.ResformContainer {
-    flex: 1;
+.fCon {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+}
+
+.formC {
+    width: 400px;
     display: flex;
     flex-direction: column;
-    width: 450px;
-    margin-right: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
 }
 
 .name {
