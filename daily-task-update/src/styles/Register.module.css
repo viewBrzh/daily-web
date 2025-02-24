@@ -6,7 +6,7 @@
     align-items: center;
     background-color: #f5f5f5;
     height: 100vh;
-    padding: 50px;
+    padding: 40px;
     position: relative;
     overflow: hidden; /* Prevent overflow outside the page */
 }
@@ -118,8 +118,6 @@
     animation-duration: 40s; /* Slower */
 }
 
-
-
 .headers {
     background-color: #f5f5f5;
     z-index: 100;
@@ -129,7 +127,6 @@
     width: auto;
     height: 100px;
     background-color: none;
-    padding-left: 10%;
     z-index: 100;
 }
 
@@ -166,6 +163,7 @@
     align-items: center;
     height: 60vh;
     flex-direction: row;
+    gap: 5%;
     overflow: auto;
     width: 806px;
     padding: 40px;
@@ -306,9 +304,6 @@
 
 /* Additional media query for very small screens */
 @media (max-width: 410px) {
-
-    /* Ensure the form container doesn't disappear on very small screens */
-    .formContainer {}
 
     /* Adjust input and button size for smaller screens */
     .input,

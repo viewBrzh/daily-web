@@ -55,7 +55,7 @@ const Login = () => {
                         </div>
                     </div>
                     <div className={styles.formContainer}>
-                        <h2 className={styles.title}>Login</h2>
+                        <h2 className={styles.title}>Welcome back to Daily!</h2>
                         <input
                             type="text"
                             placeholder="Username"
@@ -70,7 +70,8 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className={styles.input}
                         />
-                        <button onClick={handleLogin} className={styles.button}>Login</button>
+                        <a href="" className={styles.linkGrey}>Reset password</a>
+                        <button onClick={handleLogin} className={styles.button}>Sign In</button>
                         <span>Don't have an account? <a href="/register" className={styles.link}>Sign Up</a></span>
 
                         {error && <p className={styles.error}><small>{error}</small></p>}
