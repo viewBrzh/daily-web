@@ -41,10 +41,6 @@ const Login = () => {
                 <div className={styles.triangle} />
                 <div className={styles.triangle} />
                 <div className={styles.triangleBig} />
-                <div className={styles.triangleBig} />
-                <div className={styles.triangleBig} />
-                <div className={styles.triangleBig} />
-                <div className={styles.triangleBig} />
                 
                 <div className={styles.logo}><img src="/logo/logo-name.png" alt="Logo" /></div>
 
