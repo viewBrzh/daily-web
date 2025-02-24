@@ -60,7 +60,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleNewSprint = () => {
+    const handleNewSprint = async () => {
         setIsModalOpen(true);
     };
 
@@ -372,9 +372,9 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
             <UpdateTaskModal
                 isOpen={isInsertTaskOpen}
                 onClose={handleCloseModal}
-                title={task.name}
+                title={initTaskData.name}
                 onSubmit={handleSubmitAddTask}
-                task={task}
+                task={initTaskData}
                 status={status}
                 projectId={projectId}
                 sprintId={selectedSprint?.sprintId}
