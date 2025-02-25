@@ -67,6 +67,14 @@ export const addNewSprint = async (newSprint: SprintDataInsert) => {
     }
 };
 
+export const updateSprint = async (newSprint: SprintData) => {
+    try {
+        await axios.post(`/api/tasks/updateSprint`, { newSprint });
+    } catch (error) {
+        console.error("Error updating task status:", error);
+    }
+};
+
 export const updateTask = async (task: Task) => {
     try {
         await axios.post(`/api/tasks/updateTask`, { task });

@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '@/styles/modal/updateTask.module.css';
 import { Field } from '../types';
 
@@ -9,14 +9,25 @@ interface ModalProps {
     title: string;
     fields: Field[];
     onSubmit: (data: Record<string, string>) => void;
+    init?: Record<string, string>; // Initial values for updating sprint
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, fields, onSubmit }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, fields, onSubmit, init }) => {
     if (!isOpen) return null;
 
-    const [formData, setFormData] = useState<Record<string, string>>(
-        fields.reduce((acc, field) => ({ ...acc, [field.name]: '' }), {})
-    );
+    const getCurrentDate = () => new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+
+    const [formData, setFormData] = useState<Record<string, string>>({});
+
+    // Update formData when init changes (e.g., new sprint selected)
+    useEffect(() => {
+        setFormData(
+            fields.reduce((acc, field) => ({
+                ...acc,
+                [field.name]: init?.[field.name] || (field.type === 'date' ? getCurrentDate() : '')
+            }), {})
+        );
+    }, [init, fields]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -48,17 +59,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, fields, onSubmit 
                         </div>
                     ))}
                     <div className={styles.buttonGroup}>
-                        <button
-                            type="button"
-                            className='cancel'
-                            onClick={onClose}
-                        >
+                        <button type="button" className='cancel' onClick={onClose}>
                             Cancel
                         </button>
-                        <button
-                            type="submit"
-                            className='btn'
-                        >
+                        <button type="submit" className='btn'>
                             Submit
                         </button>
                     </div>

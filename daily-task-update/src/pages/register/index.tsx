@@ -46,8 +46,8 @@ const Register = () => {
             <div className={styles.triangle} />
             <div className={styles.triangle} />
             <div className={styles.triangle} />
-
-            <div className={styles.logo}><img src="/logo/logo-name.png" alt="Logo" /></div>
+            <div className={styles.container}>
+                <div className={styles.logo}><img src="/logo/logo-name.png" alt="Logo" /></div>
                 <div className={styles.ResformContainer}>
                     <div className={styles.promoTextContainer}>
                         <div className={styles.promoImg}>
@@ -107,6 +107,7 @@ const Register = () => {
                             {success && <p className={styles.success}>{success}</p>}
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     );

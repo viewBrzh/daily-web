@@ -5,24 +5,28 @@ import BigUserProfileIcon from "../common/bigUserProfileIcon";
 import { useRouter } from "next/router";
 
 const Header: React.FC = () => {
-  const fullName = localStorage.getItem("fullName");
   const router = useRouter();
   const [authenticated, setAuthenticated] = useState(false);
-
+  const [fullName, setFullName] = useState<string | null>(null);
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("fullName");
-
-    window.location.href = "/login";
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("fullName");
+    }
+    router.push("/login");
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      setAuthenticated(true);
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      const name = localStorage.getItem("fullName");
+      if (!token) {
+        router.push("/login");
+      } else {
+        setAuthenticated(true);
+        setFullName(name); // Set fullName only when in client-side
+      }
     }
   }, []);
 
@@ -34,13 +38,14 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
-        <Link href="/"><img src="/logo/logo-name.png" className={styles.logo}></img></Link>
+        <Link href="/"><img src="/logo/logo-name.png" className={styles.logo} alt="Logo" /></Link>
       </div>
       <nav>
+        {/* Navigation links can go here */}
       </nav>
       <div className={styles.userInfo}>
         <span>{fullName}</span>
-        <BigUserProfileIcon fullName={fullName ? fullName : ""}/>
+        <BigUserProfileIcon fullName={fullName ? fullName : ""} />
 
         <button className={styles.signOutBtn} onClick={logout}>Sign Out</button>
       </div>

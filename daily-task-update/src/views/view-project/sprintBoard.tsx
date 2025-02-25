@@ -1,7 +1,7 @@
 import styles from "@/styles/view-project/sprintBoard.module.css";
 import DropdownSelect from "@/components/common/drop-down/dropdownSelect";
-import { initTaskData, SprintData, SprintDataInsert, Status, Task, User } from "@/components/common/types";
-import { addNewSprint, deleteTask, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, insertTask, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
+import { initTaskData, SprintData, SprintDataInsert, sprintToRecord, Status, Task, User } from "@/components/common/types";
+import { addNewSprint, deleteTask, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, insertTask, updateSprint, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
 import React, { useCallback, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
@@ -59,9 +59,14 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const [isShowAlertDelete, setIsShowAlertDelete] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
 
     const handleNewSprint = async () => {
         setIsModalOpen(true);
+    };
+
+    const handleUpdateSprint = async () => {
+        setIsModalUpdateOpen(true);
     };
 
     const handleInsertTask = () => {
@@ -72,6 +77,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         setIsModalOpen(false);
         setIsUpdateTaskModalOpen(false);
         setIsInsertTaskOpen(false);
+        setIsModalUpdateOpen(false);
     };
 
     const handleSubmitSprint = (data: Record<string, string>) => {
@@ -83,6 +89,18 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         };
         addNewSprint(formattedData);
         setIsModalOpen(false);
+    };
+
+    const handleUpdateSprintSubmit = (data: Record<string, string>) => {
+        const formattedData: SprintData = {
+            sprintId: selectedSprint?.sprintId,
+            sprintName: data.sprintName,
+            start_date: new Date(data.start_date),
+            end_date: new Date(data.end_date),
+            projectId: projectId,
+        };
+        updateSprint(formattedData);
+        setIsModalUpdateOpen(false);
     };
 
     const handleSubmitTask = async (data: Task) => {
@@ -216,7 +234,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
     const sprintOptions = [
         ...sprintOption.map((sprint) => ({
-            value: sprint.sprintId.toString(),
+            value: sprint?.sprintId?.toString(),
             label: sprint.sprintName,
         })),
 
@@ -227,7 +245,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         if (selectedValue === "newSprint") {
             handleNewSprint();
         } else {
-            const selected = sprintOption.find((sprint) => sprint.sprintId.toString() === selectedValue);
+            const selected = sprintOption.find((sprint) => sprint?.sprintId?.toString() === selectedValue);
             if (selected) {
                 setSelectedSprint(selected);
             }
@@ -254,6 +272,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         return new Intl.DateTimeFormat('en-US', {
             month: 'long',
             day: 'numeric',
+            timeZone: 'UTC'
         }).format(parsedDate);
     };
 
@@ -313,7 +332,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                     {selectedSprint ? <DropdownSelect
                         onClick={onClickSprintSelect}
                         options={sprintOptions}
-                        value={selectedSprint?.sprintId.toString()}
+                        value={selectedSprint?.sprintId?.toString()}
                         onChange={handleSelectSprintChange}
                     /> : <button className={styles.btn} onClick={handleNewSprint}>+ New Sprint</button>}
 
@@ -330,7 +349,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 }
             </div>
             {selectedSprint &&
-                <div className={styles.manDay}>
+                <div className={styles.manDay} onClick={handleUpdateSprint} style={{cursor: "pointer"}}>
                     {formatDate(selectedSprint?.start_date.toString())} - {formatDate(selectedSprint?.end_date.toString())}| ({getDaysCount(selectedSprint?.start_date.toString(), selectedSprint?.end_date.toString())} work days)
                 </div>
             }
@@ -360,6 +379,18 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                     { name: "end_date", label: "End Date", type: "date", required: true }
                 ]}
                 onSubmit={handleSubmitSprint}
+            />
+            <Modal
+                isOpen={isModalUpdateOpen}
+                onClose={handleCloseModal}
+                title={"Update " + selectedSprint?.sprintName}
+                fields={[
+                    { name: "sprintName", label: "Sprint Name", required: true },
+                    { name: "start_date", label: "Start Date", type: "date", required: true },
+                    { name: "end_date", label: "End Date", type: "date", required: true }
+                ]}
+                onSubmit={handleUpdateSprintSubmit}
+                init={sprintToRecord(selectedSprint)}
             />
             <UpdateTaskModal
                 isOpen={isUpdateTaskModalOpen}

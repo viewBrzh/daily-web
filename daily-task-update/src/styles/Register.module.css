@@ -155,6 +155,16 @@
     z-index: 100;
 }
 
+.container {
+    overflow: auto;
+    width: 806px;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
 .ResformContainer {
     flex: 2;
     display: flex;
@@ -164,13 +174,7 @@
     height: 60vh;
     flex-direction: row;
     gap: 5%;
-    overflow: auto;
-    width: 806px;
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    
 }
 
 .fCon {
@@ -240,80 +244,4 @@
     color: red;
     text-align: center;
     margin-top: 10px;
-}
-
-/* Media query for small screens (phones) */
-@media (max-width: 768px) {
-
-    /* Adjust the container to stack items in two rows */
-    .container {
-        flex-direction: column;
-        /* Stack elements vertically */
-        justify-content: center;
-        overflow: auto;
-    }
-
-    /* Adjust the promoText styling for mobile */
-    .promoTextContainer {
-        width: 100%;
-        /* Take full width */
-        margin: 0 auto;
-        /* Remove margin */
-        justify-items: center;
-    }
-
-    .promoText {
-        width: 100%;
-        /* Take full width */
-        margin: 0;
-        /* Remove margin */
-        padding: 15px;
-        /* Adjust padding */
-        text-align: center;
-    }
-
-    /* Adjust the form container to be full width on small screens */
-    .formContainer {
-        width: 90%;
-        /* Use a percentage that fits well */
-        max-width: 350px;
-        /* Set a maximum width */
-        margin: 5%;
-        /* Adjust the margin to prevent overflow */
-        padding: 15px;
-        /* Adjust padding to ensure form fits */
-    }
-
-    /* Adjust font size for better readability on small screens */
-    .promoText h2 {
-        font-size: 1.2rem;
-        /* Increase font size */
-    }
-
-    .title {
-        font-size: 1.5rem;
-        /* Adjust title font size */
-    }
-
-    .input,
-    .button {
-        font-size: 14px;
-        /* Adjust font size of input and button */
-    }
-}
-
-/* Additional media query for very small screens */
-@media (max-width: 410px) {
-
-    /* Adjust input and button size for smaller screens */
-    .input,
-    .button {
-        font-size: 12px;
-        /* Smaller font size for very small screens */
-    }
-
-    .title {
-        font-size: 1.3rem;
-        /* Adjust title size */
-    }
 }

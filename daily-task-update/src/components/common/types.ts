@@ -108,8 +108,23 @@ export interface SprintData {
   start_date: Date;
   end_date: Date;
   sprintName: string;
-  projectId: number;
+  projectId: any;
 }
+
+export const sprintToRecord = (sprint: SprintData): Record<string, string> => {
+  const formatDate = (date: Date | string) =>
+    date instanceof Date
+      ? date.toISOString().split('T')[0] // Convert Date to 'YYYY-MM-DD'
+      : new Date(date).toISOString().split('T')[0]; // Convert string to Date first
+
+  return {
+    sprintId: sprint?.sprintId?.toString(),
+    start_date: sprint ? formatDate(sprint?.start_date) : '',
+    end_date: sprint ? formatDate(sprint?.end_date) : '',
+    sprintName: sprint?.sprintName,
+    projectId: sprint?.projectId?.toString(),
+  };
+};
 
 export interface SprintDataInsert {
   start_date: Date;
