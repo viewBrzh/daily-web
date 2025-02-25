@@ -2,13 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const serverless = require('serverless-http');
-const ProjectRoutes = require('../routes/projectRoute');
-const TasksRoutes = require('../routes/taskRoute');
-const dropDownUserRoutes = require('../routes/dropDownRoute');
-const memberRoute = require('../routes/memberRoute');
-const calendarRoute = require('../routes/calendarRoute');
-const dashboardRoute = require('../routes/dashboardRoute');
-const authenRoute = require('../routes/authenRoute');
+const ProjectRoutes = require('../route/projectRoute');
+const TasksRoutes = require('../route/taskRoute');
+const dropDownUserRoutes = require('../route/dropDownRoute');
+const memberRoute = require('../route/memberRoute');
+const calendarRoute = require('../route/calendarRoute');
+const dashboardRoute = require('../route/dashboardRoute');
+const authenRoute = require('../route/authenRoute');
 
 const app = express();
 
