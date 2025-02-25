@@ -1,4 +1,5 @@
 import { Droppable, Draggable } from "@hello-pangea/dnd";
+import { DropResult } from "@hello-pangea/dnd"; // Assuming DropResult is exported from the library
 import { Task, Status, initTaskData } from "./types";
 import SmallUserProfileIcon from "./smallUserProfileIcon";
 import styles from "@/styles/view-project/sprintBoard.module.css";
@@ -11,8 +12,8 @@ interface DragDropTaskColumnProps {
     statusItem: Status;
     tasks: Task[];
     draggingColumn: string | null;
-    onDragUpdate: (update: any) => void;
-    onDragEnd: (result: any) => void;
+    onDragUpdate: (event: React.DragEvent<HTMLDivElement>) => void;
+    onDragEnd: (result: DropResult) => void; // Use DropResult instead of any
     onEdit: (Task: Task) => void;
     onDelete: (Task: Task) => void; // Pass taskId for deletion
 }
@@ -30,7 +31,7 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [clickedTask, setClickedTask] = useState<Task>(initTaskData);
 
-    const handleTaskClick = (e: React.MouseEvent, task: Task) => {
+    const handleTaskClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, task: Task) => {
         if (!isShowModal) {
             setPosition({
                 x: e.clientX,
