@@ -10,13 +10,13 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 
-const ProjectRoutes = require('../route/projectRoute');
-const TasksRoutes = require('../route/taskRoute');
-const dropDownUserRoutes = require('../route/dropDownRoute');
-const memberRoute = require('../route/memberRoute');
-const calendarRoute = require('../route/calendarRoute');
-const dashboardRoute = require('../route/dashboardRoute');
-const authenRoute = require('../route/authenRoute');
+const ProjectRoutes = require('../../route/projectRoute');
+const TasksRoutes = require('../../route/taskRoute');
+const dropDownUserRoutes = require('../..//route/dropDownRoute');
+const memberRoute = require('../../route/memberRoute');
+const calendarRoute = require('../../route/calendarRoute');
+const dashboardRoute = require('../../route/dashboardRoute');
+const authenRoute = require('../../route/authenRoute');
 
 app.use(cors());
 app.use(express.json());
