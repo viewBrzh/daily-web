@@ -29,5 +29,5 @@ app.use("/calendar", calendarRoute);
 app.use("/dashboard", dashboardRoute);
 app.use("/auth", authenRoute);
 
-// Wrap the app using serverless-http
-module.exports.handler = serverless(app);
+module.exports = app; // <-- Correct export for local testing
+module.exports.handler = serverless(app); // <-- For Vercel deployment
