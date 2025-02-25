@@ -1,28 +1,25 @@
 import React, { useState } from "react";
 import styles from "@/styles/modal/modal.module.css";
+import { CalendarItem } from "../../types";
 
 interface AddCalendarModalProps {
     date: string;
     isOpen: boolean;
     onClose: () => void;
-    onAdd: (newEvent: {
-        projectId: number;
-        title: string;
-        description: string;
-        location: string;
-        date: string;
-        createdBy: number;
-    }) => void;
+    onAdd: (newEvent: CalendarItem) => void;
     projectId: number;
     createdBy: number;
 }
 
 const AddCalendarModal: React.FC<AddCalendarModalProps> = ({ date, isOpen, onClose, onAdd, projectId, createdBy }) => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<CalendarItem>({
         title: "",
         description: "",
         location: "",
         date: date,
+        projectId: projectId,
+        created_by: createdBy,
+        id: 0, // Or use a generated ID
     });
 
     if (!isOpen) return null;
@@ -32,7 +29,7 @@ const AddCalendarModal: React.FC<AddCalendarModalProps> = ({ date, isOpen, onClo
     };
 
     const handleAdd = () => {
-        onAdd({ ...formData, projectId, createdBy });
+        onAdd({ ...formData, projectId, created_by: createdBy });
         onClose();
     };
 

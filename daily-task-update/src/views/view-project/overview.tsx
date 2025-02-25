@@ -41,7 +41,8 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
     const [newMember, setNewMember] = useState<NewMember>({ userId: 0, fullName: "", role: "" });
     const [updateProjectData, setUpdateProjectData] = useState<UpdateProject>(initUpdateData);
 
-    // Enable Project Editing
+    // No hooks are called conditionally here, just the state values are used conditionally.
+
     const handleEdit = () => setIsEditing(true);
     const handleCancel = () => {
         setProject(projectData); // Reset changes
@@ -52,7 +53,6 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
         setIsEditing(false);
     };
 
-    // Enable Member Editing
     const handleEditMember = () => setIsEditingMember(true);
     const handleCancelMember = () => {
         setTeamMembers(memberData); // Reset changes
@@ -63,18 +63,15 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
         setIsEditingMember(false);
     };
 
-    // Update Project Details
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setProject((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle New Member Selection
     const handleUserSelect = (userId: number, fullName: string) => {
         setNewMember({ ...newMember, fullName, userId });
     };
 
-    // Add New Member
     const handleAddMember = () => {
         if (newMember.userId && newMember.fullName && newMember.role) {
             const updatedMembers = [
@@ -86,12 +83,10 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview
         }
     };
 
-    // Delete Member
     const handleDeleteMember = (indexToDelete: number) => {
         setTeamMembers(teamMembers.filter((_, index) => index !== indexToDelete));
     };
 
-    // Update Member Role
     const handleMemberRoleChange = (index: number, role: string) => {
         setTeamMembers((prev) =>
             prev.map((member, i) =>

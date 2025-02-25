@@ -71,11 +71,12 @@ export interface ViewProject {
 }
 
 export interface CalendarItem {
+    projectId?: number;
     id: number;
     date: string; 
     title: string;
     description: string;
-    created_by: string;
+    created_by: number;
     location: string;
 }
 
@@ -108,7 +109,7 @@ export interface SprintData {
   start_date: Date;
   end_date: Date;
   sprintName: string;
-  projectId: any;
+  projectId: string;
 }
 
 export const sprintToRecord = (sprint: SprintData): Record<string, string> => {

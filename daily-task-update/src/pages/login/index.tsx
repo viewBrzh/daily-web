@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import styles from '@/styles/Login.module.css';
+import Link from 'next/link';
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -51,7 +52,7 @@ const Login = () => {
                         </div>
                     </div>
                     <div className={styles.formContainer}>
-                        <h2 className={styles.title}>Welcome back to Daily!</h2>
+                        <h2 className={styles.title}>Welcome back to Daily&lsquo;s!</h2>
                         <input
                             type="text"
                             placeholder="Username"
@@ -66,10 +67,9 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className={styles.input}
                         />
-                        <a href="" className={styles.linkGrey}>Reset password</a>
+                        <Link href=""><div className={styles.linkGrey}>Reset password</div></Link>
                         <button onClick={handleLogin} className={styles.button}>Sign In</button>
-                        <span>Don't have an account? <a href="/register" className={styles.link}>Sign Up</a></span>
-
+                        <span>Don&apos;t have an account? <Link href="/register"><span className={styles.link}>Sign Up</span></Link></span>
                         {error && <p className={styles.error}><small>{error}</small></p>}
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import styles from '@/styles/Register.module.css';
+import Link from "next/link";
 
 const Register = () => {
     const [firstName, setFirstName] = useState("");
@@ -102,7 +103,7 @@ const Register = () => {
                                 className={styles.input}
                             />
                             <button onClick={handleRegister} className={styles.button}>Sign Up</button>
-                            <span>Already have an account? <a href="/login" className={styles.link}>Log In</a></span>
+                            <span>Already have an account? <Link href="/login"> <span className={styles.link}>Log In</span></Link></span>
                             {error && <p className={styles.error}>{error}</p>}
                             {success && <p className={styles.success}>{success}</p>}
                         </div>

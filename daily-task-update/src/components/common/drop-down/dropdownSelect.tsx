@@ -8,7 +8,7 @@ interface DropdownSelectProps {
     onClick?: () => void;
 }
 
-const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, value, onChange, placeholder = "Select an option", onClick }) => {
+const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, value, onChange, onClick }) => {
     return (
         <select
             onClick={onClick}

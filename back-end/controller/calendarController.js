@@ -30,8 +30,9 @@ exports.getCalendarByDate = async (req, res) => {
 
 exports.addCalendar = async (req, res) => {
     try {
-        const { projectId, title, description, location, date, createdBy } = req.body;
-        const response = CalendarModal.addCalendar(projectId, title, description, location, date, createdBy);
+        const { projectId, title, description, location, date, created_by } = req.body;
+        console.log( "projectId: ",projectId,",title: ", title,",description: ", description,",location: ", location,",date: ", date,",createdBy: ", created_by)
+        const response = CalendarModal.addCalendar(projectId, title, description, location, date, created_by);
 
         res.status(200).json((await response).result);
     } catch (err) {

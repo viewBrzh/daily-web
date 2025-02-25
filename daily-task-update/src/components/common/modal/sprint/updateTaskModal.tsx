@@ -10,14 +10,13 @@ interface ModalProps {
     onSubmit: (data: Task) => void;
     task: Task;
     status: Status[];
-    projectId?: any;
+    projectId?: number;
     sprintId?: number;
 }
 
 const UpdateTaskModal: React.FC<ModalProps> = ({
     isOpen,
     onClose,
-    title,
     onSubmit,
     task,
     status,

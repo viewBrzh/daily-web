@@ -2,12 +2,12 @@ import Layout from '@/components/layout/layout';
 import styles from "@/styles/view-project/viewProject.module.css";
 import PageContainer from '@/components/layout/pageContainer';
 import { getViewProject } from '@/pages/api/my-task/project';
-import { ViewProject, Task, Member } from '@/components/common/types';
+import { ViewProject, Member } from '@/components/common/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Overview from '@/views/view-project/overview';
 import ProjectCalendar from '@/views/view-project/projectCalendar';
-import { faArrowsTurnToDots, faBarsProgress, faCalendarDays, faChartPie, faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBarsProgress, faCalendarDays, faChartPie, faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProjectDashboard from '@/views/view-project/projectDashboard';
 import SprintBoard from '@/views/view-project/sprintBoard';
@@ -56,7 +56,6 @@ const ViewProjectPage = () => {
   const [pageData, setPageData] = useState(initialPageData);
   const [project, setProject] = useState<ViewProject>(pageData.project);
   const [members, setMembers] = useState<Member[]>(pageData.members);
-  const [tasks, setTasks] = useState<Task[]>(pageData.tasks);
   const [activeTab, setActiveTab] = useState("Overview");
 
   const [authenticated, setAuthenticated] = useState(false);
@@ -67,7 +66,7 @@ const ViewProjectPage = () => {
 
     const fetchData = async () => {
       try {
-        const res = await getViewProject(projectId, 1);
+        const res = await getViewProject(projectId.toString(), 1);
         setPageData(await res);
       } catch (error) {
         console.error('Error fetching project data:', error);
@@ -80,7 +79,6 @@ const ViewProjectPage = () => {
   useEffect(() => {
     setProject(pageData.project);
     setMembers(pageData.members);
-    setTasks(pageData.tasks);
   }, [pageData]);
 
   useEffect(() => {

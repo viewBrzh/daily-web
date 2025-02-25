@@ -7,8 +7,8 @@ interface AlertModalProps {
   description: string;
   type: string;
   onClose: () => void;
-  onConfirm: () => void;
-  isCancelable: boolean;
+  onConfirm?: () => void;
+  isCancelable?: boolean;
 }
 
 const AlertModal: React.FC<AlertModalProps> = ({ isShow, title, description, type, onClose, isCancelable, onConfirm }) => {

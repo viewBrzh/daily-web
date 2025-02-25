@@ -21,7 +21,6 @@ const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId,
   const [selectedUser, setSelectedUser] = useState<User>(initUser);
   const [suggestions, setSuggestions] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) return;
@@ -33,7 +32,7 @@ const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId,
         setSelectedUser(user);
         setIsLoading(false);
       } catch (err) {
-        setError("Failed to fetch user details");
+        console.log(err);
         setIsLoading(false);
       }
     };
@@ -59,7 +58,7 @@ const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId,
         setSuggestions(members);
         setIsLoading(false);
       } catch (err) {
-        setError("Failed to fetch dropdown users");
+        console.log(err);
         setIsLoading(false);
       }
     };

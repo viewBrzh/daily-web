@@ -13,13 +13,20 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, fields, onSubmit, init }) => {
+    // Don't return early here, render the modal structure if `isOpen` is true
     if (!isOpen) return null;
 
     const getCurrentDate = () => new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
-    const [formData, setFormData] = useState<Record<string, string>>({});
+    // Initialize formData with default values or values from `init`
+    const [formData, setFormData] = useState<Record<string, string>>(() => {
+        return fields.reduce((acc, field) => ({
+            ...acc,
+            [field.name]: init?.[field.name] || (field.type === 'date' ? getCurrentDate() : '')
+        }), {});
+    });
 
-    // Update formData when init changes (e.g., new sprint selected)
+    // Update formData when `init` or `fields` change
     useEffect(() => {
         setFormData(
             fields.reduce((acc, field) => ({

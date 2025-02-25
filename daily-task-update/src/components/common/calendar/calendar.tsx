@@ -11,7 +11,7 @@ const calendarInit = [{
   date: "",
   title: "",
   description: "",
-  created_by: "",
+  created_by: 0,
   location: "",
 }];
 
@@ -52,7 +52,7 @@ const Calendar: React.FC = () => {
   const handleSaveModal = async () => {
     setIsModalOpen(false);
 
-    const res = await getCalendar(projectId, currentDate.getMonth() + 1);
+    const res = await getCalendar(projectId?.toString() || "", currentDate.getMonth() + 1);
     setCalendar(res);
   };
 
@@ -66,7 +66,7 @@ const Calendar: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        const res = await getCalendar(projectId, currentDate.getMonth() + 1);
+        const res = await getCalendar(projectId?.toString() || "", currentDate.getMonth() + 1);
         setCalendar(res);
       } catch (error) {
         console.error('Error fetching calendar data:', error);
@@ -74,7 +74,7 @@ const Calendar: React.FC = () => {
     };
 
     fetchData();
-  }, [router.isReady, currentDate]);
+  }, [router.isReady, currentDate, projectId]);
 
   return (
     <div className={styles.calendar}>

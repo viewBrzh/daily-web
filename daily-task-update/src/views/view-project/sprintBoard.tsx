@@ -3,7 +3,7 @@ import DropdownSelect from "@/components/common/drop-down/dropdownSelect";
 import { initTaskData, SprintData, SprintDataInsert, sprintToRecord, Status, Task, User } from "@/components/common/types";
 import { addNewSprint, deleteTask, getCurrentSprintByProject, getPersonFilterOption, getSprintByProject, getTasks, getTaskStatus, insertTask, updateSprint, updateTask, updateTaskStatus } from "@/pages/api/my-task/sprint";
 import React, { useCallback, useEffect, useState } from "react";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext, DropResult, OnDragUpdateResponder } from "@hello-pangea/dnd";
 import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
 import Modal from "@/components/common/modal/addModal";
 import UpdateTaskModal from "@/components/common/modal/sprint/updateTaskModal";
@@ -24,7 +24,7 @@ const initialSprintData: SprintData = {
     sprintName: "",
     start_date: new Date(),
     end_date: new Date(),
-    projectId: 0,
+    projectId: "0",
 };
 
 const initUserData: User = {
@@ -35,23 +35,13 @@ const initUserData: User = {
 }
 
 const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
-    if (isSprint !== "Sprint") return null;
 
     const [selectedSprint, setSelectedSprint] = useState<SprintData>(initialSprintData);
     const [selectedPerson, setSelectedPerson] = useState<User>(initUserData);
     const [personOption, setPersonOption] = useState<User[]>([initUserData]);
     const [sprintOption, setSprintOption] = useState<SprintData[]>([initialSprintData]);
-    const [newSprint, setnewSprint] = useState<SprintDataInsert>(
-        {
-            sprintName: "",
-            start_date: new Date(),
-            end_date: new Date(),
-            projectId: "0",
-        }
-    )
     const [tasks, setTasks] = useState<Task[]>([initTaskData]);
     const [task, setTask] = useState<Task>(initTaskData);
-    const [newTask, setNewTask] = useState<Task>(initTaskData);
     const [status, setStatus] = useState<Status[]>([initStatus]);
     const [draggingColumn, setDraggingColumn] = useState<string | null>(null);
     const [isUpdateTaskModalOpen, setIsUpdateTaskModalOpen] = useState(false);
@@ -104,7 +94,6 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     };
 
     const handleSubmitTask = async (data: Task) => {
-        setNewTask(data);
         try {
             await updateTask(data);
             const tasks = getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
@@ -116,7 +105,6 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     };
 
     const handleSubmitAddTask = async (data: Task) => {
-        setNewTask(data);
         try {
             await insertTask(data);
             const tasks = getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
@@ -285,11 +273,15 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         return daysDifference;
     };
 
-    const handleDragUpdate = (update: any) => {
-        if (update.destination) {
-            setDraggingColumn(update.destination.droppableId);
+    const handleDragUpdate: OnDragUpdateResponder<string> = (update) => {
+        const { destination } = update;
+    
+        // If destination exists and reason is drag
+        if (destination) {
+            setDraggingColumn(destination.droppableId);
         }
     };
+    
 
     const handleDragEnd = async (result: DropResult) => {
         setDraggingColumn(null);
@@ -325,6 +317,8 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         }
     };
 
+    if (isSprint !== "Sprint") return null;
+
     return (
         <div>
             <div className={styles.header}>
@@ -349,11 +343,14 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 }
             </div>
             {selectedSprint &&
-                <div className={styles.manDay} onClick={handleUpdateSprint} style={{cursor: "pointer"}}>
+                <div className={styles.manDay} onClick={handleUpdateSprint} style={{ cursor: "pointer" }}>
                     {formatDate(selectedSprint?.start_date.toString())} - {formatDate(selectedSprint?.end_date.toString())}| ({getDaysCount(selectedSprint?.start_date.toString(), selectedSprint?.end_date.toString())} work days)
                 </div>
             }
-            <DragDropContext onDragUpdate={handleDragUpdate} onDragEnd={handleDragEnd}>
+            <DragDropContext
+                onDragUpdate={handleDragUpdate}
+                onDragEnd={handleDragEnd}
+            >
                 <div className={styles.taskTableContainer}>
                     {status.map((statusItem) => (
                         <DragDropTaskColumn
@@ -361,7 +358,6 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                             statusItem={statusItem}
                             tasks={tasks}
                             draggingColumn={draggingColumn}
-                            onDragUpdate={handleDragUpdate}
                             onDragEnd={handleDragEnd}
                             onEdit={handleEditTask}
                             onDelete={handleDeleteTaskAlert}
@@ -369,6 +365,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                     ))}
                 </div>
             </DragDropContext>
+
             <Modal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
@@ -407,7 +404,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 onSubmit={handleSubmitAddTask}
                 task={initTaskData}
                 status={status}
-                projectId={projectId}
+                projectId={parseInt(projectId)}
                 sprintId={selectedSprint?.sprintId}
             />
             <AlertModal

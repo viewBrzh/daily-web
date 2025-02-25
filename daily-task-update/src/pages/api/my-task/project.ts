@@ -32,7 +32,7 @@ export const addProject = async (project: NewProject, members: Member[]): Promis
   }
 };
 
-export const getViewProject = async (projectId: any, userId: any) => {
+export const getViewProject = async (projectId: string, userId: number) => {
   try {
     const response = await axios.post(`/api/projects/getViewProject`, {projectId, userId});
     return response.data;

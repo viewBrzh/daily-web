@@ -1,7 +1,5 @@
 import React from "react";
 
-type StatusType = "in-progress" | "complete" | "pending";
-
 interface StatusBadgeProps {
   status: string;
 }

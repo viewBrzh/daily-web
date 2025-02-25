@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SprintData, SprintDataInsert, Status, Task, User } from '@/components/common/types';
 
-export const getSprintByProject = async (projectId: any): Promise<SprintData[]> => {
+export const getSprintByProject = async (projectId: string): Promise<SprintData[]> => {
     try {
         const response = await axios.post<SprintData[]>(`/api/tasks/getSprintByProject`, { projectId });
         return response.data;
@@ -11,7 +11,7 @@ export const getSprintByProject = async (projectId: any): Promise<SprintData[]> 
     }
 }
 
-export const getCurrentSprintByProject = async (projectId: any): Promise<SprintData> => {
+export const getCurrentSprintByProject = async (projectId: string): Promise<SprintData> => {
     try {
         const response = await axios.post<SprintData>(`/api/tasks/getCurrentSprint`, { projectId });
         return response.data;
@@ -21,7 +21,7 @@ export const getCurrentSprintByProject = async (projectId: any): Promise<SprintD
     }
 };
 
-export const getPersonFilterOption = async (sprintId?: any): Promise<User[]> => {
+export const getPersonFilterOption = async (sprintId?: number): Promise<User[]> => {
     try {
         const response = await axios.post<User[]>(`/api/tasks/getPersonFilterOption`, { sprintId });
         return Array.isArray(response.data) ? response.data : []; // Ensure it returns an array
@@ -31,7 +31,7 @@ export const getPersonFilterOption = async (sprintId?: any): Promise<User[]> => 
     }
 };
 
-export const getTasks = async (sprintId?: any, userId?: any): Promise<Task[]> => {
+export const getTasks = async (sprintId?: number, userId?: number): Promise<Task[]> => {
     try {
         const response = await axios.post<Task[]>(`/api/tasks/getTasks`, { sprintId, userId });
         return response.data;
@@ -51,7 +51,7 @@ export const getTaskStatus = async (): Promise<Status[]> => {
     }
 };
 
-export const updateTaskStatus = async (taskId: any, statusId: any) => {
+export const updateTaskStatus = async (taskId: number, statusId: number) => {
     try {
         await axios.post(`/api/tasks/updateTaskStatus`, { taskId, statusId });
     } catch (error) {

@@ -1,7 +1,6 @@
 import DashboardCharts from "@/components/common/chart/dashboardCharts";
 import { DashboardData } from "@/components/common/types";
 import { getProjectDashboard } from "@/pages/api/my-task/dashboard";
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from "react";
 
 interface CalendarProps {
@@ -34,11 +33,10 @@ const initData: DashboardData = {
 };
 
 const ProjectDashboard: React.FC<CalendarProps> = ({ isDashboard, projectId }) => {
-    if (isDashboard !== "Dashboard") return null;
-
     const [dashboardData, setDashboardData] = useState<DashboardData>(initData);
 
     useEffect(() => {
+        if (isDashboard !== "Dashboard") return;  // Conditional check inside useEffect only
 
         const fetchData = async () => {
             try {
@@ -50,7 +48,9 @@ const ProjectDashboard: React.FC<CalendarProps> = ({ isDashboard, projectId }) =
         };
 
         fetchData();
-    }, []);
+    }, [isDashboard, projectId]);  // Depend on `isDashboard` and `projectId`
+
+    if (isDashboard !== "Dashboard") return null;  // Early return based on the condition
 
     return (
         <DashboardCharts data={dashboardData} />

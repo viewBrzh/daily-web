@@ -13,7 +13,7 @@ export const fetchDropDownUser = async (searchValue: string): Promise<User[]> =>
   }
 };
 
-export const fetchDropDownUserProjectMember = async (projectId: any): Promise<User[]> => {
+export const fetchDropDownUserProjectMember = async (projectId: string): Promise<User[]> => {
   try {
     const response = await axios.post<User[]>('/api/dropDown/getDropdownUserByProject', {projectId});
     return response.data; // Directly return the data

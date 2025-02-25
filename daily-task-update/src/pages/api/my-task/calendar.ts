@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { CalendarItem } from '@/components/common/types';
 
-export const getCalendar = async (projectId: any, month: number) => {
+export const getCalendar = async (projectId: string, month: number) => {
   try {
     const response = await axios.post<CalendarItem[]>(`/api/calendar/getAllCalendar`, { projectId, month });
     return response.data;
@@ -10,7 +10,7 @@ export const getCalendar = async (projectId: any, month: number) => {
   }
 }
 
-export const getCalendarByDate = async (projectId: any, date: string) => {
+export const getCalendarByDate = async (projectId: string, date: string) => {
   try {
     const response = await axios.post<CalendarItem[]>(`/api/calendar/getCalendarByDate`, { projectId, date });
     return response.data;
@@ -19,7 +19,7 @@ export const getCalendarByDate = async (projectId: any, date: string) => {
   }
 }
 
-export const addCalendar = async (eventData: any) => {
+export const addCalendar = async (eventData: CalendarItem) => {
   const response = await fetch("/api/calendar/addCalendar", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

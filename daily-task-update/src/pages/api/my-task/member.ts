@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Member } from '@/components/common/types';
 
 
-export const updateMember = async (projectId: any, members: Member[]) => {
+export const updateMember = async (projectId: string, members: Member[]) => {
   try {
     const response = await axios.post(`/api/members/updateMember`, {
       projectId: projectId,

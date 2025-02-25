@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import styles from "@/styles/modal/modal.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faUserPlus } from "@fortawesome/free-solid-svg-icons";
@@ -31,11 +31,10 @@ const initAlertProps = {
   title: "",
   description: "",
   type: 'success',
-  onClose: () => {},
+  onClose: () => { },
 }
-
 const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null;  // This is fine, it's outside any hooks
 
   const [currentPage, setCurrentPage] = useState(1);
   const [newProject, setNewProject] = useState<NewProject>({

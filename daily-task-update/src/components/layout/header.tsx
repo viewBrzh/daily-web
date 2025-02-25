@@ -21,6 +21,7 @@ const Header: React.FC = () => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       const name = localStorage.getItem("fullName");
+      console.log(token, name)
       if (!token) {
         router.push("/login");
       } else {

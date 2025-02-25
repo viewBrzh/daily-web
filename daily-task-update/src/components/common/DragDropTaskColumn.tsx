@@ -12,7 +12,6 @@ interface DragDropTaskColumnProps {
     statusItem: Status;
     tasks: Task[];
     draggingColumn: string | null;
-    onDragUpdate: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd: (result: DropResult) => void; // Use DropResult instead of any
     onEdit: (Task: Task) => void;
     onDelete: (Task: Task) => void; // Pass taskId for deletion
@@ -22,8 +21,6 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
     statusItem,
     tasks,
     draggingColumn,
-    onDragUpdate,
-    onDragEnd,
     onEdit,
     onDelete,
 }) => {
