@@ -49,7 +49,7 @@ const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId,
     const fetchSuggestions = async () => {
       try {
         setIsLoading(true);
-        const members = await fetchDropDownUserProjectMember(projectId);
+        const members = await fetchDropDownUserProjectMember(projectId?.toString());
 
         if (selectedUser && !members.some((m) => m.userId === selectedUser.userId)) {
           members.unshift(selectedUser);
