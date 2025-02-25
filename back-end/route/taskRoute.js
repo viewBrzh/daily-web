@@ -13,6 +13,7 @@ router.post('/getTasks', TasksController.getTask);
 router.post('/getTaskStatus', TasksController.getTaskStatus);
 router.post('/updateTaskStatus', TasksController.updateTaskStatus);
 router.post('/addNewSprint', TasksController.addNewSprint);
+router.post('/updateSprint', TasksController.updateSprint);
 router.post('/updateTask', TasksController.updateTask);
 router.post('/insertTask', TasksController.insertTask);
 router.post('/deleteTask', TasksController.deleteTask);

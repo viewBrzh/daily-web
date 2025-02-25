@@ -27,8 +27,13 @@ module.exports = class Tasks {
 
   static async getSprintByProject(projectId) {
     try {
-      const [result] = await db.execute(
-        "SELECT * FROM sprints WHERE projectId = ?",
+      const [result] = await db.execute(`
+        SELECT sprintId, 
+          DATE_FORMAT(start_date, '%Y-%m-%d') as start_date, 
+          DATE_FORMAT(end_date, '%Y-%m-%d') as end_date, 
+          sprintName, 
+          projectId 
+        FROM sprints WHERE projectId = ?`,
         [projectId]
       );
       return result;
@@ -36,44 +41,54 @@ module.exports = class Tasks {
       throw err;
     }
   }
-
+  
   static async getCurrentSprint(projectId) {
     try {
-      // Query for the current active sprint
       const currentSprintQuery = `
-            SELECT * FROM sprints
-            WHERE CURDATE() BETWEEN start_date AND end_date AND projectId = ?
-            ORDER BY end_date DESC
-            LIMIT 1;
-        `;
-
+        SELECT 
+          sprintId, 
+          DATE_FORMAT(start_date, '%Y-%m-%d') as start_date, 
+          DATE_FORMAT(end_date, '%Y-%m-%d') as end_date, 
+          sprintName, 
+          projectId 
+        FROM sprints
+        WHERE CURDATE() BETWEEN start_date AND end_date 
+        AND projectId = ?
+        ORDER BY end_date DESC
+        LIMIT 1;
+      `;
+      
       const [currentSprint] = await db.execute(currentSprintQuery, [projectId]);
-
+  
       if (currentSprint.length > 0) {
-        return currentSprint[0]; // Return the current sprint if found
+        return currentSprint[0];
       }
-
-      // If no current sprint, find the closest one (past or future)
+  
       const closestSprintQuery = `
-            SELECT * FROM sprints
-            WHERE projectId = ?
-            ORDER BY ABS(DATEDIFF(start_date, CURDATE()))
-            LIMIT 1;
-        `;
-
+        SELECT 
+          sprintId, 
+          DATE_FORMAT(start_date, '%Y-%m-%d') as start_date, 
+          DATE_FORMAT(end_date, '%Y-%m-%d') as end_date, 
+          sprintName, 
+          projectId 
+        FROM sprints
+        WHERE projectId = ?
+        ORDER BY ABS(DATEDIFF(start_date, CURDATE()))
+        LIMIT 1;
+      `;
+  
       const [closestSprint] = await db.execute(closestSprintQuery, [projectId]);
-
+  
       return closestSprint.length > 0 ? closestSprint[0] : null;
     } catch (err) {
       throw err;
     }
-  }
-
+  }  
+  
   static async getPersonFilterOption(sprintId) {
     try {
-      // If sprintId is null or undefined, set it to null explicitly
       if (sprintId == null) {
-        sprintId = null; // Ensure that it's null instead of undefined
+        sprintId = null;
       }
 
       const personFilterQuery = `
@@ -85,7 +100,6 @@ module.exports = class Tasks {
 
       const [personFilter] = await db.execute(personFilterQuery, [sprintId]);
 
-      // Return an empty array if no records are found
       return personFilter.length > 0 ? personFilter : [];
     } catch (err) {
       console.error("Error fetching person filter options:", err);
@@ -164,6 +178,22 @@ module.exports = class Tasks {
     }
   }
 
+  static async updateSprint(sprintId, start_date, end_date, sprintName) {
+    try {
+      const query = `
+            UPDATE sprints 
+            SET start_date = ?, end_date = ?, sprintName = ? 
+            WHERE sprintId = ?;
+        `;
+
+      await db.execute(query, [start_date, end_date, sprintName, sprintId]);
+
+      return { message: "Updated Sprint successfully: " + sprintName };
+    } catch (err) {
+      throw err;
+    }
+  }
+
   static async updateTask(taskId, name, description, resUserId, sprintId, projectId, statusId, priority) {
     try {
       const query = `
@@ -224,7 +254,6 @@ module.exports = class Tasks {
 
   static async deleteTask(taskId) {
     try {
-      // Use the correct DELETE query format
       const query = `
             DELETE FROM tasks
             WHERE taskId = ?;

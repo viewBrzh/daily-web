@@ -102,6 +102,28 @@ exports.addNewSprint = async (req, res) => {
     }
 };
 
+exports.updateSprint = async (req, res) => {
+    try {
+        const { sprintId, start_date, end_date, sprintName } = req.body.newSprint;
+        
+        if (!start_date || !end_date || !sprintName) {
+            return res.status(400).json({
+                message: 'Missing required fields',
+            });
+        }
+        const formattedStartDate = formatDate(start_date);
+        const formattedEndDate = formatDate(end_date);
+
+        const status = await Tasks.updateSprint(sprintId, formattedStartDate, formattedEndDate, sprintName);
+        res.status(200).json(status.message);
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to insert sprint',
+            error: error.message,
+        });
+    }
+};
+
 exports.updateTask = async (req, res) => {
     try {
         const { taskId, name, description, resUserId, sprintId, projectId, statusId, priority } = req.body.task;

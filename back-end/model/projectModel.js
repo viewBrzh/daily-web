@@ -166,7 +166,17 @@ module.exports = class Project {
 
   static async getViewProject(projectId, userId) {
     try {
-      const queryProject = `SELECT * FROM projects WHERE projectId = ${projectId}`;
+      const queryProject = `SELECT 
+                              projectId,
+                              projectCode,
+                              name, 
+                              description, 
+                              DATE_FORMAT(start_date, '%Y-%m-%d') as start_date,
+                              DATE_FORMAT(end_date, '%Y-%m-%d') as end_date,
+                              status,
+                              created_at, 
+                              updated_at
+                            FROM projects WHERE projectId = ${projectId}`;
       const queryMytasks = `SELECT * FROM tasks WHERE resUserId = ${userId} AND projectId = ${projectId}`;
       const queryMembers = `
         SELECT projectMembers.*, users.fullName 
