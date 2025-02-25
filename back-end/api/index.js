@@ -2,20 +2,20 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const serverless = require('serverless-http');
+const ProjectRoutes = require('../routes/projectRoute');
+const TasksRoutes = require('../routes/taskRoute');
+const dropDownUserRoutes = require('../routes/dropDownRoute');
+const memberRoute = require('../routes/memberRoute');
+const calendarRoute = require('../routes/calendarRoute');
+const dashboardRoute = require('../routes/dashboardRoute');
+const authenRoute = require('../routes/authenRoute');
 
 const app = express();
 const port = 10080;
 
-app.use(express.json());
+app.use(express.json());api\index.js
 app.use(bodyParser.json());
 
-const ProjectRoutes = require('../../route/projectRoute');
-const TasksRoutes = require('../../route/taskRoute');
-const dropDownUserRoutes = require('../../route/dropDownRoute');
-const memberRoute = require('../../route/memberRoute');
-const calendarRoute = require('../../route/calendarRoute');
-const dashboardRoute = require('../../route/dashboardRoute');
-const authenRoute = require('../../route/authenRoute');
 
 app.use(cors());
 app.use(express.json());
