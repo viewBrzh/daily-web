@@ -18,7 +18,7 @@ const Login = () => {
         const response = await fetch("api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ email: username, password }),
         });
 
         const data = await response.json();
@@ -26,7 +26,7 @@ const Login = () => {
 
         if (response.ok) {
             localStorage.setItem("token", data.token);
-            localStorage.setItem("fullName", data.user?.fullName);
+            localStorage.setItem("fullName", data.user?.full_name);
             router.push("/my-tasks");
         } else {
             setError("Invalid username or password");
@@ -55,7 +55,7 @@ const Login = () => {
                         <h2 className={styles.title}>Welcome back to Daily&lsquo;s!</h2>
                         <input
                             type="text"
-                            placeholder="Username"
+                            placeholder="Email"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             className={styles.input}

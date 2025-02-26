@@ -6,7 +6,6 @@ import Link from "next/link";
 const Register = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,7 +14,7 @@ const Register = () => {
     const router = useRouter();
 
     const handleRegister = async () => {
-        if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
             setError("Please fill in all fields.");
             return;
         }
@@ -24,10 +23,12 @@ const Register = () => {
             return;
         }
 
-        const response = await fetch("/api/auth/register", {
+        const fullName = firstName + " " + lastName;
+
+        const response = await fetch("/api/auth/signUp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ firstName, lastName, username, email, password }),
+            body: JSON.stringify({ fullName, email, password }),
         });
 
         const data = await response.json();
@@ -74,13 +75,6 @@ const Register = () => {
                                     className={styles.input}
                                 />
                             </div>
-                            <input
-                                type="text"
-                                placeholder="Username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className={styles.input}
-                            />
                             <input
                                 type="email"
                                 placeholder="Email"

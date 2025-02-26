@@ -9,11 +9,16 @@ const Header: React.FC = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [fullName, setFullName] = useState<string | null>(null);
 
-  const logout = () => {
+  const logout = async () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("token");
       localStorage.removeItem("fullName");
+
     }
+    await fetch("api/auth/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
     router.push("/login");
   };
 
