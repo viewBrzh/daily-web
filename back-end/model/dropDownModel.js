@@ -1,4 +1,8 @@
-const db = require('../util/db');
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Dropdown {
 
@@ -6,22 +10,22 @@ module.exports = class Dropdown {
         try {
             const limit = 5;
 
-            let userQuery = `
-                (SELECT userId, username, fullName, empId FROM users 
-                ${searchValue ? `WHERE fullName LIKE ? OR username LIKE ?` : ``}
-                LIMIT ?)
-                `;
+            let query = supabase
+                .from('users')
+                .select('userId, username, fullName, empId')
+                .limit(limit);
 
-            const queryParams = [];
-
-            // If searchValue exists, add parameters for the first SELECT
             if (searchValue) {
-                queryParams.push(`%${searchValue}%`, `%${searchValue}%`);
+                query = query.ilike('fullName', `%${searchValue}%`)
+                    .or(`username.ilike.%${searchValue}%`);
             }
-            queryParams.push(limit);
 
-            // Execute the query with parameters
-            const [finalResult] = await db.execute(userQuery, queryParams);
+            const { data: finalResult, error } = await query;
+
+            if (error) {
+                throw new Error('Error fetching user dropdown: ' + error.message);
+            }
+
             return { finalResult };
         } catch (err) {
             throw err;
@@ -32,21 +36,17 @@ module.exports = class Dropdown {
         try {
             const limit = 5;
 
-            let userQuery = `
-                SELECT u.userId, u.username, u.fullName, u.empId
-                FROM users u
-                JOIN projectMembers pm ON u.userId = pm.userId
-                WHERE pm.projectId = ? LIMIT ?
-                `;
+            const { data: finalResult, error } = await supabase
+                .from('projectMembers')
+                .select('userId, username, fullName, empId')
+                .eq('projectId', projectId)
+                .limit(limit)
+                .join('users', 'userId', 'users.userId');  // Join with users table based on userId
 
-            const queryParams = [projectId];
+            if (error) {
+                throw new Error('Error fetching user dropdown by project: ' + error.message);
+            }
 
-            queryParams.push(limit);
-
-            console.log(userQuery, queryParams)
-
-            // Execute the query with parameters
-            const [finalResult] = await db.execute(userQuery, queryParams);
             return { finalResult };
         } catch (err) {
             throw err;
@@ -59,22 +59,24 @@ module.exports = class Dropdown {
             if (!sprintId) {
                 return [];
             }
-    
-            const query = `
-                SELECT DISTINCT u.userId, u.username, u.fullName, u.empId
-                FROM users u
-                JOIN tasks t ON u.userId = t.resUserId
-                WHERE t.sprintId = ?;
-            `;
-    
-            const [rows] = await db.execute(query, [sprintId]);
-    
-            console.log(rows);
+
+            const { data: rows, error } = await supabase
+                .from('tasks')
+                .select('userId, username, fullName, empId')
+                .eq('sprintId', sprintId)
+                .join('users', 'userId', 'users.userId')
+                .distinct();
+
+            if (error) {
+                console.error('Error fetching task filter dropdown:', error.message);
+                throw error;
+            }
+
             return rows.length > 0 ? rows : [];
         } catch (err) {
             console.error("Error fetching task filter dropdown:", err);
             throw err;
         }
-    }    
+    }
 
 };

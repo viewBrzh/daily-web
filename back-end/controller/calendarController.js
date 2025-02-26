@@ -32,14 +32,37 @@ exports.getCalendarByDate = async (req, res) => {
 exports.addCalendar = async (req, res) => {
     try {
         const { projectId, title, description, location, date, created_by } = req.body;
-        console.log( "projectId: ",projectId,",title: ", title,",description: ", description,",location: ", location,",date: ", date,",createdBy: ", created_by)
+        
+        console.log("projectId: ", projectId, ",title: ", title, ",description: ", description, ",location: ", location, ",date: ", date, ",createdBy: ", created_by);
+
+        if (!projectId || !title || !date || !created_by) {
+            return res.status(400).json({
+                message: "Missing required fields: projectId, title, date, created_by"
+            });
+        }
+
         const response = await CalendarModal.addCalendar(projectId, title, description, location, date, created_by);
 
-        res.status(200).json((await response).result);
+        if (response && response.error) {
+            return res.status(500).json({
+                message: "Error adding calendar event",
+                error: response.error
+            });
+        }
+
+        res.status(200).json({
+            message: "Calendar event added successfully",
+            data: response
+        });
     } catch (err) {
-        throw err;
+        console.error("Error adding calendar event: ", err.message);
+        res.status(500).json({
+            message: "An unexpected error occurred while adding the calendar event",
+            error: err.message
+        });
     }
-}
+};
+
 
 exports.deleteCalendar = async (req, res) => {
     try {

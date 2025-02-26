@@ -1,4 +1,8 @@
-const db = require('../util/db');
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Tasks {
   constructor(
@@ -11,7 +15,7 @@ module.exports = class Tasks {
     startDate,
     endDate,
     priority,
-    status,
+    status
   ) {
     this.taskId = taskId;
     this.sprint = sprint;
@@ -27,121 +31,93 @@ module.exports = class Tasks {
 
   static async getSprintByProject(projectId) {
     try {
-      const [result] = await db.execute(`
-        SELECT sprintId, 
-          DATE_FORMAT(start_date, '%Y-%m-%d') as start_date, 
-          DATE_FORMAT(end_date, '%Y-%m-%d') as end_date, 
-          sprintName, 
-          projectId 
-        FROM sprints WHERE projectId = ?`,
-        [projectId]
-      );
-      return result;
+      const { data, error } = await supabase
+        .from('sprints')
+        .select('sprintId, start_date, end_date, sprintName, projectId')
+        .eq('projectId', projectId);
+      
+      if (error) throw error;
+      return data;
     } catch (err) {
       throw err;
     }
   }
-  
+
   static async getCurrentSprint(projectId) {
     try {
-      const currentSprintQuery = `
-        SELECT 
-          sprintId, 
-          DATE_FORMAT(start_date, '%Y-%m-%d') as start_date, 
-          DATE_FORMAT(end_date, '%Y-%m-%d') as end_date, 
-          sprintName, 
-          projectId 
-        FROM sprints
-        WHERE CURDATE() BETWEEN start_date AND end_date 
-        AND projectId = ?
-        ORDER BY end_date DESC
-        LIMIT 1;
-      `;
+      const { data: currentSprint, error } = await supabase
+        .from('sprints')
+        .select('sprintId, start_date, end_date, sprintName, projectId')
+        .eq('projectId', projectId)
+        .gt('start_date', new Date())
+        .order('start_date', { ascending: true })
+        .limit(1);
       
-      const [currentSprint] = await db.execute(currentSprintQuery, [projectId]);
-  
+      if (error) throw error;
       if (currentSprint.length > 0) {
         return currentSprint[0];
       }
-  
-      const closestSprintQuery = `
-        SELECT 
-          sprintId, 
-          DATE_FORMAT(start_date, '%Y-%m-%d') as start_date, 
-          DATE_FORMAT(end_date, '%Y-%m-%d') as end_date, 
-          sprintName, 
-          projectId 
-        FROM sprints
-        WHERE projectId = ?
-        ORDER BY ABS(DATEDIFF(start_date, CURDATE()))
-        LIMIT 1;
-      `;
-  
-      const [closestSprint] = await db.execute(closestSprintQuery, [projectId]);
-  
+
+      // If no current sprint, get the closest future sprint
+      const { data: closestSprint, error: closestError } = await supabase
+        .from('sprints')
+        .select('sprintId, start_date, end_date, sprintName, projectId')
+        .eq('projectId', projectId)
+        .order('start_date', { ascending: true })
+        .limit(1);
+      
+      if (closestError) throw closestError;
       return closestSprint.length > 0 ? closestSprint[0] : null;
     } catch (err) {
       throw err;
     }
-  }  
-  
+  }
+
   static async getPersonFilterOption(sprintId) {
     try {
-      if (sprintId == null) {
-        sprintId = null;
-      }
+      const { data, error } = await supabase
+        .from('users')
+        .select('userId, username, fullName, empId')
+        .join('tasks', 'tasks.resUserId', 'users.userId')
+        .eq('tasks.sprintId', sprintId);
 
-      const personFilterQuery = `
-            SELECT DISTINCT u.userId, u.username, u.fullName, u.empId
-            FROM users u
-            JOIN tasks ON tasks.resUserId = u.userId
-            WHERE tasks.sprintId = ?;
-        `;
-
-      const [personFilter] = await db.execute(personFilterQuery, [sprintId]);
-
-      return personFilter.length > 0 ? personFilter : [];
+      if (error) throw error;
+      return data.length > 0 ? data : [];
     } catch (err) {
       console.error("Error fetching person filter options:", err);
       throw err;
     }
   }
 
-
-
   static async getTask(sprintId, userId) {
     try {
-      let query = `
-        SELECT tasks.*, users.fullName AS resUserFullName
-        FROM tasks
-        LEFT JOIN users ON tasks.resUserId = users.userId
-        WHERE tasks.sprintId = ?
-      `;
-
-      const params = [sprintId];
+      let query = supabase
+        .from('tasks')
+        .select('tasks.*, users.fullName AS resUserFullName')
+        .eq('tasks.sprintId', sprintId)
+        .leftJoin('users', 'tasks.resUserId', 'users.userId');
+      
       if (userId !== 0) {
-        query += " AND tasks.resUserId = ?";
-        params.push(userId);
+        query = query.eq('tasks.resUserId', userId);
       }
 
-      const [tasks] = await db.execute(query, params);
-
-      return tasks;
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
     } catch (err) {
       throw err;
     }
   }
 
-
   static async getTaskStatus() {
     try {
-      const query = `
-            SELECT * FROM task_status ORDER BY statusId ASC;
-        `;
+      const { data, error } = await supabase
+        .from('task_status')
+        .select('*')
+        .order('statusId', { ascending: true });
 
-      const [status] = await db.execute(query);
-
-      return status;
+      if (error) throw error;
+      return data;
     } catch (err) {
       throw err;
     }
@@ -149,14 +125,12 @@ module.exports = class Tasks {
 
   static async updateTaskStatus(taskId, statusId) {
     try {
-      const query = `
-        UPDATE tasks 
-        SET statusId = ? 
-        WHERE taskId = ?;
-      `;
+      const { data, error } = await supabase
+        .from('tasks')
+        .update({ statusId })
+        .eq('taskId', taskId);
 
-      await db.execute(query, [statusId, taskId]);
-
+      if (error) throw error;
       return { message: "Task status updated successfully" };
     } catch (err) {
       throw err;
@@ -165,13 +139,11 @@ module.exports = class Tasks {
 
   static async addNewSprint(start_date, end_date, sprintName, projectId) {
     try {
-      const query = `
-        INSERT INTO sprints (start_date, end_date, sprintName, projectId)
-        VALUES (?, ?, ?, ?);
-      `;
+      const { data, error } = await supabase
+        .from('sprints')
+        .insert([{ start_date, end_date, sprintName, projectId }]);
 
-      await db.execute(query, [start_date, end_date, sprintName, projectId]);
-
+      if (error) throw error;
       return { message: "Insert Sprint successfully: " + sprintName };
     } catch (err) {
       throw err;
@@ -180,14 +152,12 @@ module.exports = class Tasks {
 
   static async updateSprint(sprintId, start_date, end_date, sprintName) {
     try {
-      const query = `
-            UPDATE sprints 
-            SET start_date = ?, end_date = ?, sprintName = ? 
-            WHERE sprintId = ?;
-        `;
+      const { data, error } = await supabase
+        .from('sprints')
+        .update({ start_date, end_date, sprintName })
+        .eq('sprintId', sprintId);
 
-      await db.execute(query, [start_date, end_date, sprintName, sprintId]);
-
+      if (error) throw error;
       return { message: "Updated Sprint successfully: " + sprintName };
     } catch (err) {
       throw err;
@@ -196,77 +166,45 @@ module.exports = class Tasks {
 
   static async updateTask(taskId, name, description, resUserId, sprintId, projectId, statusId, priority) {
     try {
-      const query = `
-        UPDATE tasks 
-        SET 
-          name = ?, 
-          description = ?, 
-          resUserId = ?, 
-          sprintId = ?, 
-          projectId = ?, 
-          statusId = ?, 
-          priority = ?
-        WHERE taskId = ?;
-      `;
+      const { data, error } = await supabase
+        .from('tasks')
+        .update({ name, description, resUserId, sprintId, projectId, statusId, priority })
+        .eq('taskId', taskId);
 
-      const values = [name, description, resUserId, sprintId, projectId, statusId, priority, taskId];
-
-      const [result] = await db.execute(query, values);
-      return result;
-    } catch (error) {
-      console.error("Error updating task:", error);
-      throw error;
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      console.error("Error updating task:", err);
+      throw err;
     }
   }
 
   static async insertTask(newTask) {
-    const query = `
-        INSERT INTO tasks (name, description, resUserId, sprintId, projectId, statusId, priority) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `;
-
-    if (!newTask.name) {
-      throw new Error('Task name is required');
-    }
-
-    const description = newTask.description && newTask.description.trim() ? newTask.description : null;
-
-    const values = [
-      newTask.name,
-      description,
-      newTask.resUserId || null,
-      newTask.sprintId || null,
-      newTask.projectId || null,
-      newTask.statusId || 1,
-      newTask.priority || null
-    ];
-
-    console.log("Inserting New Task Data:", values);
-
     try {
-      const [result] = await db.execute(query, values);
-      return result;
-    } catch (error) {
-      console.error("Error inserting task:", error);
+      const { data, error } = await supabase
+        .from('tasks')
+        .insert([newTask]);
+
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      console.error("Error inserting task:", err);
       throw new Error('Failed to insert task');
     }
   }
 
   static async deleteTask(taskId) {
     try {
-      const query = `
-            DELETE FROM tasks
-            WHERE taskId = ?;
-        `;
+      const { data, error } = await supabase
+        .from('tasks')
+        .delete()
+        .eq('taskId', taskId);
 
-      const values = [taskId];
-
-      const [result] = await db.execute(query, values);
-      return result;
-    } catch (error) {
-      console.error("Error deleting task:", error);
-      throw error;
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      console.error("Error deleting task:", err);
+      throw err;
     }
   }
-
 };
