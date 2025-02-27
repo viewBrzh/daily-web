@@ -5,52 +5,62 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Dashboard {
-
     static async getProjectDashboard(projectId) {
         try {
-            // Query for task status count
+            console.log(`Fetching dashboard for project: ${projectId}`);
+
             const { data: taskStatus, error: taskStatusError } = await supabase
                 .from('tasks')
-                .select('statusId, count(taskId)')
-                .eq('projectId', projectId)
-                .group('statusId')
-                .join('task_status', 'tasks.statusId', 'task_status.statusId')
-                .select('task_status.name, count(taskId)')
-                .group('task_status.name');
+                .select('status_id, task_status(name)')
+                .eq('project_id', projectId);
 
             if (taskStatusError) throw new Error('Error fetching task status count: ' + taskStatusError.message);
 
-            // Query for sprint progress dynamically
-            const { data: sprintProgress, error: sprintProgressError } = await supabase
-                .from('sprints')
-                .select('sprintName, count(taskId) AS totalTasks, json_agg(task_status.name) AS statusCount')
-                .eq('projectId', projectId)
-                .leftJoin('tasks', 'sprints.sprintId', 'tasks.sprintId')
-                .leftJoin('task_status', 'tasks.statusId', 'task_status.statusId')
-                .group('sprints.sprintId, task_status.name');
-
-            if (sprintProgressError) throw new Error('Error fetching sprint progress: ' + sprintProgressError.message);
-
-            // Parse the statusCount JSON string into a proper object
-            sprintProgress.forEach(sprint => {
-                if (sprint.statusCount) {
-                    sprint.statusCount = JSON.parse(sprint.statusCount);
-                }
+            const taskStatusCount = {};
+            taskStatus.forEach(task => {
+                const statusName = task.task_status?.name || 'Unknown';
+                taskStatusCount[statusName] = (taskStatusCount[statusName] || 0) + 1;
             });
 
-            // Query for project member count
+            const { data: sprintData, error: sprintError } = await supabase
+                .from('sprints')
+                .select('sprint_name, tasks(status_id, task_status(name))')
+                .eq('project_id', projectId);
+
+            if (sprintError) throw new Error('Error fetching sprint progress: ' + sprintError.message);
+
+            const sprintProgress = sprintData.map(sprint => {
+                const statusCount = {};
+                if (sprint.tasks) {
+                    sprint.tasks.forEach(task => {
+                        const statusName = task.task_status?.name || 'Unknown';
+                        statusCount[statusName] = (statusCount[statusName] || 0) + 1;
+                    });
+                }
+                return {
+                    sprintName: sprint.sprint_name,
+                    totalTasks: sprint.tasks?.length || 0,
+                    statusCount
+                };
+            });
+
             const { data: members, error: memberError } = await supabase
-                .from('projectMembers')
-                .select('role, count(*) AS count')
-                .eq('projectId', projectId)
-                .group('role');
+                .from('project_members')
+                .select('role')
+                .eq('project_id', projectId);
 
             if (memberError) throw new Error('Error fetching project member count: ' + memberError.message);
 
-            return { taskStatus, sprintProgress, members };
+            const memberCount = {};
+            members.forEach(member => {
+                const role = member.role || 'Unknown';
+                memberCount[role] = (memberCount[role] || 0) + 1;
+            });
+
+            return { taskStatus: taskStatusCount, sprintProgress, members: memberCount };
 
         } catch (err) {
-            console.log('Error:', err);
+            console.error('Error:', err.message);
             throw err;
         }
     }

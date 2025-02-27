@@ -151,19 +151,18 @@ exports.insertTask = async (req, res) => {
         const newTask = {
             name,
             description: description.trim() || null,
-            resUserId: resUserId || null,
-            sprintId: sprintId || null, 
-            projectId: parseInt(projectId) || null, 
-            statusId: statusId || 1,
+            res_user_id: resUserId || null,
+            sprint_id: sprintId || null, 
+            project_id: parseInt(projectId) || null, 
+            status_id: statusId || 1,
             priority: priority || null
         };
 
         console.log(newTask)
 
-        const result = await Tasks.insertTask(newTask);
+        await Tasks.insertTask(newTask);
         res.status(200).json({
             message: 'Task inserted successfully',
-            taskId: result.insertId,
         });
     } catch (error) {
         res.status(500).json({
@@ -176,8 +175,8 @@ exports.insertTask = async (req, res) => {
 exports.deleteTask = async (req, res) => {
     try {
         const taskId= req.body.taskId;
-        const status = await Tasks.deleteTask(taskId);
-        res.status(200).json(status);
+        await Tasks.deleteTask(taskId);
+        res.status(200).json("Delete task success");
     } catch (error) {
         res.status(500).json({
             message: 'Failed to delete task',
@@ -185,7 +184,6 @@ exports.deleteTask = async (req, res) => {
         });
     }
 };
-
 
 const formatDate = (date) => {
     const formattedDate = new Date(date);

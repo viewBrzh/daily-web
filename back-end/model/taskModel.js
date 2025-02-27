@@ -5,36 +5,13 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Tasks {
-  constructor(
-    taskId,
-    sprint,
-    name,
-    description,
-    resUserId,
-    projectId,
-    startDate,
-    endDate,
-    priority,
-    status
-  ) {
-    this.taskId = taskId;
-    this.sprint = sprint;
-    this.name = name;
-    this.description = description;
-    this.resUserId = resUserId;
-    this.projectId = projectId;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.priority = priority;
-    this.status = status;
-  }
 
-  static async getSprintByProject(projectId) {
+  static async getSprintByProject(project_id) {
     try {
       const { data, error } = await supabase
         .from('sprints')
-        .select('sprintId, start_date, end_date, sprintName, projectId')
-        .eq('projectId', projectId);
+        .select('sprint_id, start_date, end_date, sprint_name, project_id')
+        .eq('project_id', project_id);
       
       if (error) throw error;
       return data;
@@ -43,78 +20,109 @@ module.exports = class Tasks {
     }
   }
 
-  static async getCurrentSprint(projectId) {
+  static async getCurrentSprint(project_id) {
     try {
-      const { data: currentSprint, error } = await supabase
+      const { data: current_sprint, error } = await supabase
         .from('sprints')
-        .select('sprintId, start_date, end_date, sprintName, projectId')
-        .eq('projectId', projectId)
-        .gt('start_date', new Date())
+        .select('sprint_id, start_date, end_date, sprint_name, project_id')
+        .eq('project_id', project_id)
+        .gt('start_date', new Date().toISOString().split('T')[0]) // FIXED DATE FORMAT
         .order('start_date', { ascending: true })
         .limit(1);
       
       if (error) throw error;
-      if (currentSprint.length > 0) {
-        return currentSprint[0];
+      if (current_sprint.length > 0) {
+        return current_sprint[0];
       }
 
-      // If no current sprint, get the closest future sprint
-      const { data: closestSprint, error: closestError } = await supabase
+      const { data: closest_sprint, error: closest_error } = await supabase
         .from('sprints')
-        .select('sprintId, start_date, end_date, sprintName, projectId')
-        .eq('projectId', projectId)
+        .select('sprint_id, start_date, end_date, sprint_name, project_id')
+        .eq('project_id', project_id)
         .order('start_date', { ascending: true })
         .limit(1);
       
-      if (closestError) throw closestError;
-      return closestSprint.length > 0 ? closestSprint[0] : null;
+      if (closest_error) throw closest_error;
+      return closest_sprint.length > 0 ? closest_sprint[0] : null;
     } catch (err) {
       throw err;
     }
   }
 
-  static async getPersonFilterOption(sprintId) {
+  static async getPersonFilterOption(sprint_id) {
     try {
-      const { data, error } = await supabase
+      // First, fetch the task records for the given sprint_id to get the res_user_ids
+      const { data: tasks, error: tasksError } = await supabase
+        .from('tasks')
+        .select('res_user_id')
+        .eq('sprint_id', sprint_id);
+  
+      if (tasksError) throw tasksError;
+  
+      const userIds = tasks.map(task => task.res_user_id);
+  
+      if (userIds.length === 0) {
+        return []; 
+      }
+  
+      const { data: users, error: usersError } = await supabase
         .from('users')
-        .select('userId, username, fullName, empId')
-        .join('tasks', 'tasks.resUserId', 'users.userId')
-        .eq('tasks.sprintId', sprintId);
-
-      if (error) throw error;
-      return data.length > 0 ? data : [];
+        .select('user_id, email, full_name, emp_id')
+        .in('user_id', userIds);
+  
+      if (usersError) throw usersError;
+  
+      return users.length > 0 ? users : [];
     } catch (err) {
       console.error("Error fetching person filter options:", err);
       throw err;
     }
   }
-
-  static async getTask(sprintId, userId) {
+  
+  static async getTask(sprint_id, user_id) {
     try {
       let query = supabase
         .from('tasks')
-        .select('tasks.*, users.fullName AS resUserFullName')
-        .eq('tasks.sprintId', sprintId)
-        .leftJoin('users', 'tasks.resUserId', 'users.userId');
-      
-      if (userId !== 0) {
-        query = query.eq('tasks.resUserId', userId);
+        .select('*')
+        .eq('sprint_id', sprint_id);
+  
+      if (user_id !== 0) {
+        query = query.eq('res_user_id', user_id);
       }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
+  
+      const { data: tasks, error: tasksError } = await query;
+  
+      if (tasksError) throw tasksError;
+  
+      const userIds = tasks.map(task => task.res_user_id);
+      const { data: users, error: usersError } = await supabase
+        .from('users')
+        .select('user_id, full_name')
+        .in('user_id', userIds);
+  
+      if (usersError) throw usersError;
+  
+      const tasksWithUserNames = tasks.map(task => {
+        const user = users.find(u => u.user_id === task.res_user_id);
+        return {
+          ...task,
+          res_user_full_name: user ? user.full_name : null,
+        };
+      });
+  
+      return tasksWithUserNames;
     } catch (err) {
+      console.error("Error fetching tasks:", err);
       throw err;
     }
-  }
-
+  }  
+  
   static async getTaskStatus() {
     try {
       const { data, error } = await supabase
         .from('task_status')
         .select('*')
-        .order('statusId', { ascending: true });
+        .order('status_id', { ascending: true });
 
       if (error) throw error;
       return data;
@@ -123,12 +131,12 @@ module.exports = class Tasks {
     }
   }
 
-  static async updateTaskStatus(taskId, statusId) {
+  static async updateTaskStatus(task_id, status_id) {
     try {
       const { data, error } = await supabase
         .from('tasks')
-        .update({ statusId })
-        .eq('taskId', taskId);
+        .update({ status_id })
+        .eq('task_id', task_id);
 
       if (error) throw error;
       return { message: "Task status updated successfully" };
@@ -137,39 +145,39 @@ module.exports = class Tasks {
     }
   }
 
-  static async addNewSprint(start_date, end_date, sprintName, projectId) {
+  static async addNewSprint(start_date, end_date, sprint_name, project_id) {
     try {
       const { data, error } = await supabase
         .from('sprints')
-        .insert([{ start_date, end_date, sprintName, projectId }]);
+        .insert([{ start_date, end_date, sprint_name, project_id }]);
 
       if (error) throw error;
-      return { message: "Insert Sprint successfully: " + sprintName };
+      return { message: "Insert Sprint successfully: " + sprint_name };
     } catch (err) {
       throw err;
     }
   }
 
-  static async updateSprint(sprintId, start_date, end_date, sprintName) {
+  static async updateSprint(sprint_id, start_date, end_date, sprint_name) {
     try {
       const { data, error } = await supabase
         .from('sprints')
-        .update({ start_date, end_date, sprintName })
-        .eq('sprintId', sprintId);
+        .update({ start_date, end_date, sprint_name })
+        .eq('sprint_id', sprint_id);
 
       if (error) throw error;
-      return { message: "Updated Sprint successfully: " + sprintName };
+      return { message: "Updated Sprint successfully: " + sprint_name };
     } catch (err) {
       throw err;
     }
   }
 
-  static async updateTask(taskId, name, description, resUserId, sprintId, projectId, statusId, priority) {
+  static async updateTask(task_id, name, description, res_user_id, sprint_id, project_id, status_id, priority) {
     try {
       const { data, error } = await supabase
         .from('tasks')
-        .update({ name, description, resUserId, sprintId, projectId, statusId, priority })
-        .eq('taskId', taskId);
+        .update({ name, description, res_user_id, sprint_id, project_id, status_id, priority })
+        .eq('task_id', task_id);
 
       if (error) throw error;
       return data;
@@ -179,11 +187,11 @@ module.exports = class Tasks {
     }
   }
 
-  static async insertTask(newTask) {
+  static async insertTask(new_task) {
     try {
       const { data, error } = await supabase
         .from('tasks')
-        .insert([newTask]);
+        .insert([new_task]);
 
       if (error) throw error;
       return data;
@@ -193,12 +201,12 @@ module.exports = class Tasks {
     }
   }
 
-  static async deleteTask(taskId) {
+  static async deleteTask(task_id) {
     try {
       const { data, error } = await supabase
         .from('tasks')
         .delete()
-        .eq('taskId', taskId);
+        .eq('task_id', task_id);
 
       if (error) throw error;
       return data;
