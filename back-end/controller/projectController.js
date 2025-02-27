@@ -19,8 +19,8 @@ exports.getMyProject = async (req, res) => {
 
     res.status(200).json({
       projects: myProject.finalResults,
-      totalPage: myProject.totalPages,
-      totalRow: myProject.totalProjects,
+      total_page: myProject.totalPages,
+      total_row: myProject.totalProjects,
     });
   } catch (error) {
     res.status(500).json({

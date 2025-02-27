@@ -83,13 +83,13 @@ module.exports = class Project {
 
       // Map project data
       const mappedProjects = projectDataResults.map(project => ({
-        projectId: project.project_id,
-        projectCode: project.project_code,
+        project_id: project.project_id,
+        project_code: project.project_code,
         name: project.name,
         description: project.description,
-        startDate: formatDateToDDMMYYYY(project.start_date),
-        endDate: formatDateToDDMMYYYY(project.end_date),
-        lastUpdate: formatDate(project.updated_at),
+        start_date: formatDateToDDMMYYYY(project.start_date),
+        end_date: formatDateToDDMMYYYY(project.end_date),
+        updated: formatDate(project.updated),
         status: project.status,
       }));
 
@@ -129,7 +129,7 @@ module.exports = class Project {
 
           return {
             ...project,
-            role: rolesByProject[project.projectId] || "-",
+            role: rolesByProject[project.project_id] || "-",
             members: memberCount || 0,
             task: taskCount || 0,
           };

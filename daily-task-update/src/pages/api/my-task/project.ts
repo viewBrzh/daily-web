@@ -11,8 +11,8 @@ export const fetchProjects = async (userId: number, searchValue: string, current
     })
     return {
       projects: response.data.projects,
-      totalPage: response.data.totalPage,
-      totalRow: response.data.totalRow,
+      total_page: response.data.total_page,
+      total_row: response.data.total_row,
     };
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -22,10 +22,10 @@ export const fetchProjects = async (userId: number, searchValue: string, current
 
 export const addProject = async (project: NewProject, members: Member[]): Promise<number> => {
   try {
-    const users = members.map(({ userId, role }) => ({ userId, role }));
+    const users = members.map(({ user_id, role }) => ({ user_id, role }));
     console.log({project, users})
     const response = await axios.post<Project>(`/api/projects/addProject`, {project, users});
-    return response.data.projectId;
+    return response.data.project_id;
   } catch (error) {
     console.error('Error adding project:', error);
     throw error;

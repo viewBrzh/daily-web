@@ -17,7 +17,7 @@ const AddCalendarModal: React.FC<AddCalendarModalProps> = ({ date, isOpen, onClo
         description: "",
         location: "",
         date: date,
-        projectId: projectId,
+        project_id: projectId,
         created_by: createdBy,
         id: 0, // Or use a generated ID
     });
@@ -29,7 +29,7 @@ const AddCalendarModal: React.FC<AddCalendarModalProps> = ({ date, isOpen, onClo
     };
 
     const handleAdd = () => {
-        onAdd({ ...formData, projectId, created_by: createdBy });
+        onAdd({ ...formData, project_id: projectId, created_by: createdBy });
         onClose();
     };
 

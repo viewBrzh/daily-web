@@ -61,8 +61,8 @@ const MyTasks: React.FC = () => {
         const data = await fetchProjects(1, debouncedSearchValue, currentPage, sort);
         const projectData = data.projects;
         setProjects(projectData);
-        setTotalPage(data.totalPage);
-        settotalRow(data.totalRow);
+        setTotalPage(data.total_page);
+        settotalRow(data.total_row);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       }

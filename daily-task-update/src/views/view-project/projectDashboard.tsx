@@ -8,17 +8,17 @@ interface CalendarProps {
 }
 
 const initData: DashboardData = {
-    taskStatus: [
+    task_status: [
         { status: "Done", count: 0 },
         { status: "In-Progress", count: 0 },
         { status: "New", count: 0 },
         { status: "Pending", count: 0 }
     ],
-    sprintProgress: [
+    sprint_progress: [
         {
-            sprintName: "",
-            totalTasks: 0,
-            statusCount: {
+            sprint_name: "",
+            total_tasks: 0,
+            status_count: {
                 "Done": 0,
                 "In-Progress": 0,
                 "Pending": 0,

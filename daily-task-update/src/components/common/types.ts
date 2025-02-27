@@ -4,7 +4,7 @@ export interface Project {
   name: string;
   description: string;
   role: string;
-  last_update: string;
+  updated: string;
   status: string;
   members: number;
   task: number;
@@ -64,7 +64,7 @@ export interface ViewProject {
   project_id: number;
   name: string;
   description: string;
-  last_update: Date;
+  updated: Date;
   status: string;
   start_date: Date;
   end_date: Date;

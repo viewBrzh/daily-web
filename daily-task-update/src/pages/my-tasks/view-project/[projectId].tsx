@@ -14,32 +14,32 @@ import SprintBoard from '@/views/view-project/sprintBoard';
 
 const initialPageData = {
   project: {
-    projectCode: "",
-    projectId: 0,
+    project_code: "",
+    project_id: 0,
     name: "",
     description: "",
     start_date: new Date(),
     end_date: new Date(),
     status: "",
-    lastUpdate: new Date(),
+    updated: new Date(),
   },
   tasks: [
     {
-      taskId: 0,
+      task_id: 0,
       name: "",
       description: "",
-      statusId: 0,
-      resUserId: 0,
-      sprintId: 0,
-      projectId: 0,
-      resUserFullName: "",
+      status_id: 0,
+      res_user_id: 0,
+      sprint_id: 0,
+      project_id: 0,
+      res_user_full_name: "",
       priority: 0,
     }
   ],
   members: [
     {
-      fullName: "",
-      userId: 0,
+      full_name: "",
+      user_id: 0,
       role: "",
     }
   ],

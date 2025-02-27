@@ -15,14 +15,14 @@ interface OverviewProps {
 }
 
 interface NewMember {
-    userId: number;
-    fullName: string;
+    user_id: number;
+    full_name: string;
     role: string;
 }
 
 const initUpdateData = {
-    projectId: 0,
-    projectCode: "",
+    project_id: 0,
+    project_code: "",
     name: "",
     description: "",
     start_date: new Date(),
@@ -36,7 +36,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingMember, setIsEditingMember] = useState(false);
     const [teamMembers, setTeamMembers] = useState<Member[]>(memberData);
-    const [newMember, setNewMember] = useState<NewMember>({ userId: 0, fullName: "", role: "" });
+    const [newMember, setNewMember] = useState<NewMember>({ user_id: 0, full_name: "", role: "" });
     const [updateProjectData, setUpdateProjectData] = useState<UpdateProject>(initUpdateData);
 
     // No hooks are called conditionally here, just the state values are used conditionally.
@@ -67,17 +67,17 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
     };
 
     const handleUserSelect = (userId: number, fullName: string) => {
-        setNewMember({ ...newMember, fullName, userId });
+        setNewMember({ ...newMember, full_name: fullName, user_id: userId });
     };
 
     const handleAddMember = () => {
-        if (newMember.userId && newMember.fullName && newMember.role) {
+        if (newMember.user_id && newMember.full_name && newMember.role) {
             const updatedMembers = [
                 ...teamMembers,
-                { userId: newMember.userId, fullName: newMember.fullName, role: newMember.role, projectId: projectId },
+                { user_id: newMember.user_id, full_name: newMember.full_name, role: newMember.role, project_id: projectId },
             ];
             setTeamMembers(updatedMembers);
-            setNewMember({ userId: 0, fullName: "", role: "" });
+            setNewMember({ user_id: 0, full_name: "", role: "" });
         }
     };
 
@@ -100,8 +100,8 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
 
     const saveProjectChanges = async () => {
         const updateData = {
-            projectId: project.projectId,
-            projectCode: project.projectCode,
+            project_id: project.project_id,
+            project_code: project.project_code,
             name: project.name,
             description: project.description,
             start_date: project.start_date,
@@ -144,7 +144,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
                     <input type="text" name="name" value={project.name} onChange={handleChange} disabled={!isEditing} />
 
                     <label>Project Code:</label>
-                    <input type="text" name="projectCode" value={project.projectCode} onChange={handleChange} disabled={!isEditing} />
+                    <input type="text" name="project_code" value={project.project_code} onChange={handleChange} disabled={!isEditing} />
 
                     <label>Description:</label>
                     <input type="text" name="description" value={project.description} onChange={handleChange} disabled={!isEditing} />
@@ -192,7 +192,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
                             {teamMembers.map((member, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{member.fullName}</td>
+                                    <td>{member.full_name}</td>
                                     <td>
                                         {isEditingMember ? (
                                             <input

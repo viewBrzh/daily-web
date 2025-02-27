@@ -38,7 +38,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [newProject, setNewProject] = useState<NewProject>({
-    projectCode: "",
+    project_code: "",
     name: "",
     description: "",
     start_date: new Date(),
@@ -52,7 +52,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   // Validation logic
   const validatePageOne = () => {
     const validationErrors: Record<string, string> = {};
-    if (!newProject.projectCode.trim()) validationErrors.projectCode = "Project Code is required";
+    if (!newProject.project_code.trim()) validationErrors.projectCode = "Project Code is required";
     if (!newProject.name.trim()) validationErrors.name = "Project Name is required";
     if (!newProject.start_date) validationErrors.start_date = "Start Date is required";
     if (!newProject.end_date) validationErrors.end_date = "End Date is required";
@@ -85,8 +85,8 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const handleAddMember = () => {
     if (newMember.name && newMember.role) {
       setTeamMembers([...teamMembers, {
-        userId: newMember.userId,
-        fullName: newMember.name,
+        user_id: newMember.userId,
+        full_name: newMember.name,
         role: newMember.role,
       }]);
       setNewMember({ userId: 0, name: "", role: "" });
@@ -128,8 +128,8 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter project code"
-              value={newProject.projectCode}
-              onChange={(e) => setNewProject({ ...newProject, projectCode: e.target.value })}
+              value={newProject.project_code}
+              onChange={(e) => setNewProject({ ...newProject, project_code: e.target.value })}
               required
             />
             {errors.projectCode && <span className={styles.error}>{errors.projectCode}</span>}
@@ -212,7 +212,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 {teamMembers.map((member, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{member.fullName}</td>
+                    <td>{member.full_name}</td>
                     <td>{member.role}</td>
                     <td style={{ textAlign: "center" }}>
                       <button

@@ -14,7 +14,7 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
   const [isDataReady, setIsDataReady] = useState(false);
 
   useEffect(() => {
-    if (data && data.taskStatus && data.sprintProgress && data.members) {
+    if (data && data.task_status && data.sprint_progress && data.members) {
       setIsDataReady(true);
     }
   }, [data]);
@@ -25,11 +25,11 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
 
   // Data for Task Status Pie Chart
   const taskStatusData = {
-    labels: Object.keys(data.taskStatus), // Get the keys of taskStatus object as labels
+    labels: Object.keys(data.task_status), // Get the keys of taskStatus object as labels
     datasets: [
       {
         label: 'Task Status Count',
-        data: Object.values(data.taskStatus).map(status => Number(status)), // Convert to number
+        data: Object.values(data.task_status).map(status => Number(status)), // Convert to number
         backgroundColor: [
           'rgb(255, 99, 132)',
           'rgb(54, 162, 235)',
@@ -45,26 +45,26 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
 
   // Data for Sprint Progress Stacked Bar Chart
   const sprintProgressData = {
-    labels: Array.isArray(data.sprintProgress) ? data.sprintProgress.map(sprint => sprint.sprintName) : [],
+    labels: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.sprint_name) : [],
     datasets: [
       {
         label: 'Done',
-        data: Array.isArray(data.sprintProgress) ? data.sprintProgress.map(sprint => sprint.statusCount?.Done || 0) : [],
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.Done || 0) : [],
         backgroundColor: 'rgb(255, 99, 132)',
       },
       {
         label: 'In-Progress',
-        data: Array.isArray(data.sprintProgress) ? data.sprintProgress.map(sprint => sprint.statusCount?.['In-Progress'] || 0) : [],
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.['In-Progress'] || 0) : [],
         backgroundColor: 'rgb(54, 162, 235)',
       },
       {
         label: 'Pending',
-        data: Array.isArray(data.sprintProgress) ? data.sprintProgress.map(sprint => sprint.statusCount?.Pending || 0) : [],
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.Pending || 0) : [],
         backgroundColor: 'rgb(255, 206, 86)',
       },
       {
         label: 'New',
-        data: Array.isArray(data.sprintProgress) ? data.sprintProgress.map(sprint => sprint.statusCount?.New || 0) : [],
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.New || 0) : [],
         backgroundColor: 'rgb(75, 192, 192)',
       }
     ]
@@ -104,7 +104,7 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
                   callbacks: {
                     label: (tooltipItem) => {
                       const value = tooltipItem.raw as number;
-                      return `${tooltipItem.label}: ${value} tasks (${((value / Object.values(data.taskStatus).reduce((sum, item) => sum + Number(item), 0)) * 100).toFixed(2)}%)`;
+                      return `${tooltipItem.label}: ${value} tasks (${((value / Object.values(data.task_status).reduce((sum, item) => sum + Number(item), 0)) * 100).toFixed(2)}%)`;
                     }
                   }
                 },

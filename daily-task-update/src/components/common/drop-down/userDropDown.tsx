@@ -54,11 +54,11 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ onSelectUser }) => {
           {suggestions.length > 0 ? (
             suggestions.map((user) => (
               <li
-                key={user.userId}
-                onClick={() => handleSelect(user.fullName, user.userId)}
+                key={user.user_id}
+                onClick={() => handleSelect(user.full_name, user.user_id)}
                 className={styles.dropdownItem}
               >
-                {user.fullName}
+                {user.full_name}
               </li>
             ))
           ) : (
