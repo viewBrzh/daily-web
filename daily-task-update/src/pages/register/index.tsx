@@ -6,6 +6,7 @@ import Link from "next/link";
 const Register = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [nickName, setNickName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -23,7 +24,7 @@ const Register = () => {
             return;
         }
 
-        const fullName = firstName + " " + lastName;
+        const fullName = firstName + " " + lastName + " " + nickName;
 
         const response = await fetch("/api/auth/signUp", {
             method: "POST",
@@ -75,6 +76,13 @@ const Register = () => {
                                     className={styles.input}
                                 />
                             </div>
+                            <input
+                                type="text"
+                                placeholder="Nickname"
+                                value={nickName}
+                                onChange={(e) => setNickName(e.target.value)}
+                                className={styles.input}
+                            />
                             <input
                                 type="email"
                                 placeholder="Email"
