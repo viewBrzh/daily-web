@@ -41,19 +41,19 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
 
     return (
         <>
-            <Droppable key={statusItem.statusId} droppableId={statusItem.statusId.toString()}>
+            <Droppable key={statusItem.status_id} droppableId={statusItem.status_id?.toString()}>
                 {(provided) => (
                     <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`${styles.statusColumn} ${draggingColumn === statusItem.statusId.toString() ? styles.draggingOver : ""
+                        className={`${styles.statusColumn} ${draggingColumn === statusItem.status_id?.toString() ? styles.draggingOver : ""
                             }`}
                     >
                         <div className={styles.header}>{statusItem.name}</div>
                         {tasks
-                            .filter((task) => task.statusId === statusItem.statusId)
+                            .filter((task) => task.status_id === statusItem.status_id)
                             .map((task, index) => (
-                                <Draggable key={task.taskId} draggableId={task.taskId.toString()} index={index}>
+                                <Draggable key={task.task_id} draggableId={task.task_id?.toString()} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
@@ -64,7 +64,7 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
                                         >
                                             <div className={styles.head}>
                                                 <div className={styles.name}>
-                                                    <strong>{task.taskId}</strong> {task.name}
+                                                    <strong>{task.task_id}</strong> {task.name}
                                                 </div>
                                                 <button
                                                     className={styles.edit}
@@ -81,8 +81,8 @@ const DragDropTaskColumn: React.FC<DragDropTaskColumnProps> = ({
                                                 {statusItem.name}
                                             </div>
                                             <div className={styles.resUser}>
-                                                {task.resUserFullName && <SmallUserProfileIcon fullName={task.resUserFullName} />}
-                                                <span style={{ margin: "auto 0" }}>{task.resUserFullName}</span>
+                                                {task.res_user_full_name && <SmallUserProfileIcon fullName={task.res_user_full_name} />}
+                                                <span style={{ margin: "auto 0" }}>{task.res_user_full_name}</span>
                                             </div>
                                             <div className={styles.priority}>{task.priority}</div>
                                         </div>

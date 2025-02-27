@@ -59,8 +59,7 @@ module.exports = class Project {
         .from('projects')
         .select('project_id', { count: 'exact' })
         .in('project_id', projectIds)
-        .ilike('name', `%${searchValue}%`)
-        .ilike('project_code', `%${searchValue}%`);
+        .ilike('name', `%${searchValue}%`);
 
       if (totalProjectsError) throw new Error('Error fetching project count: ' + totalProjectsError.message);
 
@@ -73,7 +72,6 @@ module.exports = class Project {
         .select('*')
         .in('project_id', projectIds)
         .ilike('name', `%${searchValue}%`)
-        .ilike('project_code', `%${searchValue}%`)
         .order(sortColumn, { ascending: sortOrder === 'asc' })
         .range(offset, offset + itemPerPage - 1);
 

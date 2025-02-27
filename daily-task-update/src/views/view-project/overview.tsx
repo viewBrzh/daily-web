@@ -11,7 +11,6 @@ import { updateProject } from "@/pages/api/my-task/project";
 interface OverviewProps {
     projectData: ViewProject;
     memberData: Member[];
-    isOverview: string;
     projectId: string;
 }
 
@@ -31,8 +30,7 @@ const initUpdateData = {
     status: "",
 }
 
-const Overview: React.FC<OverviewProps> = ({ projectData, memberData, isOverview, projectId }) => {
-    if (isOverview !== "Overview") return null;
+const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId }) => {
 
     const [project, setProject] = useState<ViewProject>(projectData);
     const [isEditing, setIsEditing] = useState(false);

@@ -31,12 +31,11 @@ const Header: React.FC = () => {
         router.push("/login");
       } else {
         setAuthenticated(true);
-        setFullName(name); // Set fullName only when in client-side
+        setFullName(name);
       }
     }
   }, []);
 
-  // ✅ Instead of returning early, show loading conditionally
   if (authenticated === null) {
     return <p>Loading...</p>;
   }
@@ -46,13 +45,9 @@ const Header: React.FC = () => {
       <div className={styles.logo}>
         <Link href="/"><img src="/logo/logo-name.png" className={styles.logo} alt="Logo" /></Link>
       </div>
-      <nav>
-        {/* Navigation links can go here */}
-      </nav>
       <div className={styles.userInfo}>
         <span>{fullName}</span>
         <BigUserProfileIcon fullName={fullName ? fullName : ""} />
-
         <button className={styles.signOutBtn} onClick={logout}>Sign Out</button>
       </div>
     </header>

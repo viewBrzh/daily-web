@@ -46,7 +46,6 @@ const initialPageData = {
 };
 
 const iconTabs = [faBarsProgress, faChartPie, faTachometerAlt, faCalendarDays];
-
 const tabs = ["Overview", "Dashboard", "Sprint", "Calendar"];
 
 const ViewProjectPage = () => {
@@ -58,18 +57,20 @@ const ViewProjectPage = () => {
   const [members, setMembers] = useState<Member[]>(pageData.members);
   const [activeTab, setActiveTab] = useState("Overview");
 
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
+    // Check if the router and projectId are ready
     if (!router.isReady || !projectId) return;
 
-
+    // Fetch the project data when projectId is ready
     const fetchData = async () => {
       try {
         const res = await getViewProject(projectId.toString(), 1);
         setPageData(await res);
       } catch (error) {
         console.error('Error fetching project data:', error);
+        alert("Error fetching project data. Please try again.");
       }
     };
 
@@ -82,22 +83,24 @@ const ViewProjectPage = () => {
   }, [pageData]);
 
   useEffect(() => {
+    // Check localStorage for token to determine if user is authenticated
     const token = localStorage.getItem("token");
     if (!token) {
-      router.push("/login");
+      router.push("/login"); // Redirect to login if no token
     } else {
-      setAuthenticated(true);
+      setAuthenticated(true); // Set authenticated to true if token exists
     }
-  }, []);
+  }, [router]);
 
-  // ✅ Instead of returning early, show loading conditionally
-  if (authenticated === null) {
-    return <p>Loading...</p>;
+  // Show loading state while checking for authentication
+  if (authenticated === false) {
+    return <p>Loading...</p>; // Render loading message if not authenticated
   }
 
   return (
     <Layout>
       <PageContainer title={project.name}>
+        {/* Tab bar */}
         <div className={styles.tabBar}>
           {tabs.map((tab, index) => (
             <div
@@ -105,15 +108,17 @@ const ViewProjectPage = () => {
               className={`${styles.tab} ${activeTab === tab ? styles.active : ""}`}
               onClick={() => setActiveTab(tab)}
             >
-              <FontAwesomeIcon className={styles.icon} icon={iconTabs[index]} />  {tab}
+              <FontAwesomeIcon className={styles.icon} icon={iconTabs[index]} /> {tab}
             </div>
           ))}
         </div>
+
+        {/* Content containers based on active tab */}
         <div className={styles.contentContainer}>
-          <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectIdStr} />
-          <ProjectCalendar isCalendar={activeTab} projectId={projectIdStr} />
-          <ProjectDashboard isDashboard={activeTab} projectId={projectIdStr} />
-          <SprintBoard isSprint={activeTab} projectId={projectIdStr} />
+          {activeTab === "Overview" && <Overview projectId={projectIdStr} projectData={project} memberData={members} />}
+          {activeTab === "Calendar" && <ProjectCalendar projectId={projectIdStr} />}
+          {activeTab === "Dashboard" && <ProjectDashboard projectId={projectIdStr} />}
+          {activeTab === "Sprint" && <SprintBoard projectId={projectIdStr} />}
         </div>
       </PageContainer>
     </Layout>

@@ -4,7 +4,6 @@ import { getProjectDashboard } from "@/pages/api/my-task/dashboard";
 import React, { useEffect, useState } from "react";
 
 interface CalendarProps {
-    isDashboard: string;
     projectId: string;
 }
 
@@ -32,11 +31,10 @@ const initData: DashboardData = {
     ]
 };
 
-const ProjectDashboard: React.FC<CalendarProps> = ({ isDashboard, projectId }) => {
+const ProjectDashboard: React.FC<CalendarProps> = ({  projectId }) => {
     const [dashboardData, setDashboardData] = useState<DashboardData>(initData);
 
     useEffect(() => {
-        if (isDashboard !== "Dashboard") return;  // Conditional check inside useEffect only
 
         const fetchData = async () => {
             try {
@@ -48,9 +46,7 @@ const ProjectDashboard: React.FC<CalendarProps> = ({ isDashboard, projectId }) =
         };
 
         fetchData();
-    }, [isDashboard, projectId]);  // Depend on `isDashboard` and `projectId`
-
-    if (isDashboard !== "Dashboard") return null;  // Early return based on the condition
+    }, [projectId]); 
 
     return (
         <DashboardCharts data={dashboardData} />
