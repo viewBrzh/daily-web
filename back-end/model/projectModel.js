@@ -222,54 +222,54 @@ module.exports = class Project {
     }
   }  
   
-  static async getViewProject(projectId, userId) {
-    try {
-      if (!projectId || !userId) {
-        throw new Error("projectId and userId are required");
-      }
+    static async getViewProject(projectId, userId) {
+      try {
+        if (!projectId || !userId) {
+          throw new Error("projectId and userId are required");
+        }
 
-      console.log("Fetching project details for:", { projectId, userId });
+        console.log("Fetching project details for:", { projectId, userId });
 
-      // Fetch the project details
-      const { data: projectResult, error: projectError } = await supabase
-        .from('projects')
-        .select('project_id, project_code, name, description, start_date, end_date, status, created_at, updated_at')
-        .eq('project_id', projectId);
+        // Fetch the project details
+        const { data: projectResult, error: projectError } = await supabase
+          .from('projects')
+          .select('project_id, project_code, name, description, start_date, end_date, status, created_at, updated_at')
+          .eq('project_id', projectId);
 
-      if (projectError) throw new Error(projectError.message);
+        if (projectError) throw new Error(projectError.message);
 
-      if (!projectResult || projectResult.length === 0) {
-        return { message: 'Project not found' };
-      }
+        if (!projectResult || projectResult.length === 0) {
+          return { message: 'Project not found' };
+        }
 
-      // Fetch the tasks related to the user for the given project
-      const { data: mytasksResult, error: tasksError } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('res_user_id', userId)
-        .eq('project_id', projectId);
+        // Fetch the tasks related to the user for the given project
+        const { data: mytasksResult, error: tasksError } = await supabase
+          .from('tasks')
+          .select('*')
+          .eq('res_user_id', userId)
+          .eq('project_id', projectId);
 
-      if (tasksError) throw new Error(tasksError.message);
+        if (tasksError) throw new Error(tasksError.message);
 
-      // Fetch all members for the project
-      const { data: projectMembers, error: membersError } = await supabase
+        // Fetch all members for the project
+        const { data: projectMembers, error: membersError } = await supabase
         .from('project_members')
-        .select('user_id, role, user_id, users(full_name')
+        .select('user_id, role, users(full_name)')
         .eq('project_id', projectId);
 
-      if (membersError) throw new Error(membersError.message);
+        if (membersError) throw new Error(membersError.message);
 
-      return {
-        projectResult: projectResult[0],
-        mytasksResult: mytasksResult || [],
-        projectMembers: projectMembers || []
-      };
+        return {
+          projectResult: projectResult[0],
+          mytasksResult: mytasksResult || [],
+          projectMembers: projectMembers || []
+        };
 
-    } catch (error) {
-      console.error("Error fetching project details:", error.message);
-      throw new Error('Error fetching project details: ' + error.message);
+      } catch (error) {
+        console.error("Error fetching project details:", error.message);
+        throw new Error('Error fetching project details: ' + error.message);
+      }
     }
-  }
 
   static async updateProject(projectId, projectCode, name, description, start_date, end_date, status) {
     try {
