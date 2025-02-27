@@ -99,10 +99,6 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
         setTeamMembers(memberData);
     }, [projectData, memberData]);
 
-    useEffect(() => {
-        console.log(projectData)
-    })
-
     const saveProjectChanges = async () => {
         const updateData = {
             project_id: project.project_id,

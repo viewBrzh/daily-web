@@ -100,7 +100,7 @@ const ViewProjectPage = () => {
 
   // Show loading state while checking for authentication
   if (authenticated === false) {
-    setIsLoading(true); // Render loading message if not authenticated
+    return <div>Loading...</div> // Render loading message if not authenticated
   }
 
   return (
