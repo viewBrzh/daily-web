@@ -24,7 +24,7 @@ const Register = () => {
             return;
         }
 
-        const fullName = firstName + " " + lastName + " " + nickName;
+        const fullName = firstName + " " + lastName + " (" + nickName + ")";
 
         const response = await fetch("/api/auth/signUp", {
             method: "POST",
