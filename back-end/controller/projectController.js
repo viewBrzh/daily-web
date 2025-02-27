@@ -32,15 +32,15 @@ exports.getMyProject = async (req, res) => {
 
 exports.addProject = async (req, res) => {
   try {
-    const { projectCode, name, description, start_date, end_date } = req.body.project;
+    const { project_code, name, description, start_date, end_date } = req.body.project;
     const users = req.body.users;
 
-    console.log(users, projectCode, name, description, start_date, end_date);
+    console.log(users, project_code, name, description, start_date, end_date);
 
     // Check if all required fields are present
-    if (!projectCode || !name || !start_date || !end_date) {
+    if (!project_code || !name || !start_date || !end_date) {
       return res.status(400).json({
-        message: 'Missing required fields: projectCode, name, description, start_date, end_date',
+        message: 'Missing required fields: project_code, name, description, start_date, end_date',
       });
     }
 
@@ -52,12 +52,12 @@ exports.addProject = async (req, res) => {
     const endDate = end_date?.slice(0, 19).replace('T', ' ');
 
     // Add the project and get its ID
-    const projectId = await ProjectModel.addProject(projectCode, name, descriptionValue, startDate, endDate);
+    const projectId = await ProjectModel.addProject(project_code, name, descriptionValue, startDate, endDate);
 
     if (!Array.isArray(users) || users.length === 0) {
       return res.status(201).json({
         message: 'Project added successfully',
-        project: { projectId, projectCode, name, description, start_date, end_date }
+        project: { projectId, project_code, name, description, start_date, end_date }
       });
     }
 
@@ -67,7 +67,7 @@ exports.addProject = async (req, res) => {
     // Return success with project and members details
     res.status(201).json({
       message: 'Project added successfully',
-      project: { projectId, projectCode, name, description, start_date, end_date },
+      project: { projectId, project_code, name, description, start_date, end_date },
       membersRes
     });
   } catch (error) {

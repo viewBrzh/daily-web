@@ -89,7 +89,7 @@ module.exports = class Project {
         description: project.description,
         start_date: formatDateToDDMMYYYY(project.start_date),
         end_date: formatDateToDDMMYYYY(project.end_date),
-        updated: formatDate(project.updated),
+        updated: formatDate(project.updated_at),
         status: project.status,
       }));
 
@@ -108,25 +108,24 @@ module.exports = class Project {
         return acc;
       }, {});
 
-      // Combine project data with roles
       const finalResults = await Promise.all(
         mappedProjects.map(async (project) => {
           // Query for member count
           const { count: memberCount, error: memberCountError } = await supabase
             .from('project_members')
             .select('user_id', { count: 'exact' })
-            .eq('project_id', project.projectId);
-
+            .eq('project_id', project.project_id);  // Fix here
+      
           if (memberCountError) throw new Error('Error fetching member count: ' + memberCountError.message);
-
+      
           // Query for task count
           const { count: taskCount, error: taskCountError } = await supabase
             .from('tasks')
             .select('task_id', { count: 'exact' })
-            .eq('project_id', project.projectId);
-
+            .eq('project_id', project.project_id);  // Fix here
+      
           if (taskCountError) throw new Error('Error fetching task count: ' + taskCountError.message);
-
+      
           return {
             ...project,
             role: rolesByProject[project.project_id] || "-",
@@ -134,7 +133,7 @@ module.exports = class Project {
             task: taskCount || 0,
           };
         })
-      );
+      );      
 
       return { finalResults, totalPages, totalProjects };
     } catch (error) {
@@ -185,7 +184,7 @@ module.exports = class Project {
       }
   
       // Now check if the users exist
-      const userIds = members.map(member => member.userId);
+      const userIds = members.map(member => member.user_id);
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('user_id')
@@ -202,7 +201,7 @@ module.exports = class Project {
       // If both project and users exist, insert members
       const memberInsertData = members.map(member => ({
         project_id: projectId,
-        user_id: member.userId,
+        user_id: member.user_id,
         role: member.role,
       }));
   

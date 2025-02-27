@@ -4,7 +4,8 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-class Dashboard {
+
+module.exports = class Dashboard {
     static async getProjectDashboard(projectId) {
         try {
             console.log(`Fetching dashboard for project: ${projectId}`);
@@ -73,5 +74,3 @@ class Dashboard {
         }
     }
 }
-
-export default Dashboard;

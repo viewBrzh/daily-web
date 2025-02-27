@@ -12,7 +12,7 @@ module.exports = class Tasks {
         .from('sprints')
         .select('sprint_id, start_date, end_date, sprint_name, project_id')
         .eq('project_id', project_id);
-      
+
       if (error) throw error;
       return data;
     } catch (err) {
@@ -29,7 +29,7 @@ module.exports = class Tasks {
         .gt('start_date', new Date().toISOString().split('T')[0]) // FIXED DATE FORMAT
         .order('start_date', { ascending: true })
         .limit(1);
-      
+
       if (error) throw error;
       if (current_sprint.length > 0) {
         return current_sprint[0];
@@ -41,7 +41,7 @@ module.exports = class Tasks {
         .eq('project_id', project_id)
         .order('start_date', { ascending: true })
         .limit(1);
-      
+
       if (closest_error) throw closest_error;
       return closest_sprint.length > 0 ? closest_sprint[0] : null;
     } catch (err) {
@@ -51,78 +51,92 @@ module.exports = class Tasks {
 
   static async getPersonFilterOption(sprint_id) {
     try {
-      // First, fetch the task records for the given sprint_id to get the res_user_ids
+      // Fetch tasks to get res_user_ids
       const { data: tasks, error: tasksError } = await supabase
         .from('tasks')
         .select('res_user_id')
         .eq('sprint_id', sprint_id);
-  
+
       if (tasksError) throw tasksError;
-  
-      const userIds = tasks.map(task => task.res_user_id);
-  
+
+      // Extract unique user IDs, excluding null values
+      const userIds = [...new Set(tasks.map(task => task.res_user_id).filter(id => id !== null))];
+
       if (userIds.length === 0) {
-        return []; 
+        return []; // No valid user IDs, return empty array
       }
-  
+
+      // Fetch user details for valid user IDs
       const { data: users, error: usersError } = await supabase
         .from('users')
         .select('user_id, email, full_name, emp_id')
         .in('user_id', userIds);
-  
+
       if (usersError) throw usersError;
-  
-      return users.length > 0 ? users : [];
+
+      return users || [];
     } catch (err) {
       console.error("Error fetching person filter options:", err);
       throw err;
     }
   }
-  
+
   static async getTask(sprint_id, user_id) {
     try {
       let query = supabase
         .from('tasks')
         .select('*')
         .eq('sprint_id', sprint_id);
-  
+
       if (user_id !== 0) {
         query = query.eq('res_user_id', user_id);
       }
-  
+
       const { data: tasks, error: tasksError } = await query;
-  
       if (tasksError) throw tasksError;
-  
-      const userIds = tasks.map(task => task.res_user_id);
-      const { data: users, error: usersError } = await supabase
-        .from('users')
-        .select('user_id, full_name')
-        .in('user_id', userIds);
-  
-      if (usersError) throw usersError;
-  
+
+      let users = [];
+
+      if (tasks.length > 0) {
+        // Get unique user IDs, excluding null values
+        const userIds = [...new Set(tasks.map(task => task.res_user_id).filter(id => id !== null))];
+
+        if (userIds.length > 0) {
+          const { data: usersData, error: usersError } = await supabase
+            .from('users')
+            .select('user_id, full_name')
+            .in('user_id', userIds);
+
+          if (usersError) throw usersError;
+          users = usersData || [];
+        }
+      }
+
       const tasksWithUserNames = tasks.map(task => {
+        if (task.res_user_id === null) {
+          return { ...task, res_user_full_name: null };  // Handle null case explicitly
+        }
+
         const user = users.find(u => u.user_id === task.res_user_id);
         return {
           ...task,
           res_user_full_name: user ? user.full_name : null,
         };
       });
-  
+
       return tasksWithUserNames;
     } catch (err) {
       console.error("Error fetching tasks:", err);
       throw err;
     }
-  }  
-  
+  }
+
   static async getTaskStatus() {
     try {
       const { data, error } = await supabase
         .from('task_status')
         .select('*')
-        .order('status_id', { ascending: true });
+        .order('status_id', { ascending: false });
 
       if (error) throw error;
       return data;
