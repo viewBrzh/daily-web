@@ -42,8 +42,6 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
     
     const [isLoading, setIsLoading] = useState(false);
 
-    // No hooks are called conditionally here, just the state values are used conditionally.
-
     const handleEdit = () => setIsEditing(true);
     const handleCancel = () => {
         setProject(projectData); // Reset changes
@@ -101,6 +99,10 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
         setTeamMembers(memberData);
     }, [projectData, memberData]);
 
+    useEffect(() => {
+        console.log(projectData)
+    })
+
     const saveProjectChanges = async () => {
         const updateData = {
             project_id: project.project_id,
@@ -112,8 +114,8 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
             status: project.status,
         }
         setUpdateProjectData(updateData);
-        updateProject(updateData);
-        console.log(updateProjectData);
+        const response = await updateProject(updateData);
+        console.log(response);
     };
 
     const saveTeamMembersChanges = async () => {

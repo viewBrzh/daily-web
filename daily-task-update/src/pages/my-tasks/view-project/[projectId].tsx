@@ -73,6 +73,8 @@ const ViewProjectPage = () => {
         const user_id = localStorage.getItem("user_id");
         const res = await getViewProject(projectId.toString(), parseInt(user_id || "0"));
         setPageData(res);
+        setProject(res.project);
+        setMembers(res.members)
       } catch (error) {
         console.error('Error fetching project data:', error);
         alert("Error fetching project data. Please try again.");
@@ -98,7 +100,7 @@ const ViewProjectPage = () => {
 
   // Show loading state while checking for authentication
   if (authenticated === false) {
-    return <p>Loading...</p>; // Render loading message if not authenticated
+    setIsLoading(true); // Render loading message if not authenticated
   }
 
   return (
