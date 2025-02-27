@@ -254,7 +254,7 @@ module.exports = class Project {
       // Fetch all members for the project
       const { data: projectMembers, error: membersError } = await supabase
         .from('project_members')
-        .select('user_id, role')
+        .select('user_id,  full_name, role')
         .eq('project_id', projectId);
 
       if (membersError) throw new Error(membersError.message);
