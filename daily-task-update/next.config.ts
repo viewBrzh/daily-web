@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'daily-web-api.vercel.app/:path*', // Proxy to your backend server
+        destination: 'https://daily-web-api.vercel.app/:path*', // Proxy to your backend server
       },
     ];
   },

@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY;  // Ensure this key is set in your environment
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;  
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 class AuthModel {
