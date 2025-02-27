@@ -193,7 +193,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
                             {teamMembers.map((member, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{member.full_name}</td>
+                                    <td>{member.users.full_name}</td>
                                     <td>
                                         {isEditingMember ? (
                                             <input
