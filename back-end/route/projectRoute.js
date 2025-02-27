@@ -11,5 +11,6 @@ router.post('/getMyProjectLists', ProjectController.getMyProject);
 router.post('/addProject', ProjectController.addProject);
 router.post('/getViewProject', ProjectController.getViewProject);
 router.post('/updateProject', ProjectController.updateProject);
+router.post('/getAllProject', ProjectController.getAllProject);
 
 module.exports = router;

@@ -1,4 +1,8 @@
-const db = require('../util/db');
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Project {
   constructor(projectId, name, lastUpdate, status) {
@@ -14,25 +18,29 @@ module.exports = class Project {
       const offset = (page - 1) * itemPerPage;
 
       // Query to fetch tasks for the user
-      const memberQuery = `SELECT * FROM projectMembers WHERE userId = ${resUserId}`;
-      const [memberResult] = await db.execute(memberQuery);
+      const { data: memberResult, error: memberError } = await supabase
+        .from('project_members')
+        .select('project_id')
+        .eq('user_id', resUserId);
+
+      if (memberError) throw new Error('Error fetching member tasks: ' + memberError.message);
 
       // Map project IDs from the tasks
-      const projectIds = memberResult.map(task => task.projectId);
+      const projectIds = memberResult.map(task => task.project_id);
 
       if (projectIds.length === 0) {
         return { message: "No tasks found for this user." };
       }
 
       // Build the WHERE clause to filter by name or code
-      let filterConditions = `projectId IN (${projectIds.join(",")})`;
+      let filterConditions = `project_id IN (${projectIds.join(",")})`;
       if (searchValue) {
-        filterConditions += ` AND (name LIKE '%${searchValue}%' OR projectCode LIKE '%${searchValue}%')`;
+        filterConditions += ` AND (name ILIKE '%${searchValue}%' OR project_code ILIKE '%${searchValue}%')`;
       }
 
       // Determine sort column based on input
-      let sortOrder = 'ASC';
-      let sortColumn;
+      let sortOrder = 'asc';
+      let sortColumn = 'updated_at';
       switch (sortBy) {
         case "name":
           sortColumn = "name";
@@ -43,29 +51,33 @@ module.exports = class Project {
         case "last-updated":
         default:
           sortColumn = "updated_at";
-          sortOrder = "DESC"
+          sortOrder = "desc";
       }
 
       // Query to fetch the total count of projects that match the filter
-      const queryProjectCount = `
-        SELECT COUNT(*) AS totalProjects
-        FROM projects 
-        WHERE ${filterConditions}
-      `;
-      const [totalProjectsResult] = await db.execute(queryProjectCount);
-      const totalProjects = totalProjectsResult[0].totalProjects;
+      const { count: totalProjects, error: totalProjectsError } = await supabase
+        .from('projects')
+        .select('project_id', { count: 'exact' })
+        .in('project_id', projectIds)
+        .ilike('name', `%${searchValue}%`)
+        .ilike('project_code', `%${searchValue}%`);
+
+      if (totalProjectsError) throw new Error('Error fetching project count: ' + totalProjectsError.message);
 
       // Calculate the total number of pages
       const totalPages = Math.ceil(totalProjects / itemPerPage);
 
       // Query to fetch projects with sorting, LIMIT, and OFFSET
-      const queryProjectData = `
-        SELECT * FROM projects 
-        WHERE ${filterConditions} 
-        ORDER BY ${sortColumn} ${sortOrder} 
-        LIMIT ${itemPerPage} OFFSET ${offset}
-      `;
-      const [projectDataResults] = await db.execute(queryProjectData);
+      const { data: projectDataResults, error: projectDataError } = await supabase
+        .from('projects')
+        .select('*')
+        .in('project_id', projectIds)
+        .ilike('name', `%${searchValue}%`)
+        .ilike('project_code', `%${searchValue}%`)
+        .order(sortColumn, { ascending: sortOrder === 'asc' })
+        .range(offset, offset + itemPerPage - 1);
+
+      if (projectDataError) throw new Error('Error fetching project data: ' + projectDataError.message);
 
       if (projectDataResults.length === 0) {
         return { message: "No projects found with the given search criteria." };
@@ -73,8 +85,8 @@ module.exports = class Project {
 
       // Map project data
       const mappedProjects = projectDataResults.map(project => ({
-        projectId: project.projectId,
-        projectCode: project.projectCode,
+        projectId: project.project_id,
+        projectCode: project.project_code,
         name: project.name,
         description: project.description,
         startDate: formatDateToDDMMYYYY(project.start_date),
@@ -84,42 +96,44 @@ module.exports = class Project {
       }));
 
       // Query to fetch roles for the user in the filtered projects
-      const queryRole = `
-        SELECT projectId, role 
-        FROM projectMembers 
-        WHERE userId = ${resUserId} 
-        AND projectId IN (${projectIds.join(",")})
-      `;
-      const [roleDataResults] = await db.execute(queryRole);
+      const { data: roleDataResults, error: roleDataError } = await supabase
+        .from('project_members')
+        .select('project_id, role')
+        .eq('user_id', resUserId)
+        .in('project_id', projectIds);
+
+      if (roleDataError) throw new Error('Error fetching role data: ' + roleDataError.message);
 
       // Map roles by project ID
       const rolesByProject = roleDataResults.reduce((acc, role) => {
-        acc[role.projectId] = role.role;
+        acc[role.project_id] = role.role;
         return acc;
       }, {});
 
       // Combine project data with roles
       const finalResults = await Promise.all(
         mappedProjects.map(async (project) => {
-          const queryMemberCount = `
-            SELECT COUNT(*) AS memberCount 
-            FROM projectMembers 
-            WHERE projectId = ?
-          `;
-          const [memberCountResult] = await db.execute(queryMemberCount, [project.projectId]);
+          // Query for member count
+          const { count: memberCount, error: memberCountError } = await supabase
+            .from('project_members')
+            .select('user_id', { count: 'exact' })
+            .eq('project_id', project.projectId);
 
-          const queryTaskCount = `
-            SELECT COUNT(*) AS taskCount 
-            FROM tasks 
-            WHERE projectId = ?
-          `;
-          const [taskCountResult] = await db.execute(queryTaskCount, [project.projectId]);
+          if (memberCountError) throw new Error('Error fetching member count: ' + memberCountError.message);
+
+          // Query for task count
+          const { count: taskCount, error: taskCountError } = await supabase
+            .from('tasks')
+            .select('task_id', { count: 'exact' })
+            .eq('project_id', project.projectId);
+
+          if (taskCountError) throw new Error('Error fetching task count: ' + taskCountError.message);
 
           return {
             ...project,
             role: rolesByProject[project.projectId] || "-",
-            members: memberCountResult[0]?.memberCount || 0,
-            task: taskCountResult[0]?.taskCount || 0,
+            members: memberCount || 0,
+            task: taskCount || 0,
           };
         })
       );
@@ -131,86 +145,146 @@ module.exports = class Project {
     }
   }
 
-
-  static async addProject(projectCode, name, description, start_date, end_date, member) {
+  static async addProject(projectCode, name, description, start_date, end_date) {
     try {
-      // Assuming you're using a database model or connection object
-      const query = `INSERT INTO projects (projectCode, name, description, start_date, end_date) 
-                       VALUES (?, ?, ?, ?, ?)`;
-
-      // Assuming you have a DB connection or ORM, replace this with the actual query execution
-      const [result] = await db.query(query, [projectCode, name, description, start_date, end_date]);
-
-      console.log('Project added successfully:', projectCode, result.insertId);
-      return result.insertId;
+    
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([{ project_code: projectCode, name, description, start_date, end_date }])
+        .select();
+  
+      if (error) {
+        throw new Error(error.message);
+      }
+  
+      const projectId = data[0].project_id; // Make sure this is a valid integer
+  
+      console.log('Project added successfully:', projectCode, projectId);
+      return projectId;  // Return the project ID
     } catch (error) {
-      console.error('Error adding Project Code:', projectCode, error.message);
-      throw error;
+      console.error('Error adding project:', error.message);
+      return { message: 'Failed to add new project', error: error.message };
     }
   }
 
   static async addMembers(projectId, members) {
     try {
-      const query = `INSERT INTO projectMembers (projectId, userId, role) VALUES ?`;
-
-      const values = members.map(member => [projectId, member.userId, member.role]);
-
-      const [result] = await db.query(query, [values]);
-      console.log(result)
-
-      return result;
+      // Log projectId to ensure it is correct
+      console.log('Project ID:', projectId);  // Debugging line
+  
+      // First, check if the project exists
+      const { data: projectData, error: projectError } = await supabase
+        .from('projects')
+        .select('project_id')
+        .eq('project_id', projectId);
+  
+      if (projectError) {
+        throw new Error('Error checking project: ' + projectError.message);
+      }
+  
+      if (projectData.length === 0) {
+        throw new Error(`Project with ID ${projectId} does not exist.`);
+      }
+  
+      // Now check if the users exist
+      const userIds = members.map(member => member.userId);
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('user_id')
+        .in('user_id', userIds);
+  
+      if (userError) {
+        throw new Error('Error checking users: ' + userError.message);
+      }
+  
+      if (userData.length !== userIds.length) {
+        throw new Error('One or more users do not exist.');
+      }
+  
+      // If both project and users exist, insert members
+      const memberInsertData = members.map(member => ({
+        project_id: projectId,
+        user_id: member.userId,
+        role: member.role,
+      }));
+  
+      const { data, error } = await supabase
+        .from('project_members')
+        .insert(memberInsertData)
+        .select();
+  
+      if (error) {
+        throw new Error('Error adding members: ' + error.message);
+      }
+  
+      console.log('Members added successfully:', data);
+      return data; // Return the added members data
     } catch (error) {
+      console.error('Error adding members:', error.message);
       throw new Error('Error adding members: ' + error.message);
     }
-  }
-
+  }  
+  
   static async getViewProject(projectId, userId) {
     try {
-      const queryProject = `SELECT 
-                              projectId,
-                              projectCode,
-                              name, 
-                              description, 
-                              DATE_FORMAT(start_date, '%Y-%m-%d') as start_date,
-                              DATE_FORMAT(end_date, '%Y-%m-%d') as end_date,
-                              status,
-                              created_at, 
-                              updated_at
-                            FROM projects WHERE projectId = ${projectId}`;
-      const queryMytasks = `SELECT * FROM tasks WHERE resUserId = ${userId} AND projectId = ${projectId}`;
-      const queryMembers = `
-        SELECT projectMembers.*, users.fullName 
-        FROM projectMembers 
-        JOIN users ON projectMembers.userId = users.userId 
-        WHERE projectMembers.projectId = ${projectId}
-      `;
+      if (!projectId || !userId) {
+        throw new Error("projectId and userId are required");
+      }
 
-      const [projectResult] = await db.query(queryProject);
-      const mytasksResult = await db.query(queryMytasks);
-      const projectMembers = await db.query(queryMembers);
+      console.log("Fetching project details for:", { projectId, userId });
 
-      return { projectResult, mytasksResult, projectMembers };
+      // Fetch the project details
+      const { data: projectResult, error: projectError } = await supabase
+        .from('projects')
+        .select('project_id, project_code, name, description, start_date, end_date, status, created_at, updated_at')
+        .eq('project_id', projectId);
+
+      if (projectError) throw new Error(projectError.message);
+
+      if (!projectResult || projectResult.length === 0) {
+        return { message: 'Project not found' };
+      }
+
+      // Fetch the tasks related to the user for the given project
+      const { data: mytasksResult, error: tasksError } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('res_user_id', userId)
+        .eq('project_id', projectId);
+
+      if (tasksError) throw new Error(tasksError.message);
+
+      // Fetch all members for the project
+      const { data: projectMembers, error: membersError } = await supabase
+        .from('project_members')
+        .select('user_id, role')
+        .eq('project_id', projectId);
+
+      if (membersError) throw new Error(membersError.message);
+
+      return {
+        projectResult: projectResult[0],
+        mytasksResult: mytasksResult || [],
+        projectMembers: projectMembers || []
+      };
+
     } catch (error) {
-      throw new Error('Error adding members: ' + error.message);
+      console.error("Error fetching project details:", error.message);
+      throw new Error('Error fetching project details: ' + error.message);
     }
   }
 
   static async updateProject(projectId, projectCode, name, description, start_date, end_date, status) {
     try {
-      const formattedStartDate = new Date(start_date).toISOString().slice(0, 19).replace("T", " ");
-      const formattedEndDate = new Date(end_date).toISOString().slice(0, 19).replace("T", " ");
+      const { error } = await supabase
+        .from('projects')
+        .update({ project_code: projectCode, name, description, start_date, end_date, status })
+        .eq('project_id', projectId);
 
-      const query = `
-            UPDATE projects 
-            SET projectCode = ?, \`name\` = ?, description = ?, start_date = ?, end_date = ?, status = ?
-            WHERE projectId = ?
-        `;
-
-      const [result] = await db.query(query, [projectCode, name, description, formattedStartDate, formattedEndDate, status, projectId]);
-
-      if (result.affectedRows === 0) {
-        return { message: "Project not found or no changes made", projectId }
+      if (error) {
+        return { message: "Error updating project", projectId };
       }
+
       return { message: "Project updated successfully", projectId };
     } catch (error) {
       console.error("Error updating project:", error.message);
@@ -218,12 +292,28 @@ module.exports = class Project {
     }
   }
 
+  static async getAllProjects() {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*'); // Select all columns
+
+      if (error) {
+        return { message: "Error fetching projects", error };
+      }
+
+      return { message: "Projects fetched successfully", data };
+    } catch (error) {
+      console.error("Error fetching projects:", error.message);
+      throw error;
+    }
+  }
 };
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 }
@@ -236,3 +326,5 @@ const formatDate = (dateString) => {
     year: "numeric",
   });
 };
+
+

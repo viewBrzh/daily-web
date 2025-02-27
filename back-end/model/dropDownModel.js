@@ -1,4 +1,8 @@
-const db = require('../util/db');
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Dropdown {
 
@@ -6,23 +10,22 @@ module.exports = class Dropdown {
         try {
             const limit = 5;
 
-            let userQuery = `
-                (SELECT userId, username, fullName, empId FROM users 
-                ${searchValue ? `WHERE fullName LIKE ? OR username LIKE ?` : ``}
-                LIMIT ?)
-                `;
+            let query = supabase
+                .from('users')
+                .select('user_id, email, full_name, emp_id')
+                .limit(limit);
 
-            const queryParams = [];
-
-            // If searchValue exists, add parameters for the first SELECT
             if (searchValue) {
-                queryParams.push(`%${searchValue}%`, `%${searchValue}%`);
+                query = query.ilike('full_name', `%${searchValue}%`)
             }
-            queryParams.push(limit);
 
-            // Execute the query with parameters
-            const [finalResult] = await db.execute(userQuery, queryParams);
-            return { finalResult };
+            const { data: finalResult, error } = await query;
+
+            if (error) {
+                throw new Error('Error fetching user dropdown: ' + error.message);
+            }
+
+            return  finalResult;
         } catch (err) {
             throw err;
         }
@@ -31,27 +34,31 @@ module.exports = class Dropdown {
     static async getUserDropdownByProject(projectId) {
         try {
             const limit = 5;
-
-            let userQuery = `
-                SELECT u.userId, u.username, u.fullName, u.empId
-                FROM users u
-                JOIN projectMembers pm ON u.userId = pm.userId
-                WHERE pm.projectId = ? LIMIT ?
-                `;
-
-            const queryParams = [projectId];
-
-            queryParams.push(limit);
-
-            console.log(userQuery, queryParams)
-
-            // Execute the query with parameters
-            const [finalResult] = await db.execute(userQuery, queryParams);
-            return { finalResult };
+    
+            const { data: finalResult, error } = await supabase
+                .from('project_members')
+                .select('user_id, users(email, full_name, emp_id)') // Use relationship format
+                .eq('project_id', projectId)
+                .limit(limit);
+    
+            if (error) {
+                throw new Error('Error fetching user dropdown by project: ' + error.message);
+            }
+    
+            // Restructure the data
+            const formattedResult = finalResult.map(member => ({
+                user_id: member.user_id,
+                email: member.users?.email || null,
+                full_name: member.users?.full_name || null,
+                emp_id: member.users?.emp_id || null
+            }));
+    
+            return { finalResult: formattedResult };
         } catch (err) {
             throw err;
         }
     }
+    
 
     static async getTaskFilterDropdown(sprintId) {
         try {
@@ -60,21 +67,30 @@ module.exports = class Dropdown {
                 return [];
             }
     
-            const query = `
-                SELECT DISTINCT u.userId, u.username, u.fullName, u.empId
-                FROM users u
-                JOIN tasks t ON u.userId = t.resUserId
-                WHERE t.sprintId = ?;
-            `;
+            const { data: rows, error } = await supabase
+                .from('tasks')
+                .select('res_user_id, users(email, full_name, emp_id)')
+                .eq('sprint_id', sprintId);
     
-            const [rows] = await db.execute(query, [sprintId]);
+            if (error) {
+                console.error('Error fetching task filter dropdown:', error.message);
+                throw error;
+            }
     
-            console.log(rows);
-            return rows.length > 0 ? rows : [];
+            // Restructure the data to include user details at the top level
+            const formattedRows = rows.map(task => ({
+                user_id: task.res_user_id,
+                email: task.users?.email || null,
+                full_name: task.users?.full_name || null,
+                emp_id: task.users?.emp_id || null
+            }));
+    
+            return formattedRows;
+    
         } catch (err) {
             console.error("Error fetching task filter dropdown:", err);
             throw err;
         }
-    }    
+    }
 
 };
