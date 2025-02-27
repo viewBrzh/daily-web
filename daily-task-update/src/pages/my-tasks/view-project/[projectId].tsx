@@ -61,7 +61,7 @@ const ViewProjectPage = () => {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
+  // Run only on the client side to avoid localStorage error during SSR
   useEffect(() => {
     // Check if the router and projectId are ready
     if (!router.isReady || !projectId) return;
@@ -82,20 +82,17 @@ const ViewProjectPage = () => {
     };
 
     fetchData();
-  }, [router.isReady, projectId, localStorage]);
+  }, [router.isReady, projectId]);
 
+  // Check if the component is mounted and if localStorage is available
   useEffect(() => {
-    setProject(pageData.project);
-    setMembers(pageData.members);
-  }, [pageData]);
-
-  useEffect(() => {
-    // Check localStorage for token to determine if user is authenticated
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login"); // Redirect to login if no token
-    } else {
-      setAuthenticated(true); // Set authenticated to true if token exists
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login"); // Redirect to login if no token
+      } else {
+        setAuthenticated(true); // Set authenticated to true if token exists
+      }
     }
   }, [router]);
 

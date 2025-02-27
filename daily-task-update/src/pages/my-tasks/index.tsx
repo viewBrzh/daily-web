@@ -10,6 +10,7 @@ import { fetchProjects } from "../api/my-task/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
+import LoadingModal from "@/components/common/loadingModa";
 
 
 const MyTasks: React.FC = () => {
@@ -25,6 +26,7 @@ const MyTasks: React.FC = () => {
   const router = useRouter();
 
   const [authenticated, setAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const handleAddProjectClick = () => {
@@ -66,15 +68,19 @@ const MyTasks: React.FC = () => {
 
   useEffect(() => {
     const fetchProjectData = async () => {
+      setIsLoading(true);
       try {
         const user_id = localStorage.getItem("user_id");
         const data = await fetchProjects(parseInt(user_id || "0"), debouncedSearchValue, currentPage, sort);
         const projectData = data.projects;
+        
         setProjects(projectData);
         setTotalPage(data.total_page);
         settotalRow(data.total_row);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -151,7 +157,8 @@ const MyTasks: React.FC = () => {
           </div>
         </div>
       </PageContainer>
-      <AddProjectModal isOpen={isModalOpen} onClose={handleCloseModal} onSuccess={hadleSuccess}/>
+      <AddProjectModal isOpen={isModalOpen} onClose={handleCloseModal} onSuccess={hadleSuccess} />
+      <LoadingModal isLoading={isLoading} />
     </Layout>
   );
 };
