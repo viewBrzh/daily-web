@@ -8,6 +8,7 @@ import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
 import Modal from "@/components/common/modal/addModal";
 import UpdateTaskModal from "@/components/common/modal/sprint/updateTaskModal";
 import AlertModal from "@/components/common/modal/alert/alertModal";
+import LoadingModal from "@/components/common/loadingModa";
 
 interface CalendarProps {
     projectId: string;
@@ -49,6 +50,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleNewSprint = async () => {
         setIsModalOpen(true);
@@ -69,18 +71,32 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
         setIsModalUpdateOpen(false);
     };
 
-    const handleSubmitSprint = (data: Record<string, string>) => {
+    const handleSubmitSprint = async (data: Record<string, string>) => {
+        setIsLoading(true);
+        setIsModalOpen(false);
         const formattedData: SprintDataInsert = {
             sprint_name: data.sprintName,
             start_date: new Date(data.start_date),
             end_date: new Date(data.end_date),
             project_id: projectId,
         };
-        addNewSprint(formattedData);
-        setIsModalOpen(false);
-    };
+        try {
+            const res = await addNewSprint(formattedData);
+            if (res) {
+                fetchSprint();
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
+        }
 
-    const handleUpdateSprintSubmit = (data: Record<string, string>) => {
+    };
+    useEffect(()=> {
+        console.log("isLoading:" + isLoading)
+    }, [isLoading])
+
+    const handleUpdateSprintSubmit = async (data: Record<string, string>) => {
         const formattedData: SprintData = {
             sprint_id: selectedSprint?.sprint_id,
             sprint_name: data.sprint_name,
@@ -88,11 +104,16 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
             end_date: new Date(data.end_date),
             project_id: projectId,
         };
-        updateSprint(formattedData);
+        const res = await updateSprint(formattedData);
+        if (res) {
+            fetchSprint();
+        }
         setIsModalUpdateOpen(false);
     };
 
     const handleSubmitTask = async (data: Task) => {
+        setIsUpdateTaskModalOpen(false);
+        setIsLoading(true);
         try {
             await updateTask(data);
             const tasks = await getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
@@ -100,19 +121,23 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
             console.log(task)
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoading(false);
         }
-        setIsUpdateTaskModalOpen(false);
     };
 
     const handleSubmitAddTask = async (data: Task) => {
+        setIsInsertTaskOpen(false);
+        setIsLoading(true);
         try {
             await insertTask(data);
             const tasks = getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
             setTasks(await tasks);
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoading(false);
         }
-        setIsInsertTaskOpen(false);
     };
 
     const onClickSprintSelect = async () => {
@@ -138,6 +163,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
     // Confirm handler
     const handleDeleteTask = async () => {
         console.log("Confirm to Deleting:", task);
+        setIsLoading(true);
         try {
             await deleteTask(task.task_id);
 
@@ -148,33 +174,42 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
             setIsShowAlertDelete(false);
         } catch (error) {
             console.error("Error deleting task:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         const fetchStatus = async () => {
+            setIsLoading(true);
             try {
                 const status = await getTaskStatus();
                 setStatus(status);
             } catch (error) {
                 console.error("Error fetching status:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchStatus();
     }, [])
 
-    useEffect(() => {
-        const fetchSprint = async () => {
-            try {
-                const currentSprint = await getCurrentSprintByProject(projectId);
-                setSelectedSprint(currentSprint);
+    const fetchSprint = async () => {
+        setIsLoading(true);
+        try {
+            const currentSprint = await getCurrentSprintByProject(projectId);
+            setSelectedSprint(currentSprint);
 
-                const dropdownSprint = await getSprintByProject(projectId);
-                setSprintOption(dropdownSprint);
-            } catch (error) {
-                console.error("Error fetching sprints:", error);
-            }
-        };
+            const dropdownSprint = await getSprintByProject(projectId);
+            setSprintOption(dropdownSprint);
+        } catch (error) {
+            console.error("Error fetching sprints:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchSprint();
     }, [projectId]);
 
@@ -193,6 +228,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
 
     useEffect(() => {
         if (!selectedSprint) return;
+        setIsLoading(true);
         const fetchTasks = async () => {
             try {
                 const tasks = await getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
@@ -200,6 +236,8 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
                 console.log(task)
             } catch (error) {
                 console.error("Error fetching tasks:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchTasks();
@@ -381,7 +419,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
                 onClose={handleCloseModal}
                 title={"Update " + selectedSprint?.sprint_name}
                 fields={[
-                    { name: "sprintName", label: "Sprint Name", required: true },
+                    { name: "sprint_name", label: "Sprint Name", required: true },
                     { name: "start_date", label: "Start Date", type: "date", required: true },
                     { name: "end_date", label: "End Date", type: "date", required: true }
                 ]}
@@ -415,6 +453,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
                 onConfirm={handleDeleteTask}
                 isCancelable={true}
             />
+            <LoadingModal isLoading={isLoading} />
         </div>
     );
 };

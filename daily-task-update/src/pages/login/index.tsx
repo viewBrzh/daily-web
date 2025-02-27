@@ -22,11 +22,11 @@ const Login = () => {
         });
 
         const data = await response.json();
-        console.log(data);
 
-        if (response.ok) {
+        if (data.success) {
             localStorage.setItem("token", data.token);
             localStorage.setItem("fullName", data.user?.full_name);
+            localStorage.setItem("user_id", data.user?.user_id);
             router.push("/my-tasks");
         } else {
             setError("Invalid username or password");

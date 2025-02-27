@@ -100,16 +100,19 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
 
                             <label className={styles.label}>Status</label>
                             <select
-                                name="statusId"
+                                name="status_id"
                                 className={styles.select}
                                 value={formData.status_id}
                                 onChange={handleChange}
                             >
-                                {status.map((st) => (
-                                    <option key={st.status_id} value={st.status_id}>
-                                        {st.status_id} - {st.name}
-                                    </option>
-                                ))}
+                                {status
+                                    .sort((a, b) => b.status_id - a.status_id) // Sort in descending order (4 → 1)
+                                    .map((st) => (
+                                        <option key={st.status_id} value={st.status_id}>
+                                            {st.status_id} - {st.name}
+                                        </option>
+                                    ))}
+
                             </select>
 
                             <label className={styles.label}>Priority</label>

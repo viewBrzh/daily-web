@@ -31,13 +31,22 @@ const MyTasks: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const hadleSuccess = async () => {
+    setIsModalOpen(false);
+    const user_id = localStorage.getItem("user_id");
+    const data = await fetchProjects(parseInt(user_id || "0"), debouncedSearchValue, currentPage, sort);
+    setProjects(data.projects);
+    setTotalPage(data.total_page);
+    settotalRow(data.total_row);
+  }
+
+  const handleCloseModal = async () => {
     setIsModalOpen(false);
   };
 
   const searchPayload = {
     label: 'Search',
-    placeholder: 'project name/Code',
+    placeholder: 'project name',
     value: searchValue,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value),
   };
@@ -58,7 +67,8 @@ const MyTasks: React.FC = () => {
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        const data = await fetchProjects(1, debouncedSearchValue, currentPage, sort);
+        const user_id = localStorage.getItem("user_id");
+        const data = await fetchProjects(parseInt(user_id || "0"), debouncedSearchValue, currentPage, sort);
         const projectData = data.projects;
         setProjects(projectData);
         setTotalPage(data.total_page);
@@ -89,7 +99,6 @@ const MyTasks: React.FC = () => {
     }
   }, []);
 
-  // ✅ Instead of returning early, show loading conditionally
   if (authenticated === null) {
     return <p>Loading...</p>;
   }
@@ -142,7 +151,7 @@ const MyTasks: React.FC = () => {
           </div>
         </div>
       </PageContainer>
-      <AddProjectModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <AddProjectModal isOpen={isModalOpen} onClose={handleCloseModal} onSuccess={hadleSuccess}/>
     </Layout>
   );
 };

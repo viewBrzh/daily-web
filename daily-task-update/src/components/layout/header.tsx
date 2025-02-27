@@ -13,14 +13,23 @@ const Header: React.FC = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("token");
       localStorage.removeItem("fullName");
-
     }
-    await fetch("api/auth/logout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    router.push("/login");
-  };
+  
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (response.ok) {
+        router.push("/login");
+      } else {
+        console.error("Logout failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };  
 
   useEffect(() => {
     if (typeof window !== "undefined") {

@@ -9,6 +9,7 @@ import AlertModal from "./alert/alertModal";
 
 interface ModalProps {
   isOpen: boolean;
+  onSuccess: () =>void;
   onClose: () => void;
 }
 
@@ -33,7 +34,7 @@ const initAlertProps = {
   type: 'success',
   onClose: () => { },
 }
-const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
   if (!isOpen) return null;  // This is fine, it's outside any hooks
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -99,7 +100,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async () => {
     await addProject(newProject, teamMembers);
-    onClose();
+    onSuccess();
     setAlertProps({
       isShow: true,
       title: "Success",
@@ -255,8 +256,9 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         isShow={alertProps?.isShow}
         title={alertProps?.title}
         description={alertProps?.description}
-        type={alertProps.type}
-        onClose={closeModal} />
+        type={alertProps?.type}
+        onClose={closeModal} 
+        onConfirm={closeModal}/>
     </div>
   );
 };

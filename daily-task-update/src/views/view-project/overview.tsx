@@ -7,6 +7,7 @@ import { faCircleInfo, faPeopleGroup, faTrash, faUserPlus } from "@fortawesome/f
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { updateMember } from "@/pages/api/my-task/member";
 import { updateProject } from "@/pages/api/my-task/project";
+import LoadingModal from "@/components/common/loadingModa";
 
 interface OverviewProps {
     projectData: ViewProject;
@@ -38,6 +39,8 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
     const [teamMembers, setTeamMembers] = useState<Member[]>(memberData);
     const [newMember, setNewMember] = useState<NewMember>({ user_id: 0, full_name: "", role: "" });
     const [updateProjectData, setUpdateProjectData] = useState<UpdateProject>(initUpdateData);
+    
+    const [isLoading, setIsLoading] = useState(false);
 
     // No hooks are called conditionally here, just the state values are used conditionally.
 
@@ -227,6 +230,7 @@ const Overview: React.FC<OverviewProps> = ({ projectData, memberData, projectId 
                     </div>
                 )}
             </div>
+            <LoadingModal isLoading={isLoading} />
         </div>
     );
 };

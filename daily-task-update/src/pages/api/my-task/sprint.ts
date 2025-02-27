@@ -40,7 +40,7 @@ export const getTasks = async (sprintId?: number, userId?: number): Promise<Task
             sprintId: sprintId || 0,
             userId: userId || 0
         });
-        return response.data;
+        return response.data || [];
     } catch (error) {
         console.error("Error fetching person ontion:", error);
         return {} as Task[];
@@ -67,7 +67,8 @@ export const updateTaskStatus = async (taskId: number, statusId: number) => {
 
 export const addNewSprint = async (newSprint: SprintDataInsert) => {
     try {
-        await axios.post(`/api/tasks/addNewSprint`, { newSprint });
+        const res = await axios.post(`/api/tasks/addNewSprint`, { newSprint });
+        return res;
     } catch (error) {
         console.error("Error updating task status:", error);
     }
@@ -75,7 +76,8 @@ export const addNewSprint = async (newSprint: SprintDataInsert) => {
 
 export const updateSprint = async (newSprint: SprintData) => {
     try {
-        await axios.post(`/api/tasks/updateSprint`, { newSprint });
+        const res = await axios.post(`/api/tasks/updateSprint`, { newSprint });
+        return res;
     } catch (error) {
         console.error("Error updating task status:", error);
     }

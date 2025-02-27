@@ -11,6 +11,7 @@ import { faBarsProgress, faCalendarDays, faChartPie, faTachometerAlt } from '@fo
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProjectDashboard from '@/views/view-project/projectDashboard';
 import SprintBoard from '@/views/view-project/sprintBoard';
+import LoadingModal from '@/components/common/loadingModa';
 
 const initialPageData = {
   project: {
@@ -58,6 +59,8 @@ const ViewProjectPage = () => {
   const [activeTab, setActiveTab] = useState("Overview");
 
   const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     // Check if the router and projectId are ready
@@ -65,17 +68,21 @@ const ViewProjectPage = () => {
 
     // Fetch the project data when projectId is ready
     const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const res = await getViewProject(projectId.toString(), 1);
-        setPageData(await res);
+        const user_id = localStorage.getItem("user_id");
+        const res = await getViewProject(projectId.toString(), parseInt(user_id || "0"));
+        setPageData(res);
       } catch (error) {
         console.error('Error fetching project data:', error);
         alert("Error fetching project data. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [router.isReady, projectId]);
+  }, [router.isReady, projectId, localStorage]);
 
   useEffect(() => {
     setProject(pageData.project);
@@ -121,6 +128,7 @@ const ViewProjectPage = () => {
           {activeTab === "Sprint" && <SprintBoard projectId={projectIdStr} />}
         </div>
       </PageContainer>
+      <LoadingModal isLoading={isLoading} />
     </Layout>
   );
 };

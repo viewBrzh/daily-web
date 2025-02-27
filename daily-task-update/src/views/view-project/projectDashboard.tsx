@@ -1,4 +1,5 @@
 import DashboardCharts from "@/components/common/chart/dashboardCharts";
+import LoadingModal from "@/components/common/loadingModa";
 import { DashboardData } from "@/components/common/types";
 import { getProjectDashboard } from "@/pages/api/my-task/dashboard";
 import React, { useEffect, useState } from "react";
@@ -31,25 +32,33 @@ const initData: DashboardData = {
     ]
 };
 
-const ProjectDashboard: React.FC<CalendarProps> = ({  projectId }) => {
+const ProjectDashboard: React.FC<CalendarProps> = ({ projectId }) => {
     const [dashboardData, setDashboardData] = useState<DashboardData>(initData);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
 
         const fetchData = async () => {
+            setIsLoading(true);
             try {
                 const res = await getProjectDashboard(projectId);
                 setDashboardData(res);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchData();
-    }, [projectId]); 
+    }, [projectId]);
 
     return (
-        <DashboardCharts data={dashboardData} />
+        <>
+            <DashboardCharts data={dashboardData} />
+            <LoadingModal isLoading={isLoading} />
+        </>
+
     );
 }
 
