@@ -109,7 +109,7 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
                                     .sort((a, b) => b.status_id - a.status_id) // Sort in descending order (4 → 1)
                                     .map((st) => (
                                         <option key={st.status_id} value={st.status_id}>
-                                            {st.status_id} - {st.name}
+                                            {st.name}
                                         </option>
                                     ))}
 
