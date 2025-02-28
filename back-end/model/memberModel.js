@@ -29,17 +29,17 @@ module.exports = class Member {
             }
 
             const existingUserIds = new Set(existingMembers?.map(member => member.user_id));
-            const newUserIds = new Set(newMembers.map(member => member.userId));
+            const newUserIds = new Set(newMembers.map(member => member.user_id));
 
             // Identify members to add
-            const membersToAdd = newMembers.filter(member => !existingUserIds.has(member.userId));
+            const membersToAdd = newMembers.filter(member => !existingUserIds.has(member.user_id));
 
             // Identify members to delete
-            const membersToDelete = [...existingUserIds].filter(userId => !newUserIds.has(userId));
+            const membersToDelete = [...existingUserIds].filter(user_id => !newUserIds.has(user_id));
 
             // Identify members whose role needs to be updated
             const membersToUpdateRole = newMembers.filter(member => {
-                const existingMember = existingMembers.find(m => m.user_id === member.userId);
+                const existingMember = existingMembers.find(m => m.user_id === member.user_id);
                 return existingMember && existingMember.role !== member.role;
             });
 
@@ -48,7 +48,7 @@ module.exports = class Member {
                 const { error: addError } = await supabase
                     .from('project_members')
                     .upsert(membersToAdd.map(member => ({
-                        user_id: member.userId,
+                        user_id: member.user_id,
                         project_id: projectId,
                         role: member.role,
                     })));
@@ -77,7 +77,7 @@ module.exports = class Member {
                     const { error: updateError } = await supabase
                         .from('project_members')
                         .update({ role: member.role })
-                        .eq('user_id', member.userId)
+                        .eq('user_id', member.user_id)
                         .eq('project_id', projectId); // Fixed incorrect column name
 
                     if (updateError) {

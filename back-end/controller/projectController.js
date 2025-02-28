@@ -120,8 +120,8 @@ exports.getViewProject = async (req, res) => {
 
 exports.updateProject = async (req, res) => {
   try {
-    const { projectId, projectCode, name, description, start_date, end_date, status } = req.body.project;
-    const result = await ProjectModel.updateProject(projectId, projectCode, name, description, start_date, end_date, status); // Await result
+    const { project_id, project_code, name, description, start_date, end_date, status } = req.body.project;
+    const result = await ProjectModel.updateProject(project_id, project_code, name, description, start_date, end_date, status); // Await result
 
     res.status(200).json(result);
   } catch (error) {
