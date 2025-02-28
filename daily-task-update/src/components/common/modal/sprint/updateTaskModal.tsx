@@ -36,9 +36,9 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: name === "status_id" || name === "priority" ? Number(value) : value
         }));
-    };
+    };    
 
     const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setFormData((prevState) => ({

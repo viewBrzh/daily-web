@@ -159,7 +159,7 @@ export const initTaskData: Task = {
 task_id: 0,
 name: "",
 description: "",
-status_id: 0,
+status_id: 4,
 res_user_id: 0,
 sprint_id: 0,
 project_id: 0,
