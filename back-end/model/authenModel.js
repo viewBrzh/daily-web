@@ -126,7 +126,8 @@ class AuthModel {
     static async resetPassword(email) {
         try {
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: 'https://daily-web-theta.vercel.app/reset-password/update'
+                redirectTo: 'https://daily-web-theta.vercel.app/reset-password/update?'
+                // redirectTo: 'http://localhost:3001/reset-password/update'
             });
 
             if (error) {
@@ -141,24 +142,32 @@ class AuthModel {
         }
     }
 
-    static async updatePassword(newPassword, token) {
+    static async updatePassword(newPassword, access_token, refresh_token) {
         try {
-            const { data, error } = await supabase.auth.api.updateUser(
-                token, 
-                { password: newPassword }
-            );
-    
+            const { data: session, error: sessionError } = await supabase.auth.setSession({
+                access_token,
+                refresh_token
+            });
+            if (sessionError || !session) {
+                console.error('Session error:', sessionError);
+                return { success: false, message: 'Auth session is missing or expired.' };
+            }
+
+            const { data, error } = await supabase.auth.updateUser({
+                password: newPassword
+            });
+
             if (error) {
                 console.error('Error updating password:', error.message);
                 return { success: false, message: error.message };
             }
-    
+
             return { success: true, message: 'Password updated successfully', data };
         } catch (error) {
             console.error('Error during password update:', error);
             return { success: false, message: 'An error occurred while updating the password.' };
         }
-    }    
+    }
 }
 
 module.exports = AuthModel;
