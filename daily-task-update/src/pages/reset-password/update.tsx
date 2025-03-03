@@ -14,7 +14,7 @@ const UpdatePassword = () => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const tokenFromURL = urlParams.get("token");
+        const tokenFromURL = urlParams.get("access_token");
         if (!tokenFromURL) {
             setError("Invalid or missing token.");
         } else {
