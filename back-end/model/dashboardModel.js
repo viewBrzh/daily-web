@@ -1,8 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
 const supabase = createClient(supabaseUrl, supabaseKey);
+
 
 module.exports = class Dashboard {
     static async getProjectDashboard(projectId) {
@@ -14,7 +15,9 @@ module.exports = class Dashboard {
                 .select('status_id, task_status(name)')
                 .eq('project_id', projectId);
 
-            if (taskStatusError) throw new Error('Error fetching task status count: ' + taskStatusError.message);
+            if (taskStatusError) {
+                throw new Error('Error fetching task status count: ' + taskStatusError.message);
+            }
 
             const taskStatusCount = {};
             taskStatus.forEach(task => {
@@ -27,20 +30,20 @@ module.exports = class Dashboard {
                 .select('sprint_name, tasks(status_id, task_status(name))')
                 .eq('project_id', projectId);
 
-            if (sprintError) throw new Error('Error fetching sprint progress: ' + sprintError.message);
+            if (sprintError) {
+                throw new Error('Error fetching sprint progress: ' + sprintError.message);
+            }
 
             const sprintProgress = sprintData.map(sprint => {
                 const statusCount = {};
-                if (sprint.tasks) {
-                    sprint.tasks.forEach(task => {
-                        const statusName = task.task_status?.name || 'Unknown';
-                        statusCount[statusName] = (statusCount[statusName] || 0) + 1;
-                    });
-                }
+                sprint.tasks?.forEach(task => {
+                    const statusName = task.task_status?.name || 'Unknown';
+                    statusCount[statusName] = (statusCount[statusName] || 0) + 1;
+                });
                 return {
-                    sprintName: sprint.sprint_name,
-                    totalTasks: sprint.tasks?.length || 0,
-                    statusCount
+                    sprint_name: sprint.sprint_name,
+                    total_tasks: sprint.tasks?.length || 0,
+                    status_count: statusCount,
                 };
             });
 
@@ -49,7 +52,9 @@ module.exports = class Dashboard {
                 .select('role')
                 .eq('project_id', projectId);
 
-            if (memberError) throw new Error('Error fetching project member count: ' + memberError.message);
+            if (memberError) {
+                throw new Error('Error fetching project member count: ' + memberError.message);
+            }
 
             const memberCount = {};
             members.forEach(member => {
@@ -57,11 +62,15 @@ module.exports = class Dashboard {
                 memberCount[role] = (memberCount[role] || 0) + 1;
             });
 
-            return { taskStatus: taskStatusCount, sprintProgress, members: memberCount };
+            return {
+                task_status: taskStatusCount,
+                sprint_progress: sprintProgress,
+                members: memberCount,
+            };
 
         } catch (err) {
             console.error('Error:', err.message);
             throw err;
         }
     }
-};
+}

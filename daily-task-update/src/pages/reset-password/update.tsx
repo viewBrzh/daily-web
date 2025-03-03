@@ -9,17 +9,22 @@ const UpdatePassword = () => {
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [token, setToken] = useState("");
+    const [accessToken, setAccessToken] = useState("");
+    const [refreshToken, setRefreshToken] = useState("");
     const router = useRouter();
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tokenFromURL = urlParams.get("access_token");
+        const hash = window.location.hash;
+        const params = new URLSearchParams(hash.replace("#", "?"));
+
+        const tokenFromURL = params.get("access_token");
+        const refreshTokenFromURL = params.get("refresh_token");
         console.log(tokenFromURL);
-        if (!tokenFromURL) {
+        if (!tokenFromURL || !refreshTokenFromURL) {
             setError("Invalid or missing token.");
         } else {
-            setToken(tokenFromURL);
+            setAccessToken(tokenFromURL);
+            setRefreshToken(refreshTokenFromURL);
         }
     }, []);
 
@@ -35,7 +40,7 @@ const UpdatePassword = () => {
             const response = await fetch("/api/auth/update-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ new_password: newPassword, token: token }),
+                body: JSON.stringify({ new_password: newPassword, access_token: accessToken, refresh_token: refreshToken }),
             });
 
             const data = await response.json();

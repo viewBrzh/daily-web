@@ -11,42 +11,42 @@ import { faBarsProgress, faCalendarDays, faChartPie, faTachometerAlt } from '@fo
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProjectDashboard from '@/views/view-project/projectDashboard';
 import SprintBoard from '@/views/view-project/sprintBoard';
+import LoadingModal from '@/components/common/loadingModa';
 
 const initialPageData = {
   project: {
-    projectCode: "",
-    projectId: 0,
+    project_code: "",
+    project_id: 0,
     name: "",
     description: "",
     start_date: new Date(),
     end_date: new Date(),
     status: "",
-    lastUpdate: new Date(),
+    updated: new Date(),
   },
   tasks: [
     {
-      taskId: 0,
+      task_id: 0,
       name: "",
       description: "",
-      statusId: 0,
-      resUserId: 0,
-      sprintId: 0,
-      projectId: 0,
-      resUserFullName: "",
+      status_id: 0,
+      res_user_id: 0,
+      sprint_id: 0,
+      project_id: 0,
+      res_user_full_name: "",
       priority: 0,
     }
   ],
   members: [
     {
-      fullName: "",
-      userId: 0,
+      full_name: "",
+      user_id: 0,
       role: "",
     }
   ],
 };
 
 const iconTabs = [faBarsProgress, faChartPie, faTachometerAlt, faCalendarDays];
-
 const tabs = ["Overview", "Dashboard", "Sprint", "Calendar"];
 
 const ViewProjectPage = () => {
@@ -58,46 +58,55 @@ const ViewProjectPage = () => {
   const [members, setMembers] = useState<Member[]>(pageData.members);
   const [activeTab, setActiveTab] = useState("Overview");
 
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Run only on the client side to avoid localStorage error during SSR
   useEffect(() => {
+    // Check if the router and projectId are ready
     if (!router.isReady || !projectId) return;
 
-
+    // Fetch the project data when projectId is ready
     const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const res = await getViewProject(projectId.toString(), 1);
-        setPageData(await res);
+        const user_id = localStorage.getItem("user_id");
+        const res = await getViewProject(projectId.toString(), parseInt(user_id || "0"));
+        setPageData(res);
+        setProject(res.project);
+        setMembers(res.members)
       } catch (error) {
         console.error('Error fetching project data:', error);
+        alert("Error fetching project data. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, [router.isReady, projectId]);
 
+  // Check if the component is mounted and if localStorage is available
   useEffect(() => {
-    setProject(pageData.project);
-    setMembers(pageData.members);
-  }, [pageData]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      setAuthenticated(true);
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login"); // Redirect to login if no token
+      } else {
+        setAuthenticated(true); // Set authenticated to true if token exists
+      }
     }
-  }, []);
+  }, [router]);
 
-  // ✅ Instead of returning early, show loading conditionally
-  if (authenticated === null) {
-    return <p>Loading...</p>;
+  // Show loading state while checking for authentication
+  if (authenticated === false) {
+    return <div>Loading...</div> // Render loading message if not authenticated
   }
 
   return (
     <Layout>
-      <PageContainer title={project.name}>
+      <PageContainer title={project.name} isMain={false} mainRef='/my-tasks'>
+        {/* Tab bar */}
         <div className={styles.tabBar}>
           {tabs.map((tab, index) => (
             <div
@@ -105,17 +114,20 @@ const ViewProjectPage = () => {
               className={`${styles.tab} ${activeTab === tab ? styles.active : ""}`}
               onClick={() => setActiveTab(tab)}
             >
-              <FontAwesomeIcon className={styles.icon} icon={iconTabs[index]} />  {tab}
+              <FontAwesomeIcon className={styles.icon} icon={iconTabs[index]} /> {tab}
             </div>
           ))}
         </div>
+
+        {/* Content containers based on active tab */}
         <div className={styles.contentContainer}>
-          <Overview projectData={project} memberData={members} isOverview={activeTab} projectId={projectIdStr} />
-          <ProjectCalendar isCalendar={activeTab} projectId={projectIdStr} />
-          <ProjectDashboard isDashboard={activeTab} projectId={projectIdStr} />
-          <SprintBoard isSprint={activeTab} projectId={projectIdStr} />
+          {activeTab === "Overview" && <Overview projectId={projectIdStr} projectData={project} memberData={members} />}
+          {activeTab === "Calendar" && <ProjectCalendar projectId={projectIdStr} />}
+          {activeTab === "Dashboard" && <ProjectDashboard projectId={projectIdStr} />}
+          {activeTab === "Sprint" && <SprintBoard projectId={projectIdStr} />}
         </div>
       </PageContainer>
+      <LoadingModal isLoading={isLoading} />
     </Layout>
   );
 };

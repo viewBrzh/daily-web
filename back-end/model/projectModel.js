@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Project {
@@ -59,8 +59,7 @@ module.exports = class Project {
         .from('projects')
         .select('project_id', { count: 'exact' })
         .in('project_id', projectIds)
-        .ilike('name', `%${searchValue}%`)
-        .ilike('project_code', `%${searchValue}%`);
+        .ilike('name', `%${searchValue}%`);
 
       if (totalProjectsError) throw new Error('Error fetching project count: ' + totalProjectsError.message);
 
@@ -73,7 +72,6 @@ module.exports = class Project {
         .select('*')
         .in('project_id', projectIds)
         .ilike('name', `%${searchValue}%`)
-        .ilike('project_code', `%${searchValue}%`)
         .order(sortColumn, { ascending: sortOrder === 'asc' })
         .range(offset, offset + itemPerPage - 1);
 
@@ -85,13 +83,13 @@ module.exports = class Project {
 
       // Map project data
       const mappedProjects = projectDataResults.map(project => ({
-        projectId: project.project_id,
-        projectCode: project.project_code,
+        project_id: project.project_id,
+        project_code: project.project_code,
         name: project.name,
         description: project.description,
-        startDate: formatDateToDDMMYYYY(project.start_date),
-        endDate: formatDateToDDMMYYYY(project.end_date),
-        lastUpdate: formatDate(project.updated_at),
+        start_date: formatDateToDDMMYYYY(project.start_date),
+        end_date: formatDateToDDMMYYYY(project.end_date),
+        updated: formatDate(project.updated_at),
         status: project.status,
       }));
 
@@ -110,14 +108,13 @@ module.exports = class Project {
         return acc;
       }, {});
 
-      // Combine project data with roles
       const finalResults = await Promise.all(
         mappedProjects.map(async (project) => {
           // Query for member count
           const { count: memberCount, error: memberCountError } = await supabase
             .from('project_members')
             .select('user_id', { count: 'exact' })
-            .eq('project_id', project.projectId);
+            .eq('project_id', project.project_id);  // Fix here
 
           if (memberCountError) throw new Error('Error fetching member count: ' + memberCountError.message);
 
@@ -125,13 +122,13 @@ module.exports = class Project {
           const { count: taskCount, error: taskCountError } = await supabase
             .from('tasks')
             .select('task_id', { count: 'exact' })
-            .eq('project_id', project.projectId);
+            .eq('project_id', project.project_id);  // Fix here
 
           if (taskCountError) throw new Error('Error fetching task count: ' + taskCountError.message);
 
           return {
             ...project,
-            role: rolesByProject[project.projectId] || "-",
+            role: rolesByProject[project.project_id] || "-",
             members: memberCount || 0,
             task: taskCount || 0,
           };
@@ -147,18 +144,18 @@ module.exports = class Project {
 
   static async addProject(projectCode, name, description, start_date, end_date) {
     try {
-    
+
       const { data, error } = await supabase
         .from('projects')
         .insert([{ project_code: projectCode, name, description, start_date, end_date }])
         .select();
-  
+
       if (error) {
         throw new Error(error.message);
       }
-  
+
       const projectId = data[0].project_id; // Make sure this is a valid integer
-  
+
       console.log('Project added successfully:', projectCode, projectId);
       return projectId;  // Return the project ID
     } catch (error) {
@@ -171,108 +168,115 @@ module.exports = class Project {
     try {
       // Log projectId to ensure it is correct
       console.log('Project ID:', projectId);  // Debugging line
-  
+
       // First, check if the project exists
       const { data: projectData, error: projectError } = await supabase
         .from('projects')
         .select('project_id')
         .eq('project_id', projectId);
-  
+
       if (projectError) {
         throw new Error('Error checking project: ' + projectError.message);
       }
-  
+
       if (projectData.length === 0) {
         throw new Error(`Project with ID ${projectId} does not exist.`);
       }
-  
+
       // Now check if the users exist
-      const userIds = members.map(member => member.userId);
+      const userIds = members.map(member => member.user_id);
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('user_id')
         .in('user_id', userIds);
-  
+
       if (userError) {
         throw new Error('Error checking users: ' + userError.message);
       }
-  
+
       if (userData.length !== userIds.length) {
         throw new Error('One or more users do not exist.');
       }
-  
+
       // If both project and users exist, insert members
       const memberInsertData = members.map(member => ({
         project_id: projectId,
-        user_id: member.userId,
+        user_id: member.user_id,
         role: member.role,
       }));
-  
+
       const { data, error } = await supabase
         .from('project_members')
         .insert(memberInsertData)
         .select();
-  
+
       if (error) {
         throw new Error('Error adding members: ' + error.message);
       }
-  
+
       console.log('Members added successfully:', data);
       return data; // Return the added members data
     } catch (error) {
       console.error('Error adding members:', error.message);
       throw new Error('Error adding members: ' + error.message);
     }
-  }  
-  
+  }
+
   static async getViewProject(projectId, userId) {
     try {
       if (!projectId || !userId) {
         throw new Error("projectId and userId are required");
       }
-
+  
       console.log("Fetching project details for:", { projectId, userId });
-
+  
       // Fetch the project details
       const { data: projectResult, error: projectError } = await supabase
         .from('projects')
         .select('project_id, project_code, name, description, start_date, end_date, status, created_at, updated_at')
         .eq('project_id', projectId);
-
+  
       if (projectError) throw new Error(projectError.message);
-
+  
       if (!projectResult || projectResult.length === 0) {
         return { message: 'Project not found' };
       }
-
+  
       // Fetch the tasks related to the user for the given project
       const { data: mytasksResult, error: tasksError } = await supabase
         .from('tasks')
         .select('*')
         .eq('res_user_id', userId)
         .eq('project_id', projectId);
-
+  
       if (tasksError) throw new Error(tasksError.message);
-
-      // Fetch all members for the project
+  
+      // Fetch all members for the project with user details
       const { data: projectMembers, error: membersError } = await supabase
         .from('project_members')
-        .select('user_id, role')
+        .select('user_id, role, users(full_name)')
         .eq('project_id', projectId);
-
+  
       if (membersError) throw new Error(membersError.message);
-
+  
+      // Map the response to get the desired structure
+      const formattedProjectMembers = projectMembers.map(member => ({
+        user_id: member.user_id,
+        role: member.role,
+        full_name: member.users?.full_name // Ensure that users is available and full_name is fetched
+      }));
+  
       return {
         projectResult: projectResult[0],
         mytasksResult: mytasksResult || [],
-        projectMembers: projectMembers || []
+        projectMembers: formattedProjectMembers || []
       };
-
+  
     } catch (error) {
       console.error("Error fetching project details:", error.message);
       throw new Error('Error fetching project details: ' + error.message);
     }
-  }
+  }  
 
   static async updateProject(projectId, projectCode, name, description, start_date, end_date, status) {
     try {

@@ -30,7 +30,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ pageData }) => {
           <div
             key={index}
             className={styles.projectCard}
-            onClick={() => handleViewProject(project.projectId.toString())}
+            onClick={() => handleViewProject(project.project_id.toString())}
           >
             <div className={styles.projectCardHeader}>
               <div className={styles.titleContainer}>
@@ -38,7 +38,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ pageData }) => {
               </div>
               <StatusBadge status={project.status} />
             </div>
-            <p className={styles.projectCode}>{project.projectCode}</p>
+            <p className={styles.projectCode}>{project.project_code}</p>
             <div className={styles.statsContainer}>
               <div className={styles.statItem}>
                 <p className={styles.statLabel}><FontAwesomeIcon icon={faClipboard} /> Task</p>
@@ -46,7 +46,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ pageData }) => {
               </div>
               <div className={styles.statItem}>
                 <p className={styles.statLabel}><FontAwesomeIcon icon={faCalendarDays} /> Last Update</p>
-                <p className={styles.statValue}>{project.lastUpdate}</p>
+                <p className={styles.statValue}>{project.updated}</p>
               </div>
               <div className={styles.statItem}>
                 <p className={styles.statLabel}><FontAwesomeIcon icon={faPeopleGroup} /> Member</p>

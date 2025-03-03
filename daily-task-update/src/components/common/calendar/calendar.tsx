@@ -5,6 +5,7 @@ import { getCalendar } from '@/pages/api/my-task/calendar';
 import { useRouter } from 'next/router';
 import { CalendarItem } from '../types';
 import EditCalendarModal from '../modal/my-task/editCalendarModal';
+import LoadingModal from '../loadingModa';
 
 const calendarInit = [{
   id: 0,
@@ -37,6 +38,7 @@ const Calendar: React.FC = () => {
   const firstDayOfMonth = getFirstDayOfMonth(month, year);
   const daysInMonth = getDaysInMonth(month, year);
   const [calendar, setCalendar] = useState<CalendarItem[]>(calendarInit);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handle previous and next month changes
   const changeMonth = (direction: number) => {
@@ -65,11 +67,14 @@ const Calendar: React.FC = () => {
     if (!router.isReady || !projectId) return;
 
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const res = await getCalendar(projectId?.toString() || "", currentDate.getMonth() + 1);
         setCalendar(res);
       } catch (error) {
         console.error('Error fetching calendar data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -111,6 +116,7 @@ const Calendar: React.FC = () => {
         ))}
       </div>
       <EditCalendarModal date={modalDate} isOpen={isModalOpen} onClose={handleCloseModal} onSave={handleSaveModal} />
+      <LoadingModal isLoading={isLoading} />
     </div>
   );
 };

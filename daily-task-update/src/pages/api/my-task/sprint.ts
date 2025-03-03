@@ -23,7 +23,9 @@ export const getCurrentSprintByProject = async (projectId: string): Promise<Spri
 
 export const getPersonFilterOption = async (sprintId?: number): Promise<User[]> => {
     try {
-        const response = await axios.post<User[]>(`/api/tasks/getPersonFilterOption`, { sprintId });
+        const response = await axios.post<User[]>(`/api/tasks/getPersonFilterOption`, { 
+            sprintId: sprintId || 0
+         });
         return Array.isArray(response.data) ? response.data : []; // Ensure it returns an array
     } catch (error) {
         console.error("Error fetching person option:", error);
@@ -32,9 +34,13 @@ export const getPersonFilterOption = async (sprintId?: number): Promise<User[]> 
 };
 
 export const getTasks = async (sprintId?: number, userId?: number): Promise<Task[]> => {
+    console.log(sprintId, userId)
     try {
-        const response = await axios.post<Task[]>(`/api/tasks/getTasks`, { sprintId, userId });
-        return response.data;
+        const response = await axios.post<Task[]>(`/api/tasks/getTasks`, {
+            sprintId: sprintId || 0,
+            userId: userId || 0
+        });
+        return response.data || [];
     } catch (error) {
         console.error("Error fetching person ontion:", error);
         return {} as Task[];
@@ -61,7 +67,8 @@ export const updateTaskStatus = async (taskId: number, statusId: number) => {
 
 export const addNewSprint = async (newSprint: SprintDataInsert) => {
     try {
-        await axios.post(`/api/tasks/addNewSprint`, { newSprint });
+        const res = await axios.post(`/api/tasks/addNewSprint`, { newSprint });
+        return res;
     } catch (error) {
         console.error("Error updating task status:", error);
     }
@@ -69,7 +76,8 @@ export const addNewSprint = async (newSprint: SprintDataInsert) => {
 
 export const updateSprint = async (newSprint: SprintData) => {
     try {
-        await axios.post(`/api/tasks/updateSprint`, { newSprint });
+        const res = await axios.post(`/api/tasks/updateSprint`, { newSprint });
+        return res;
     } catch (error) {
         console.error("Error updating task status:", error);
     }

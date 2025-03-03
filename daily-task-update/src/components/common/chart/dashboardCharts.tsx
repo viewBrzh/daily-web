@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels'; // Import the datalabels plugin
@@ -11,13 +11,25 @@ interface DashboardProps {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, ChartDataLabels); // Register the plugin
 
 const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
+  const [isDataReady, setIsDataReady] = useState(false);
+
+  useEffect(() => {
+    if (data && data.task_status && data.sprint_progress && data.members) {
+      setIsDataReady(true);
+    }
+  }, [data]);
+
+  if (!isDataReady) {
+    return <div>Loading...</div>; // Or a custom loading spinner
+  }
+
   // Data for Task Status Pie Chart
   const taskStatusData = {
-    labels: data.taskStatus.map(item => item.status),
+    labels: Object.keys(data.task_status), // Get the keys of taskStatus object as labels
     datasets: [
       {
         label: 'Task Status Count',
-        data: data.taskStatus.map(item => item.count),
+        data: Object.values(data.task_status).map(status => Number(status)), // Convert to number
         backgroundColor: [
           'rgb(255, 99, 132)',
           'rgb(54, 162, 235)',
@@ -33,26 +45,26 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
 
   // Data for Sprint Progress Stacked Bar Chart
   const sprintProgressData = {
-    labels: data.sprintProgress.map(sprint => sprint.sprintName),
+    labels: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.sprint_name) : [],
     datasets: [
       {
         label: 'Done',
-        data: data.sprintProgress.map(sprint => sprint.statusCount?.Done || 0), // Handle null safely
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.Done || 0) : [],
         backgroundColor: 'rgb(255, 99, 132)',
       },
       {
         label: 'In-Progress',
-        data: data.sprintProgress.map(sprint => sprint.statusCount?.['In-Progress'] || 0), // Handle null safely
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.['In-Progress'] || 0) : [],
         backgroundColor: 'rgb(54, 162, 235)',
       },
       {
         label: 'Pending',
-        data: data.sprintProgress.map(sprint => sprint.statusCount?.Pending || 0), // Handle null safely
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.Pending || 0) : [],
         backgroundColor: 'rgb(255, 206, 86)',
       },
       {
         label: 'New',
-        data: data.sprintProgress.map(sprint => sprint.statusCount?.New || 0), // Handle null safely
+        data: Array.isArray(data.sprint_progress) ? data.sprint_progress.map(sprint => sprint.status_count?.New || 0) : [],
         backgroundColor: 'rgb(75, 192, 192)',
       }
     ]
@@ -60,11 +72,11 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
 
   // Data for Project Members Pie Chart
   const memberData = {
-    labels: data.members.map(member => member.role),
+    labels: Object.keys(data.members), // Get the keys of members object as labels
     datasets: [
       {
         label: 'Members by Role',
-        data: data.members.map(member => member.count),
+        data: Object.values(data.members), // Get the values of members object as data
         backgroundColor: ['#FF5733', '#36A2EB', '#FFEB3B'],
         borderColor: '#fff',
         borderWidth: 1,
@@ -92,16 +104,16 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
                   callbacks: {
                     label: (tooltipItem) => {
                       const value = tooltipItem.raw as number;
-                      return `${tooltipItem.label}: ${value} tasks (${((value / data.taskStatus.reduce((sum, item) => sum + item.count, 0)) * 100).toFixed(2)}%)`;
+                      return `${tooltipItem.label}: ${value} tasks (${((value / Object.values(data.task_status).reduce((sum, item) => sum + Number(item), 0)) * 100).toFixed(2)}%)`;
                     }
                   }
                 },
                 datalabels: {
-                  color: '#fff', // You can customize the color of the data labels
+                  color: '#fff',
                   font: {
                     weight: 'bold',
                   },
-                  formatter: (value) => `${value}`, // Display the number of tasks
+                  formatter: (value) => `${value}`,
                 }
               }
             }}
@@ -153,13 +165,12 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
                   font: {
                     weight: 'bold',
                   },
-                  formatter: (value) => { return value > 0 ? `${value}` : ''; }, // Display the number of tasks
+                  formatter: (value) => { return value > 0 ? `${value}` : ''; },
                 }
               }
             }}
-            style={{ height: '300px' }} // Set fixed height for the bar chart
+            style={{ height: '300px' }} 
           />
-
         </div>
       </div>
 
@@ -188,7 +199,7 @@ const DashboardCharts: React.FC<DashboardProps> = ({ data }) => {
                   font: {
                     weight: 'bold',
                   },
-                  formatter: (value) => `${value}`, // Display the number of members
+                  formatter: (value) => `${value}`,
                 }
               }
             }}

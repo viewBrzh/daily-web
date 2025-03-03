@@ -36,9 +36,9 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: name === "status_id" || name === "priority" ? Number(value) : value
         }));
-    };
+    };    
 
     const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setFormData((prevState) => ({
@@ -59,8 +59,8 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
         e.preventDefault();
         onSubmit({
             ...formData,
-            projectId: projectId ?? formData.projectId,
-            sprintId: sprintId ?? formData.sprintId
+            project_id: projectId ?? formData.project_id,
+            sprint_id: sprintId ?? formData.sprint_id
         });
     };
 
@@ -68,7 +68,7 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
         <div className={styles.overlay}>
             <div className={styles.modalContainerTask}>
                 <div className={styles.name}>
-                    <strong>{task.taskId !== 0 ? task.taskId : '#'}</strong>
+                    <strong>{task.task_id !== 0 ? task.task_id : '#'}</strong>
                     <input
                         type="text"
                         name="name"
@@ -93,23 +93,26 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
                         <div className={styles.rightColumn}>
                             <label className={styles.label}>Assigned To</label>
                             <ProjectMemberDropdown
-                                projectId={projectId || task.projectId}
+                                projectId={projectId || task.project_id}
                                 onSelectUser={handleSelectUser}
-                                userId={task.resUserId}
+                                userId={task.res_user_id}
                             />
 
                             <label className={styles.label}>Status</label>
                             <select
-                                name="statusId"
+                                name="status_id"
                                 className={styles.select}
-                                value={formData.statusId}
+                                value={formData.status_id}
                                 onChange={handleChange}
                             >
-                                {status.map((st) => (
-                                    <option key={st.statusId} value={st.statusId}>
-                                        {st.statusId} - {st.name}
-                                    </option>
-                                ))}
+                                {status
+                                    .sort((a, b) => b.status_id - a.status_id) // Sort in descending order (4 → 1)
+                                    .map((st) => (
+                                        <option key={st.status_id} value={st.status_id}>
+                                            {st.name}
+                                        </option>
+                                    ))}
+
                             </select>
 
                             <label className={styles.label}>Priority</label>

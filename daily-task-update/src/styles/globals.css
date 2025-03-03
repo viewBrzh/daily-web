@@ -336,3 +336,22 @@ select {
 option {
   border-radius: 4px;
 }
+
+.back {
+  padding: 4px 8px;
+  border-radius: 5px;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+
+.back:hover {
+  background-color: var(--lightGreyBG);
+}
+
+.back svg {
+  margin-right: 8px; 
+}

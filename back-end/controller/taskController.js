@@ -81,10 +81,10 @@ exports.updateTaskStatus = async (req, res) => {
 
 exports.addNewSprint = async (req, res) => {
     try {
-        const { start_date, end_date, sprintName, projectId } = req.body.newSprint;
-        console.log(start_date, end_date, sprintName, projectId);
+        const { start_date, end_date, sprint_name, project_id } = req.body.newSprint;
+        console.log(start_date, end_date, sprint_name, project_id);
         
-        if (!start_date || !end_date || !sprintName || !projectId) {
+        if (!start_date || !end_date || !sprint_name || !project_id) {
             return res.status(400).json({
                 message: 'Missing required fields',
             });
@@ -92,8 +92,8 @@ exports.addNewSprint = async (req, res) => {
         const formattedStartDate = formatDate(start_date);
         const formattedEndDate = formatDate(end_date);
 
-        const status = await Tasks.addNewSprint(formattedStartDate, formattedEndDate, sprintName, projectId);
-        res.status(200).json(status.message);
+        const status = await Tasks.addNewSprint(formattedStartDate, formattedEndDate, sprint_name, project_id);
+        res.status(200).json(status);
     } catch (error) {
         res.status(500).json({
             message: 'Failed to insert sprint',
@@ -104,9 +104,9 @@ exports.addNewSprint = async (req, res) => {
 
 exports.updateSprint = async (req, res) => {
     try {
-        const { sprintId, start_date, end_date, sprintName } = req.body.newSprint;
+        const { sprint_id, start_date, end_date, sprint_name } = req.body.newSprint;
         
-        if (!start_date || !end_date || !sprintName) {
+        if (!start_date || !end_date || !sprint_name) {
             return res.status(400).json({
                 message: 'Missing required fields',
             });
@@ -114,7 +114,7 @@ exports.updateSprint = async (req, res) => {
         const formattedStartDate = formatDate(start_date);
         const formattedEndDate = formatDate(end_date);
 
-        const status = await Tasks.updateSprint(sprintId, formattedStartDate, formattedEndDate, sprintName);
+        const status = await Tasks.updateSprint(sprint_id, formattedStartDate, formattedEndDate, sprint_name);
         res.status(200).json(status.message);
     } catch (error) {
         res.status(500).json({
@@ -126,10 +126,10 @@ exports.updateSprint = async (req, res) => {
 
 exports.updateTask = async (req, res) => {
     try {
-        const { taskId, name, description, resUserId, sprintId, projectId, statusId, priority } = req.body.task;
-        console.log( taskId, name, description, resUserId, sprintId, projectId, statusId, priority);
+        const { task_id, name, description, res_user_id, sprint_id, project_id, status_id, priority } = req.body.task;
+        console.log( task_id, name, description, res_user_id, sprint_id, project_id, status_id, priority);
 
-        const status = await Tasks.updateTask( taskId, name, description, resUserId, sprintId, projectId, statusId, priority);
+        const status = await Tasks.updateTask( task_id, name, description, res_user_id, sprint_id, project_id, status_id, priority );
         res.status(200).json(status);
     } catch (error) {
         res.status(500).json({
@@ -141,7 +141,7 @@ exports.updateTask = async (req, res) => {
 
 exports.insertTask = async (req, res) => {
     try {
-        const { name, description, resUserId, sprintId, projectId, statusId, priority } = req.body.task;
+        const { name, description, res_user_id, sprint_id, project_id, status_id, priority } = req.body.task;
 
         // Ensure required fields have valid values
         if (!name) {
@@ -151,10 +151,10 @@ exports.insertTask = async (req, res) => {
         const newTask = {
             name,
             description: description.trim() || null,
-            res_user_id: resUserId || null,
-            sprint_id: sprintId || null, 
-            project_id: parseInt(projectId) || null, 
-            status_id: statusId || 1,
+            res_user_id: res_user_id || null,
+            sprint_id: sprint_id || null, 
+            project_id: parseInt(project_id) || null, 
+            status_id: status_id || 1,
             priority: priority || null
         };
 

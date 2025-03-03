@@ -11,10 +11,10 @@ interface UserDropdownProps {
 }
 
 const initUser: User = {
-  userId: 0,
-  username: "",
-  fullName: "",
-  empId: ""
+  user_id: 0,
+  email: "",
+  full_name: "",
+  emp_id: ""
 }
 
 const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId, onSelectUser }) => {
@@ -51,7 +51,7 @@ const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId,
         setIsLoading(true);
         const members = await fetchDropDownUserProjectMember(projectId?.toString());
 
-        if (selectedUser && !members.some((m) => m.userId === selectedUser.userId)) {
+        if (selectedUser && !members.some((m) => m.user_id === selectedUser.user_id)) {
           members.unshift(selectedUser);
         }
 
@@ -68,10 +68,10 @@ const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId,
 
   const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
-    const selectedUser = suggestions.find((user) => user.userId === selectedId);
+    const selectedUser = suggestions.find((user) => user.user_id === selectedId);
     if (selectedUser) {
       setSelectedUser(selectedUser);
-      onSelectUser(selectedUser.userId, selectedUser.fullName);
+      onSelectUser(selectedUser.user_id, selectedUser.full_name);
     }
   };
 
@@ -82,12 +82,12 @@ const ProjectMemberDropdown: React.FC<UserDropdownProps> = ({ userId, projectId,
       ) : (
         <select
           className={styles.select}
-          value={selectedUser?.userId || ""}
+          value={selectedUser?.user_id || ""}
           onChange={handleSelect}
         >
           {suggestions.map((user) => (
-            <option key={user.userId} value={user.userId}>
-              {user.fullName}
+            <option key={user.user_id} value={user.user_id}>
+              {user.full_name}
             </option>
           ))}
         </select>

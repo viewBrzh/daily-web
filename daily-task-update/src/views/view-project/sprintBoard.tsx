@@ -8,33 +8,33 @@ import DragDropTaskColumn from "@/components/common/DragDropTaskColumn";
 import Modal from "@/components/common/modal/addModal";
 import UpdateTaskModal from "@/components/common/modal/sprint/updateTaskModal";
 import AlertModal from "@/components/common/modal/alert/alertModal";
+import LoadingModal from "@/components/common/loadingModa";
 
 interface CalendarProps {
-    isSprint: string;
     projectId: string;
 }
 
 const initStatus: Status = {
-    statusId: 0,
+    status_id: 0,
     name: ""
 }
 
 const initialSprintData: SprintData = {
-    sprintId: 0,
-    sprintName: "",
+    sprint_id: 0,
+    sprint_name: "",
     start_date: new Date(),
     end_date: new Date(),
-    projectId: "0",
+    project_id: "0",
 };
 
 const initUserData: User = {
-    userId: 0,
-    username: "",
-    fullName: "",
-    empId: "",
+    user_id: 0,
+    email: "",
+    full_name: "",
+    emp_id: "",
 }
 
-const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
+const SprintBoard: React.FC<CalendarProps> = ({ projectId }) => {
 
     const [selectedSprint, setSelectedSprint] = useState<SprintData>(initialSprintData);
     const [selectedPerson, setSelectedPerson] = useState<User>(initUserData);
@@ -50,6 +50,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleNewSprint = async () => {
         setIsModalOpen(true);
@@ -70,49 +71,73 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         setIsModalUpdateOpen(false);
     };
 
-    const handleSubmitSprint = (data: Record<string, string>) => {
-        const formattedData: SprintDataInsert = {
-            sprintName: data.sprintName,
-            start_date: new Date(data.start_date),
-            end_date: new Date(data.end_date),
-            projectId: projectId,
-        };
-        addNewSprint(formattedData);
+    const handleSubmitSprint = async (data: Record<string, string>) => {
+        setIsLoading(true);
         setIsModalOpen(false);
-    };
-
-    const handleUpdateSprintSubmit = (data: Record<string, string>) => {
-        const formattedData: SprintData = {
-            sprintId: selectedSprint?.sprintId,
-            sprintName: data.sprintName,
+        const formattedData: SprintDataInsert = {
+            sprint_name: data.sprintName,
             start_date: new Date(data.start_date),
             end_date: new Date(data.end_date),
-            projectId: projectId,
+            project_id: projectId,
         };
-        updateSprint(formattedData);
+        try {
+            const res = await addNewSprint(formattedData);
+            if (res) {
+                fetchSprint();
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
+        }
+
+    };
+    useEffect(()=> {
+        console.log("isLoading:" + isLoading)
+    }, [isLoading])
+
+    const handleUpdateSprintSubmit = async (data: Record<string, string>) => {
+        const formattedData: SprintData = {
+            sprint_id: selectedSprint?.sprint_id,
+            sprint_name: data.sprint_name,
+            start_date: new Date(data.start_date),
+            end_date: new Date(data.end_date),
+            project_id: projectId,
+        };
+        const res = await updateSprint(formattedData);
+        if (res) {
+            fetchSprint();
+        }
         setIsModalUpdateOpen(false);
     };
 
     const handleSubmitTask = async (data: Task) => {
+        setIsUpdateTaskModalOpen(false);
+        setIsLoading(true);
         try {
             await updateTask(data);
-            const tasks = getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
-            setTasks(await tasks);
+            const tasks = await getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
+            setTasks(tasks);
+            console.log(task)
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoading(false);
         }
-        setIsUpdateTaskModalOpen(false);
     };
 
     const handleSubmitAddTask = async (data: Task) => {
+        setIsInsertTaskOpen(false);
+        setIsLoading(true);
         try {
             await insertTask(data);
-            const tasks = getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+            const tasks = getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
             setTasks(await tasks);
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoading(false);
         }
-        setIsInsertTaskOpen(false);
     };
 
     const onClickSprintSelect = async () => {
@@ -121,7 +146,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     };
 
     const onClickPersonSelect = async () => {
-        const personOptionRes = await getPersonFilterOption(selectedSprint?.sprintId);
+        const personOptionRes = await getPersonFilterOption(selectedSprint?.sprint_id);
         setPersonOption(personOptionRes);
     };
 
@@ -138,43 +163,53 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     // Confirm handler
     const handleDeleteTask = async () => {
         console.log("Confirm to Deleting:", task);
+        setIsLoading(true);
         try {
-            await deleteTask(task.taskId);
+            await deleteTask(task.task_id);
 
-            const tasks = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+            const tasks = await getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
             setTasks(tasks);
 
             // Close modal after task deletion
             setIsShowAlertDelete(false);
         } catch (error) {
             console.error("Error deleting task:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         const fetchStatus = async () => {
+            setIsLoading(true);
             try {
                 const status = await getTaskStatus();
                 setStatus(status);
             } catch (error) {
                 console.error("Error fetching status:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchStatus();
     }, [])
 
-    useEffect(() => {
-        const fetchSprint = async () => {
-            try {
-                const currentSprint = await getCurrentSprintByProject(projectId);
-                setSelectedSprint(currentSprint);
+    const fetchSprint = async () => {
+        setIsLoading(true);
+        try {
+            const currentSprint = await getCurrentSprintByProject(projectId);
+            setSelectedSprint(currentSprint);
 
-                const dropdownSprint = await getSprintByProject(projectId);
-                setSprintOption(dropdownSprint);
-            } catch (error) {
-                console.error("Error fetching sprints:", error);
-            }
-        };
+            const dropdownSprint = await getSprintByProject(projectId);
+            setSprintOption(dropdownSprint);
+        } catch (error) {
+            console.error("Error fetching sprints:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchSprint();
     }, [projectId]);
 
@@ -182,7 +217,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         if (!selectedSprint) return;
         const fetchPerson = async () => {
             try {
-                const personOptionRes = await getPersonFilterOption(selectedSprint?.sprintId);
+                const personOptionRes = await getPersonFilterOption(selectedSprint?.sprint_id);
                 setPersonOption(personOptionRes);
             } catch (error) {
                 console.error("Error fetching persons:", error);
@@ -193,12 +228,16 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
     useEffect(() => {
         if (!selectedSprint) return;
+        setIsLoading(true);
         const fetchTasks = async () => {
             try {
-                const tasks = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+                const tasks = await getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
                 setTasks(tasks);
+                console.log(task)
             } catch (error) {
                 console.error("Error fetching tasks:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchTasks();
@@ -211,8 +250,8 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
     const personOptions = [
         ...specialOptions,
         ...personOption?.map((person) => ({
-            value: person.userId.toString(),
-            label: person.fullName,
+            value: person?.user_id?.toString(),
+            label: person.full_name,
         }))
     ];
 
@@ -222,8 +261,8 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
     const sprintOptions = [
         ...sprintOption.map((sprint) => ({
-            value: sprint?.sprintId?.toString(),
-            label: sprint.sprintName,
+            value: sprint?.sprint_id?.toString(),
+            label: sprint.sprint_name,
         })),
 
         ...specialSprintOptions,
@@ -233,7 +272,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         if (selectedValue === "newSprint") {
             handleNewSprint();
         } else {
-            const selected = sprintOption.find((sprint) => sprint?.sprintId?.toString() === selectedValue);
+            const selected = sprintOption.find((sprint) => sprint?.sprint_id?.toString() === selectedValue);
             if (selected) {
                 setSelectedSprint(selected);
             }
@@ -245,7 +284,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         if (selectedValue === "all") {
             setSelectedPerson(initUserData);
         } else {
-            const selected = personOption?.find((person) => person.userId.toString() === selectedValue);
+            const selected = personOption?.find((person) => person?.user_id?.toString() === selectedValue);
             if (selected) {
                 setSelectedPerson(selected);
             }
@@ -275,13 +314,13 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
 
     const handleDragUpdate: OnDragUpdateResponder<string> = (update) => {
         const { destination } = update;
-    
+
         // If destination exists and reason is drag
         if (destination) {
             setDraggingColumn(destination.droppableId);
         }
     };
-    
+
 
     const handleDragEnd = async (result: DropResult) => {
         setDraggingColumn(null);
@@ -298,7 +337,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         }
 
         const updatedTasks = [...tasks];
-        const taskIndex = updatedTasks.findIndex((task) => task.taskId.toString() === taskId);
+        const taskIndex = updatedTasks.findIndex((task) => task.task_id?.toString() === taskId);
 
         if (taskIndex === -1) {
             console.error("Task not found!");
@@ -306,18 +345,16 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
         }
 
         const movedTask = updatedTasks[taskIndex];
-        movedTask.statusId = Number(destination.droppableId);
+        movedTask.status_id = Number(destination.droppableId);
 
         try {
-            await updateTaskStatus(movedTask.taskId, movedTask.statusId);
-            const newTask = await getTasks(selectedSprint?.sprintId, selectedPerson?.userId);
+            await updateTaskStatus(movedTask.task_id, movedTask.status_id);
+            const newTask = await getTasks(selectedSprint?.sprint_id, selectedPerson?.user_id);
             setTasks(newTask);
         } catch (error) {
             console.error("Error updating task status:", error);
         }
     };
-
-    if (isSprint !== "Sprint") return null;
 
     return (
         <div>
@@ -326,15 +363,15 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                     {selectedSprint ? <DropdownSelect
                         onClick={onClickSprintSelect}
                         options={sprintOptions}
-                        value={selectedSprint?.sprintId?.toString()}
+                        value={selectedSprint?.sprint_id?.toString()}
                         onChange={handleSelectSprintChange}
                     /> : <button className={styles.btn} onClick={handleNewSprint}>+ New Sprint</button>}
 
                     <DropdownSelect
                         onClick={onClickPersonSelect}
-                        placeholder={selectedPerson.userId === 0 ? "Person: All" : `Person: ${selectedPerson.fullName}`}
+                        placeholder={selectedPerson.user_id === 0 ? "Person: All" : `Person: ${selectedPerson.full_name}`}
                         options={personOptions}
-                        value={selectedPerson.userId === 0 ? "all" : selectedPerson.userId.toString()}
+                        value={selectedPerson.user_id === 0 ? "all" : selectedPerson.user_id?.toString()}
                         onChange={handleSelectPersonChange}
                     />
                 </div>
@@ -344,7 +381,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
             </div>
             {selectedSprint &&
                 <div className={styles.manDay} onClick={handleUpdateSprint} style={{ cursor: "pointer" }}>
-                    {formatDate(selectedSprint?.start_date.toString())} - {formatDate(selectedSprint?.end_date.toString())}| ({getDaysCount(selectedSprint?.start_date.toString(), selectedSprint?.end_date.toString())} work days)
+                    {formatDate(selectedSprint?.start_date?.toString())} - {formatDate(selectedSprint?.end_date?.toString())}| ({getDaysCount(selectedSprint?.start_date?.toString(), selectedSprint?.end_date?.toString())} work days)
                 </div>
             }
             <DragDropContext
@@ -354,7 +391,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 <div className={styles.taskTableContainer}>
                     {status.map((statusItem) => (
                         <DragDropTaskColumn
-                            key={statusItem.statusId}
+                            key={statusItem.status_id}
                             statusItem={statusItem}
                             tasks={tasks}
                             draggingColumn={draggingColumn}
@@ -380,9 +417,9 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
             <Modal
                 isOpen={isModalUpdateOpen}
                 onClose={handleCloseModal}
-                title={"Update " + selectedSprint?.sprintName}
+                title={"Update " + selectedSprint?.sprint_name}
                 fields={[
-                    { name: "sprintName", label: "Sprint Name", required: true },
+                    { name: "sprint_name", label: "Sprint Name", required: true },
                     { name: "start_date", label: "Start Date", type: "date", required: true },
                     { name: "end_date", label: "End Date", type: "date", required: true }
                 ]}
@@ -405,7 +442,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 task={initTaskData}
                 status={status}
                 projectId={parseInt(projectId)}
-                sprintId={selectedSprint?.sprintId}
+                sprintId={selectedSprint?.sprint_id}
             />
             <AlertModal
                 isShow={isShowAlertDelete}
@@ -416,6 +453,7 @@ const SprintBoard: React.FC<CalendarProps> = ({ isSprint, projectId }) => {
                 onConfirm={handleDeleteTask}
                 isCancelable={true}
             />
+            <LoadingModal isLoading={isLoading} />
         </div>
     );
 };

@@ -9,6 +9,7 @@ import AlertModal from "./alert/alertModal";
 
 interface ModalProps {
   isOpen: boolean;
+  onSuccess: () =>void;
   onClose: () => void;
 }
 
@@ -22,23 +23,24 @@ interface AlertModalProps {
   isShow: boolean;
   title: string;
   description: string;
-  type: string;
+  type: "success" | "warning" | "error";
   onClose: () => void;
 }
 
-const initAlertProps = {
+const initAlertProps: AlertModalProps = {
   isShow: false,
   title: "",
   description: "",
-  type: 'success',
+  type: "success",
   onClose: () => { },
-}
-const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+};
+
+const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
   if (!isOpen) return null;  // This is fine, it's outside any hooks
 
   const [currentPage, setCurrentPage] = useState(1);
   const [newProject, setNewProject] = useState<NewProject>({
-    projectCode: "",
+    project_code: "",
     name: "",
     description: "",
     start_date: new Date(),
@@ -49,10 +51,9 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [newMember, setNewMember] = useState<NewMember>({ userId: 0, name: "", role: "" });
   const [alertProps, setAlertProps] = useState<AlertModalProps>(initAlertProps);
 
-  // Validation logic
   const validatePageOne = () => {
     const validationErrors: Record<string, string> = {};
-    if (!newProject.projectCode.trim()) validationErrors.projectCode = "Project Code is required";
+    if (!newProject.project_code.trim()) validationErrors.projectCode = "Project Code is required";
     if (!newProject.name.trim()) validationErrors.name = "Project Name is required";
     if (!newProject.start_date) validationErrors.start_date = "Start Date is required";
     if (!newProject.end_date) validationErrors.end_date = "End Date is required";
@@ -85,8 +86,8 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const handleAddMember = () => {
     if (newMember.name && newMember.role) {
       setTeamMembers([...teamMembers, {
-        userId: newMember.userId,
-        fullName: newMember.name,
+        user_id: newMember.userId,
+        full_name: newMember.name,
         role: newMember.role,
       }]);
       setNewMember({ userId: 0, name: "", role: "" });
@@ -99,7 +100,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async () => {
     await addProject(newProject, teamMembers);
-    onClose();
+    onSuccess();
     setAlertProps({
       isShow: true,
       title: "Success",
@@ -128,8 +129,8 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <input
               type="text"
               placeholder="Enter project code"
-              value={newProject.projectCode}
-              onChange={(e) => setNewProject({ ...newProject, projectCode: e.target.value })}
+              value={newProject.project_code}
+              onChange={(e) => setNewProject({ ...newProject, project_code: e.target.value })}
               required
             />
             {errors.projectCode && <span className={styles.error}>{errors.projectCode}</span>}
@@ -212,7 +213,7 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 {teamMembers.map((member, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{member.fullName}</td>
+                    <td>{member.full_name}</td>
                     <td>{member.role}</td>
                     <td style={{ textAlign: "center" }}>
                       <button
@@ -255,8 +256,9 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         isShow={alertProps?.isShow}
         title={alertProps?.title}
         description={alertProps?.description}
-        type={alertProps.type}
-        onClose={closeModal} />
+        type={alertProps?.type}
+        onClose={closeModal} 
+        onConfirm={closeModal}/>
     </div>
   );
 };

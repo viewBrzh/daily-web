@@ -2,15 +2,18 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import styles from '@/styles/Register.module.css';
 import Link from "next/link";
+import AlertModal from "@/components/common/modal/alert/alertModal";
 
 const Register = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [nickName, setNickName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
     const router = useRouter();
 
     const handleRegister = async () => {
@@ -23,7 +26,7 @@ const Register = () => {
             return;
         }
 
-        const fullName = firstName + " " + lastName;
+        const fullName = firstName + " " + lastName + " (" + nickName + ")";
 
         const response = await fetch("/api/auth/signUp", {
             method: "POST",
@@ -31,14 +34,14 @@ const Register = () => {
             body: JSON.stringify({ fullName, email, password }),
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            setSuccess("Welcome aboard! Please check your email to verify your account.");
-            setTimeout(() => router.push("/login"), 3000);
+            const data = await response.json();
+            setSuccessMessage("Registration successful! Please check your email to verify your account.");
         } else {
+            const data = await response.json(); // Check this only if response is not ok
             setError(data.error || "Something went wrong. Please try again.");
         }
+
     };
 
     return (
@@ -76,6 +79,13 @@ const Register = () => {
                                 />
                             </div>
                             <input
+                                type="text"
+                                placeholder="Nickname"
+                                value={nickName}
+                                onChange={(e) => setNickName(e.target.value)}
+                                className={styles.input}
+                            />
+                            <input
                                 type="email"
                                 placeholder="Email"
                                 value={email}
@@ -99,11 +109,21 @@ const Register = () => {
                             <button onClick={handleRegister} className={styles.button}>Sign Up</button>
                             <span>Already have an account? <Link href="/login"> <span className={styles.link}>Log In</span></Link></span>
                             {error && <p className={styles.error}>{error}</p>}
-                            {success && <p className={styles.success}>{success}</p>}
+                            {successMessage && <p className={styles.success}>{successMessage}</p>}
                         </div>
                     </div>
                 </div>
             </div>
+            <AlertModal
+                isShow={!!successMessage}
+                title="Check Your Email"
+                description={successMessage}
+                type="success"
+                onClose={() => {
+                    setSuccessMessage("");
+                    router.push("/login"); // Redirect after closing modal
+                }}
+            />
         </div>
     );
 };

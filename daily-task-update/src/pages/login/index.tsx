@@ -22,11 +22,11 @@ const Login = () => {
         });
 
         const data = await response.json();
-        console.log(data);
 
-        if (response.ok) {
+        if (data.success) {
             localStorage.setItem("token", data.token);
             localStorage.setItem("fullName", data.user?.full_name);
+            localStorage.setItem("user_id", data.user?.user_id);
             router.push("/my-tasks");
         } else {
             setError("Invalid username or password");
@@ -67,7 +67,7 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className={styles.input}
                         />
-                        <Link href=""><div className={styles.linkGrey}>Reset password</div></Link>
+                        <Link href="/reset-password"><div className={styles.linkGrey}>Reset password</div></Link>
                         <button onClick={handleLogin} className={styles.button}>Sign In</button>
                         <span>Don&apos;t have an account? <Link href="/register"><span className={styles.link}>Sign Up</span></Link></span>
                         {error && <p className={styles.error}><small>{error}</small></p>}

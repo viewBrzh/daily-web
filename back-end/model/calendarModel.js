@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://cthfnaaoskttzptrovht.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
 
 if (!supabaseKey) {
     console.warn("Warning: SUPABASE_KEY is not defined. Check your environment variables.");

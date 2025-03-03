@@ -10,6 +10,7 @@ import { fetchProjects } from "../api/my-task/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
+import LoadingModal from "@/components/common/loadingModa";
 
 
 const MyTasks: React.FC = () => {
@@ -25,19 +26,29 @@ const MyTasks: React.FC = () => {
   const router = useRouter();
 
   const [authenticated, setAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const handleAddProjectClick = () => {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const hadleSuccess = async () => {
+    setIsModalOpen(false);
+    const user_id = localStorage.getItem("user_id");
+    const data = await fetchProjects(parseInt(user_id || "0"), debouncedSearchValue, currentPage, sort);
+    setProjects(data.projects);
+    setTotalPage(data.total_page);
+    settotalRow(data.total_row);
+  }
+
+  const handleCloseModal = async () => {
     setIsModalOpen(false);
   };
 
   const searchPayload = {
     label: 'Search',
-    placeholder: 'project name/Code',
+    placeholder: 'project name',
     value: searchValue,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value),
   };
@@ -57,14 +68,19 @@ const MyTasks: React.FC = () => {
 
   useEffect(() => {
     const fetchProjectData = async () => {
+      setIsLoading(true);
       try {
-        const data = await fetchProjects(1, debouncedSearchValue, currentPage, sort);
+        const user_id = localStorage.getItem("user_id");
+        const data = await fetchProjects(parseInt(user_id || "0"), debouncedSearchValue, currentPage, sort);
         const projectData = data.projects;
+        
         setProjects(projectData);
-        setTotalPage(data.totalPage);
-        settotalRow(data.totalRow);
+        setTotalPage(data.total_page);
+        settotalRow(data.total_row);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -89,7 +105,6 @@ const MyTasks: React.FC = () => {
     }
   }, []);
 
-  // ✅ Instead of returning early, show loading conditionally
   if (authenticated === null) {
     return <p>Loading...</p>;
   }
@@ -97,7 +112,7 @@ const MyTasks: React.FC = () => {
   return (
     <Layout>
       <SearchBar payload={searchPayload} />
-      <PageContainer title={"My Project"}>
+      <PageContainer title={"My Project"} isMain={true}>
         <div className={styles.container}>
           <div className={styles.header}>
             <div className={styles.divContainer}>
@@ -142,7 +157,8 @@ const MyTasks: React.FC = () => {
           </div>
         </div>
       </PageContainer>
-      <AddProjectModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <AddProjectModal isOpen={isModalOpen} onClose={handleCloseModal} onSuccess={hadleSuccess} />
+      <LoadingModal isLoading={isLoading} />
     </Layout>
   );
 };
