@@ -63,9 +63,9 @@ exports.resetPassword = async (req, res) => {
 exports.updatePassword = async (req, res) => {
     try {
         const {new_password} = req.body;
-        const res = await AuthenModel.updatePassword(new_password);
+        const response = await AuthenModel.updatePassword(new_password);
         if (response.success) {
-            return res.status(200).json({ message: response.message });
+            return res.status(200).json(res);
         } else {
             return res.status(400).json({ error: response.message });
         }
