@@ -41,11 +41,9 @@ exports.logout = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     const { email } = req.body;
-
     if (!email) {
         return res.status(400).json({ error: "Email is required" });
     }
-
     try {
         const response = await AuthenModel.resetPassword(email);
         if (response.success) {
@@ -61,4 +59,21 @@ exports.resetPassword = async (req, res) => {
         });
     }
 };
+
+exports.updatePassword = async (req, res) => {
+    try {
+        const {new_password} = req.body;
+        const res = await AuthenModel.updatePassword(new_password);
+        if (response.success) {
+            return res.status(200).json({ message: response.message });
+        } else {
+            return res.status(400).json({ error: response.message });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message
+        })
+    }
+}
 
