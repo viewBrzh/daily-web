@@ -105,7 +105,7 @@ const ViewProjectPage = () => {
 
   return (
     <Layout>
-      <PageContainer title={project.name}>
+      <PageContainer title={project.name} isMain={false} mainRef='/my-tasks'>
         {/* Tab bar */}
         <div className={styles.tabBar}>
           {tabs.map((tab, index) => (

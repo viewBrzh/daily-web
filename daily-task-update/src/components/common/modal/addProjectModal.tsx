@@ -23,17 +23,18 @@ interface AlertModalProps {
   isShow: boolean;
   title: string;
   description: string;
-  type: string;
+  type: "success" | "warning" | "error";
   onClose: () => void;
 }
 
-const initAlertProps = {
+const initAlertProps: AlertModalProps = {
   isShow: false,
   title: "",
   description: "",
-  type: 'success',
+  type: "success",
   onClose: () => { },
-}
+};
+
 const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
   if (!isOpen) return null;  // This is fine, it's outside any hooks
 
@@ -50,7 +51,6 @@ const AddProjectModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) =
   const [newMember, setNewMember] = useState<NewMember>({ userId: 0, name: "", role: "" });
   const [alertProps, setAlertProps] = useState<AlertModalProps>(initAlertProps);
 
-  // Validation logic
   const validatePageOne = () => {
     const validationErrors: Record<string, string> = {};
     if (!newProject.project_code.trim()) validationErrors.projectCode = "Project Code is required";

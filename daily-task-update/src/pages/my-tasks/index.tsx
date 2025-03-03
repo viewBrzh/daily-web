@@ -112,7 +112,7 @@ const MyTasks: React.FC = () => {
   return (
     <Layout>
       <SearchBar payload={searchPayload} />
-      <PageContainer title={"My Project"}>
+      <PageContainer title={"My Project"} isMain={true}>
         <div className={styles.container}>
           <div className={styles.header}>
             <div className={styles.divContainer}>
