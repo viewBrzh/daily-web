@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "@/styles/ResetPassword.module.css";
 import AlertModal from "@/components/common/modal/alert/alertModal";
@@ -9,7 +9,18 @@ const UpdatePassword = () => {
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [token, setToken] = useState("");
     const router = useRouter();
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromURL = urlParams.get("token");
+        if (!tokenFromURL) {
+            setError("Invalid or missing token.");
+        } else {
+            setToken(tokenFromURL);
+        }
+    }, []);
 
     const handleUpdatePassword = async () => {
         if (!newPassword || newPassword.length < 6) {
@@ -23,7 +34,7 @@ const UpdatePassword = () => {
             const response = await fetch("/api/auth/update-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ new_password: newPassword }),
+                body: JSON.stringify({ new_password: newPassword, token }),
             });
 
             const data = await response.json();

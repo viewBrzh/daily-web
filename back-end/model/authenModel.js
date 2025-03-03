@@ -141,11 +141,13 @@ class AuthModel {
         }
     }
 
-    static async updatePassword(newPassword) {
+    static async updatePassword(newPassword, token) {
         try {
-            const { data, error } = await supabase.auth.updateUser({
-                password: newPassword
-            });
+            const { data, error } = await supabase.auth.api.updateUser(
+                token, 
+                { password: newPassword }
+            );
+    
             if (error) {
                 console.error('Error updating password:', error.message);
                 return { success: false, message: error.message };
