@@ -9,5 +9,6 @@ router.get('/', (req, res) => {
 router.post('/login', AuthController.login);
 router.post('/signUp', AuthController.signUp);
 router.post('/logout', AuthController.logout);
+router.post('/reset-password', AuthController.resetPassword);
 
 module.exports = router;

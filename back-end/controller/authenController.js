@@ -38,3 +38,27 @@ exports.logout = async (req, res) => {
         });
     }
 };
+
+exports.resetPassword = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+    }
+
+    try {
+        const response = await AuthenModel.resetPassword(email);
+        if (response.success) {
+            return res.status(200).json({ message: response.message });
+        } else {
+            return res.status(400).json({ error: response.message });
+        }
+    } catch (error) {
+        console.error("Error during password reset:", error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+};
+
