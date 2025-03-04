@@ -61,12 +61,9 @@ const ViewProjectPage = () => {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Run only on the client side to avoid localStorage error during SSR
   useEffect(() => {
-    // Check if the router and projectId are ready
     if (!router.isReady || !projectId) return;
 
-    // Fetch the project data when projectId is ready
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -86,21 +83,19 @@ const ViewProjectPage = () => {
     fetchData();
   }, [router.isReady, projectId]);
 
-  // Check if the component is mounted and if localStorage is available
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       if (!token) {
-        router.push("/login"); // Redirect to login if no token
+        router.push("/login");
       } else {
-        setAuthenticated(true); // Set authenticated to true if token exists
+        setAuthenticated(true);
       }
     }
   }, [router]);
 
-  // Show loading state while checking for authentication
   if (authenticated === false) {
-    return <div>Loading...</div> // Render loading message if not authenticated
+    return <div>Loading...</div>
   }
 
   return (
@@ -119,7 +114,6 @@ const ViewProjectPage = () => {
           ))}
         </div>
 
-        {/* Content containers based on active tab */}
         <div className={styles.contentContainer}>
           {activeTab === "Overview" && <Overview projectId={projectIdStr} projectData={project} memberData={members} />}
           {activeTab === "Calendar" && <ProjectCalendar projectId={projectIdStr} />}

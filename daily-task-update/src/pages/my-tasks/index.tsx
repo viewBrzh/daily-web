@@ -129,7 +129,7 @@ const MyTasks: React.FC = () => {
         </div>
         <div className={"paginationContainer"}>
           <div className={"paginationInfo"}>
-            Showing {startItem + 1} - {endItem} of {totalRow}
+            Showing {endItem > 0 ? startItem + 1 : 0} - {endItem || 0} of {totalRow || 0}
           </div>
           <div className="paginationControls">
             <span className="paginationInfo">
@@ -140,7 +140,7 @@ const MyTasks: React.FC = () => {
                 min="1"
                 max={totalPage}
               />{" "}
-              / {totalPage}
+              / {totalPage || 1}
             </span>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
