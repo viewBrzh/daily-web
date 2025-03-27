@@ -9,6 +9,7 @@ const memberRoute = require('../route/memberRoute');
 const calendarRoute = require('../route/calendarRoute');
 const dashboardRoute = require('../route/dashboardRoute');
 const authenRoute = require('../route/authenRoute');
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -31,3 +32,7 @@ app.use("/auth", authenRoute);
 
 module.exports = app;
 module.exports.handler = serverless(app); 
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

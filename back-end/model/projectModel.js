@@ -1,7 +1,13 @@
-import { createClient } from '@supabase/supabase-js';
+require('dotenv').config(); 
+const { createClient } = require('@supabase/supabase-js');
 
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabaseUrl = process.env.SUPABASE_URL;
+
+console.log("Creating Supabase client with:");
+console.log("supabaseUrl:", supabaseUrl);
+console.log("supabaseKey:", supabaseKey ? "Loaded" : "Not Loaded");
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = class Project {
