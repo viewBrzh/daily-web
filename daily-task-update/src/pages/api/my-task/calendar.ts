@@ -23,10 +23,11 @@ export const addCalendar = async (eventData: CalendarItem) => {
   const response = await fetch("/api/calendar/addCalendar", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(eventData),
+    body: JSON.stringify({ ...eventData, projectId: eventData.project_id }),
   });
   return response.json();
 };
+
 export const deleteCalendar = async (id: number) => {
   const response = await fetch(`/api/calendar/deleteCalendar`, {
       method: "POST",
