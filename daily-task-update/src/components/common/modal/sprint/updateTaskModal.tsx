@@ -50,7 +50,7 @@ const UpdateTaskModal: React.FC<ModalProps> = ({
     const handleSelectUser = (userId: number, userName: string) => {
         setFormData((prevState) => ({
             ...prevState,
-            resUserId: userId,
+            res_user_id: userId,
             assignedUserName: userName
         }));
     };
